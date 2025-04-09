@@ -11,6 +11,8 @@ namespace e_commerce
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            // builder.Services.AddAutoMapper(typeof(MappingProfile));
+
             builder.Services.AddDbContext<ECommerceDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             //builder.Services.AddApplicationServices();
@@ -24,6 +26,7 @@ namespace e_commerce
             app.UseRouting();
 
             app.UseAuthorization();
+
 
             app.MapStaticAssets();
             app.MapControllerRoute(
