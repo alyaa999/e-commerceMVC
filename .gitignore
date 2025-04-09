@@ -59,9 +59,12 @@ dlldata.c
 BenchmarkDotNet.Artifacts/
 
 # .NET Core
+# .NET Core
 project.lock.json
 project.fragment.lock.json
 artifacts/
+appsettings*.json   # Ignore appsettings files (like appsettings.Development.json)
+
 
 # ASP.NET Scaffolding
 ScaffoldingReadMe.txt
@@ -361,3 +364,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Application configuration
+appsettings*.json
+
