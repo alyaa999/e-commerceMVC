@@ -109,6 +109,21 @@ tabs.forEach((tab) => {
       tab.classList.remove("active-tab");
     });
 
-    tab.classList.add("active-tab");
+    tab.classList.add("active-tab");    
   });
 });
+
+///---------------Categories Meun-----------------//
+function toggleCategories() {
+    const categoryMenu = document.getElementById('category-menu');
+    if (categoryMenu.style.display === "none") {
+        categoryMenu.style.display = "block";  // Show the menu
+    } else {
+        categoryMenu.style.display = "none";  // Hide the menu
+    }
+}
+
+function toggleSubcategories(id) {
+    const subcategoryList = document.getElementById(id);
+    subcategoryList.classList.toggle('hidden');
+}
