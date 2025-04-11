@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using e_commerce.Infrastructure.Entites;
 
@@ -11,9 +12,11 @@ using e_commerce.Infrastructure.Entites;
 namespace e_commerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    partial class ECommerceDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250410185912_IntialCreate")]
+    partial class IntialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -697,14 +700,8 @@ namespace e_commerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id")
                         .HasName("PK__Seller__3214EC272DFE5864");
-
-                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Seller");
                 });
@@ -996,17 +993,6 @@ namespace e_commerce.Infrastructure.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("e_commerce.Infrastructure.Entites.Seller", b =>
-                {
-                    b.HasOne("e_commerce.Domain.Entites.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.SubCategory", b =>

@@ -1,5 +1,8 @@
+using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
+using e_commerce.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace e_commerce
 {
@@ -15,6 +18,7 @@ namespace e_commerce
 
             builder.Services.AddDbContext<ECommerceDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddScoped<IWishlistRepo, WishlistRepo>();
             //builder.Services.AddApplicationServices();
             var app = builder.Build();
 

@@ -1,0 +1,63 @@
+﻿@model e_commerce.Infrastructure.Entites.Wishlist
+
+@{
+}
+
+<section class="breadcrumb">
+    <ul class="breadcrumb__list flex container">
+        <li><a href="index.html" class="breadcrumb__link">Home</a></li>
+        <li><span class="breadcrumb__link"></span></li>
+        <li><span class="breadcrumb__link">Shop</span></li>
+        <li><span class="breadcrumb__link"></span></li>
+        <li><span class="breadcrumb__link">Wishlist</span></li>
+    </ul>
+</section>
+
+<section class="wishlist section--lg container">
+    <div class="table__container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Stock Status</th>
+                    <th>Add to Cart</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Products)
+                {
+                    <tr>
+                        <td>
+                            <img src=@Url.Content($"~/image/{item.ProductImages.FirstOrDefault().ImageUrl}")
+                                 alt=""
+                                 class="table__img" />
+                        </td>
+                        <td>
+                            <h3 class="table__title">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </h3>
+                        </td>
+                        <td>
+                            <span class="table__price">@Html.DisplayFor(m => item.Price)</span>
+                        </td>
+                        <td>
+                            @if (@item.Stock > 0)
+                            {
+                                <span class="table__stock">In Stock</span>
+                            }
+                            else
+                            {
+                                <span class="table__stock">Out of Stock</span>
+                            }
+                        </td>
+                        <td><a asp-controller="" asp-action="" class="btn btn--sm">Add to Cart</a></td>
+                        <td><a data-id="5"><i class="fi fi-rs-trash table__trash btn-delete"></i></a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
