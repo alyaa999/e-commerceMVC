@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using e_commerce.Domain.Entites;
 using Microsoft.EntityFrameworkCore;
 
 namespace e_commerce.Infrastructure.Entites;
@@ -17,7 +18,8 @@ public partial class Customer
 
     [InverseProperty("Customer")]
     public virtual ICollection<Address> Addresses { get; set; } = new List<Address>();
-
+    public string ApplicationUserId { get; set; }
+    public ApplicationUser ApplicationUser { get; set; }
     [InverseProperty("Customer")]
     public virtual Cart Cart { get; set; }
 

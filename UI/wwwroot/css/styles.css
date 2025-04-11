@@ -2125,3 +2125,21 @@ table {
     max-width: 270px;
   }
 }
+.fa-spinner {
+    animation: fa-spin 2s infinite linear;
+}
+
+@keyframes fa-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(359deg);
+    }
+}
+
+.action__btn[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

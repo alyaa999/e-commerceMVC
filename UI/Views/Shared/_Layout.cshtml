@@ -7,7 +7,8 @@
     <!--=============== FLATICON ===============-->
     <link rel="stylesheet"
           href="https://cdn-uicons.flaticon.com/2.0.0/uicons-regular-straight/css/uicons-regular-straight.css" />
-    
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <!--=============== SWIPER CSS ===============-->
     <link rel="stylesheet"
@@ -82,7 +83,8 @@
                     <img src="~/image/icon-heart.svg" alt="" />
                     <span class="count">3</span>
                 </a>
-                <a href="cart.html" class="header__action-btn" title="Cart">
+                <a asp-action="viewcartproducts" asp-controller="Cart"
+                   class="header__action-btn" title="Cart">
                     <img src="~/image/icon-cart.svg" alt="" />
                     <span class="count">3</span>
                 </a>
@@ -207,5 +209,14 @@
 
     <!--=============== MAIN JS ===============-->
     <script src="~/js/main.js"></script>
+    <!-- jQuery (required for AJAX) -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- SweetAlert2 for notifications -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- my js file -->
+    <script src="~/js/cart.js"></script>
+    <script src="~/js/cartupdate.js"></script> 
+    
 </body>
 </html>
