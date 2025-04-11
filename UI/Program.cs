@@ -20,6 +20,7 @@ namespace e_commerce
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddScoped<IWishlistRepo, WishlistRepo>();
             //builder.Services.AddApplicationServices();
+            builder.Services.AddScoped<IcartRepository, CarRepoService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

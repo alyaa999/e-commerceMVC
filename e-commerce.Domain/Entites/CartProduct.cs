@@ -8,7 +8,7 @@ namespace e_commerce.Infrastructure.Entites;
 
 [PrimaryKey("CartId", "ProductCode")]
 [Table("Cart_Product")]
-public partial class CartProduct
+public partial class CartProduct 
 {
     [Key]
     [Column("Cart_ID")]
