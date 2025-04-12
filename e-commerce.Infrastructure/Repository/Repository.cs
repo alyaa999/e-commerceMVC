@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
@@ -42,7 +43,10 @@ namespace e_commerce.Infrastructure.Repository
         {
             return await _dbSet.FindAsync(id);
         }
-
+        public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
+        }
         public void Update(T entity)
         {
             _dbSet.Update(entity);
@@ -52,5 +56,32 @@ namespace e_commerce.Infrastructure.Repository
         {
             await _db.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<T>> GetAllIncludingAsync(params Expression<Func<T, object>>[] includeProperties)
+        {
+            IQueryable<T> query = _dbSet;
+
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+
+            return await query.ToListAsync();
+        }
+
+        // Alternative version that returns IQueryable for more flexibility
+        public IQueryable<T> GetAllIncludingQuery(params Expression<Func<T, object>>[] includeProperties)
+        {
+            IQueryable<T> query = _dbSet;
+
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+
+            return query;
+        }
+
+     
     }
 }

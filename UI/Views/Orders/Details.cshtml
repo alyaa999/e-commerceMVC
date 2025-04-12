@@ -1,0 +1,76 @@
+﻿@model e_commerce.Infrastructure.Entites.Order
+<!-- Assuming your Order model is in this namespace -->
+
+@{
+    ViewData["Title"] = "Order Details";
+    Layout = "_AdminLayout";  // Use the same layout
+}
+
+<h1 class="text-center my-4 text-primary fw-bold">Order Details</h1>
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h3>Order Information</h3>
+            <p><strong>Order ID:</strong> @Model.Id</p>
+            <p><strong>Customer ID:</strong> @Model.Customer?.Id</p>
+            <p><strong>Order Date:</strong> @Model.OrderDate</p>
+            <p><strong>Total Amount:</strong> @Model.TotalPrice.ToString("C")</p>
+            <p><strong>Status:</strong> 
+                <span class="badge @GetOrderStatusClass(Model.Status)">
+                    @Enum.GetName(typeof(e_commerce.Web.Controllers.OrdersController.OrderStatus), Model.Status)
+                </span>
+            </p>
+        </div>
+        <div class="col-md-6">
+            <h3>Customer Information</h3>
+            <p><strong>Name:</strong> @Model.Customer.ApplicationUser.FirstName</p>
+            <p><strong>Email:</strong> @Model.Customer.ApplicationUser.Email</p>
+            <p><strong>Phone:</strong> @Model.Customer?.ApplicationUser.PhoneNumber</p>
+        </div>
+    </div>
+
+    <h3>Order Items</h3>
+    <table class="table table-hover table-bordered text-center align-middle">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderProducts)
+            {
+                <tr>
+                    <td>@item.Product.Name</td> <!-- Assuming each product has a Name property -->
+                    <td>@item.Quantity</td>
+                    <td>@item.UnitPrice.ToString("C")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="d-flex justify-content-between">
+    <a href="@Url.Action("Index", "Orders")" class="btn btn-secondary">Back to Orders</a>
+    <a href="@Url.Action("Confirm", "Orders", new { id = Model.Id })" class="btn btn-success">Confirm Order</a>
+    <a href="@Url.Action("Cancel", "Orders", new { id = Model.Id })" class="btn btn-danger">Cancel Order</a>
+</div>
+
+@* Helper method to return the correct status class *@
+@functions {
+    public string GetOrderStatusClass(int status)
+    {
+        return status switch
+        {
+            0 => "bg-warning text-dark",   // Pending
+            1 => "bg-primary",             // Confirmed
+            2 => "bg-info",                // Shipped
+            3 => "bg-success",             // Delivered
+            4 => "bg-danger",              // Cancelled
+            5 => "bg-secondary",           // Returned
+            _ => "bg-light text-dark"
+        };
+    }
+}

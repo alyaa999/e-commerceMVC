@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using e_commerce.Domain.Entites;
 using Microsoft.EntityFrameworkCore;
 
 namespace e_commerce.Infrastructure.Entites;
@@ -29,4 +30,7 @@ public partial class Customer
 
     [InverseProperty("Customer")]
     public virtual ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
+
+    public string ApplicationUserId { get; set; }
+    public ApplicationUser ApplicationUser { get; set; }
 }

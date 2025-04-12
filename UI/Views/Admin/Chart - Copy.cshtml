@@ -1,0 +1,261 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+<div class="main-container container">
+    <div class="page-header">
+        <h1 class="page-title">Business Intelligence</h1>
+        <div>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Analytics</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Stats Cards Row -->
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xl-12">
+            <div class="row">
+                <!-- Customers Card -->
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Total Customers</h6>
+                                    <h2 class="mb-0 number-font" id="totalCustomers">0</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="customersChart" class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12">
+                                <span class="text-success">
+                                    <i class="fe fe-arrow-up-circle text-success"></i> 5%
+                                </span>
+                                Current Year
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Card -->
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Total Orders</h6>
+                                    <h2 class="mb-0 number-font" id="totalOrders">0</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="ordersChart" class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12">
+                                <span class="text-success">
+                                    <i class="fe fe-arrow-up-circle text-success"></i> 12%
+                                </span>
+                                Current Year
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Card -->
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Total Products</h6>
+                                    <h2 class="mb-0 number-font" id="totalProducts">0</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="productsChart" class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12">
+                                <span class="text-success">
+                                    <i class="fe fe-arrow-up-circle text-success"></i> 8%
+                                </span>
+                                Current Year
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SubCategories Card -->
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xl-3">
+                    <div class="card overflow-hidden">
+                        <div class="card-body">
+                            <div class="d-flex">
+                                <div class="mt-2">
+                                    <h6 class="">Total Categories</h6>
+                                    <h2 class="mb-0 number-font" id="totalCategories">0</h2>
+                                </div>
+                                <div class="ms-auto">
+                                    <div class="chart-wrapper mt-1">
+                                        <canvas id="categoriesChart" class="h-8 w-9 chart-dropshadow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <span class="text-muted fs-12">
+                                <span class="text-success">
+                                    <i class="fe fe-arrow-up-circle text-success"></i> 3%
+                                </span>
+                                Current Year
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Chart Row -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Monthly Sales Report</h3>
+                </div>
+                <div class="card-body">
+                    <canvas id="salesChart" height="100"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Initialize counters
+            animateCounter('totalUsers', @ViewBag.CustomersNum);
+            animateCounter('totalOrders', @ViewBag.OrdersNum);
+            animateCounter('totalProducts', @ViewBag.ProductsNum);
+            animateCounter('totalSubCategories', @ViewBag.SubCategoriesNum);
+
+            // Fetch sales data
+            $.ajax({
+                url: '/Admin/GetSalesData',
+                type: 'GET',
+                success: function (data) {
+                    renderSalesChart(data);
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching sales data:', error);
+                }
+            });
+
+            // Initialize mini charts
+            initMiniCharts();
+        });
+
+        function animateCounter(elementId, targetValue) {
+            let current = 0;
+            const increment = targetValue / 100;
+            const element = document.getElementById(elementId);
+            const interval = setInterval(() => {
+                current += increment;
+                if (current >= targetValue) {
+                    clearInterval(interval);
+                    element.textContent = targetValue;
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 10);
+        }
+
+        function renderSalesChart(data) {
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const salesData = Array(12).fill(0);
+
+            data.forEach(item => {
+                salesData[item.month - 1] = item.totalSales;
+            });
+
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'Sales ($)',
+                        data: salesData,
+                        backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return '$' + context.raw.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function initMiniCharts() {
+            // Mini charts for the cards
+            const createMiniChart = (id, color) => {
+                const ctx = document.getElementById(id).getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['', '', '', '', ''],
+                        datasets: [{
+                            data: [5, 10, 5, 15, 10],
+                            borderColor: color,
+                            borderWidth: 2,
+                            tension: 0.4,
+                            fill: false,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            x: { display: false },
+                            y: { display: false }
+                        },
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            };
+
+            createMiniChart('customersChart', '#4ecc48');
+            createMiniChart('ordersChart', '#f39c12');
+            createMiniChart('productsChart', '#e74c3c');
+            createMiniChart('categoriesChart', '#9b59b6');
+        }
+    </script>
+}

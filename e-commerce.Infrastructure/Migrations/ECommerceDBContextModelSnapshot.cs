@@ -379,8 +379,14 @@ namespace e_commerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id")
                         .HasName("PK__Customer__3214EC27B75DE14A");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Customer");
                 });
@@ -477,6 +483,9 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Desc")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -486,6 +495,9 @@ namespace e_commerce.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(5, 2)")
                         .HasDefaultValue(0m);
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
@@ -691,8 +703,14 @@ namespace e_commerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ApplicationUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id")
                         .HasName("PK__Seller__3214EC272DFE5864");
+
+                    b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Seller");
                 });
@@ -856,6 +874,17 @@ namespace e_commerce.Infrastructure.Migrations
                     b.Navigation("ProductCodeNavigation");
                 });
 
+            modelBuilder.Entity("e_commerce.Infrastructure.Entites.Customer", b =>
+                {
+                    b.HasOne("e_commerce.Domain.Entites.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
+                });
+
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Order", b =>
                 {
                     b.HasOne("e_commerce.Infrastructure.Entites.Customer", "Customer")
@@ -973,6 +1002,17 @@ namespace e_commerce.Infrastructure.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("e_commerce.Infrastructure.Entites.Seller", b =>
+                {
+                    b.HasOne("e_commerce.Domain.Entites.ApplicationUser", "ApplicationUser")
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.SubCategory", b =>

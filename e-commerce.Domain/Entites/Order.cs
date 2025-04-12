@@ -18,7 +18,7 @@ public partial class Order
 
     [Column("Order_Date", TypeName = "datetime")]
     public DateTime? OrderDate { get; set; }
-
+ 
     public int Status { get; set; }
 
     [Column("Payment_Method")]
@@ -35,7 +35,9 @@ public partial class Order
     public virtual Customer Customer { get; set; }
 
     [InverseProperty("Order")]
+
     public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+    
 
     [InverseProperty("Order")]
     public virtual ICollection<Return> Returns { get; set; } = new List<Return>();
