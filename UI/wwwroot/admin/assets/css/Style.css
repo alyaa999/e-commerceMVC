@@ -1,0 +1,140 @@
+﻿:root {
+    --primary: #4e73df;
+    --secondary: #858796;
+    --success: #1cc88a;
+    --info: #36b9cc;
+    --warning: #f6c23e;
+    --danger: #e74a3b;
+    --light: #f8f9fc;
+    --dark: #5a5c69;
+}
+
+/* Base Styles */
+body {
+    font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #6e707e;
+    background-color: #f8f9fc;
+}
+
+a {
+    color: var(--primary);
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+    a:hover {
+        color: #224abe;
+        text-decoration: none;
+    }
+
+/* Layout */
+.main-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+.page-wrapper {
+    width: 100%;
+    padding: 20px;
+    margin-left: 250px;
+    transition: all 0.3s;
+}
+
+/* Header */
+.header {
+    height: 70px;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    background-color: #fff;
+    padding: 0 20px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 250px;
+    z-index: 1030;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background: #fff;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1040;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    transition: all 0.3s;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 0.35rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.1);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: #f8f9fc;
+    border-bottom: 1px solid #e3e6f0;
+    padding: 1rem 1.35rem;
+}
+
+/* Tables */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #6e707e;
+}
+
+    .table th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.7rem;
+        letter-spacing: 0.05em;
+        border-top: none;
+        border-bottom: 1px solid #e3e6f0;
+    }
+
+/* Buttons */
+.btn {
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 0.35rem;
+    transition: all 0.3s;
+}
+
+/* Badges */
+.badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35em 0.65em;
+    border-radius: 0.25rem;
+}
+
+/* Responsive */
+@media (max-width: 991.98px) {
+    .page-wrapper {
+        margin-left: 0;
+    }
+
+    .header {
+        left: 0;
+    }
+
+    .sidebar {
+        left: -250px;
+    }
+
+        .sidebar.show {
+            left: 0;
+        }
+}

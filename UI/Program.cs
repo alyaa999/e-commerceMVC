@@ -14,13 +14,13 @@ namespace e_commerce
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            // builder.Services.AddAutoMapper(typeof(MappingProfile));
-
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddDbContext<ECommerceDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddScoped<IWishlistRepo, WishlistRepo>();
             //builder.Services.AddApplicationServices();
             builder.Services.AddScoped<IcartRepository, CarRepoService>();
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -31,7 +31,6 @@ namespace e_commerce
             app.UseRouting();
 
             app.UseAuthorization();
-
 
             app.MapStaticAssets();
             app.MapControllerRoute(
