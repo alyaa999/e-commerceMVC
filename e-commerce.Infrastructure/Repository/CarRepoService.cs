@@ -105,5 +105,21 @@ namespace e_commerce.Infrastructure.Repository
                 context.SaveChanges();
             }
         }
+        public void RemoveItemFromCart(int userId, int productId)
+        {
+            var cart = context.Carts.Include(c => c.CartProducts).Include(c => c.Customer).FirstOrDefault(c => c.CustomerId == userId);
+            if (cart != null)
+            {
+                var item = cart.CartProducts.FirstOrDefault(cp => cp.ProductCode == productId);
+                if (item != null)
+                {
+                    context.CartProducts.Remove(item);
+                    // Update cart totals
+                    cart.TotalItemsNumber = cart.CartProducts.Sum(cp => cp.Quantity);
+                    cart.TotalPrice = cart.CartProducts.Sum(cp => cp.ItemTotal);
+                    context.SaveChanges();
+                }
+            }
+        }
     }
 }
