@@ -102,5 +102,23 @@ public class CategoryController : Controller
         }
 
         return RedirectToAction(nameof(Index));
+
     }
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var category = await _categoryRepo.GetByIdAsync(id.Value);
+
+        if (category == null)
+        {
+            return NotFound();
+        }
+
+        return View(category);
+    }
+
 }
