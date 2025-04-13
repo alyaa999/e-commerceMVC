@@ -1,6 +1,7 @@
 using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Infrastructure.Repository;
+using e_commerce.Web.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,6 +22,8 @@ namespace e_commerce
             builder.Services.AddScoped<IWishlistRepo, WishlistRepo>();
             //builder.Services.AddApplicationServices();
             builder.Services.AddScoped<IcartRepository, CarRepoService>();
+            builder.Services.AddScoped<IAdressRepo, AddressRepo>();
+            builder.Services.AddAutoMapper(typeof(AddressProfile));
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

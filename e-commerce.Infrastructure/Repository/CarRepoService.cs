@@ -45,7 +45,7 @@ namespace e_commerce.Infrastructure.Repository
                     });
                 }
             }
-
+            SaveChanges();
             // Update cart totals
             var cart = context.Carts.Find(cartId);
             if (cart != null)

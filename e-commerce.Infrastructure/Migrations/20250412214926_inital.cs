@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace e_commerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class IntialCreate : Migration
+    public partial class inital : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -63,18 +63,6 @@ namespace e_commerce.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK__Category__3214EC2794A91D88", x => x.ID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Seller",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Seller__3214EC272DFE5864", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -196,6 +184,25 @@ namespace e_commerce.Infrastructure.Migrations
                     table.PrimaryKey("PK__Customer__3214EC27B75DE14A", x => x.ID);
                     table.ForeignKey(
                         name: "FK_Customer_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Seller",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__Seller__3214EC272DFE5864", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Seller_AspNetUsers_ApplicationUserId",
                         column: x => x.ApplicationUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -633,6 +640,11 @@ namespace e_commerce.Infrastructure.Migrations
                 name: "IX_Review_Product_ID",
                 table: "Review",
                 column: "Product_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Seller_ApplicationUserId",
+                table: "Seller",
+                column: "ApplicationUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sub_Category_Category_ID",

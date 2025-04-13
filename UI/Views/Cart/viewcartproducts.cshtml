@@ -115,16 +115,12 @@
                 <h3 class="section__title">Cart Totals</h3>
                 <table class="cart__total-table">
                     <tr>
-                        <td><span class="cart__total-title">Cart Subtotal</span></td>
-                        <td><span class="cart__total-price">$ @Model.TotalPrice</span></td>
-                    </tr>
-                    <tr>
-                        <td><span class="cart__total-title">Shipping</span></td>
-                        <td><span class="cart__total-price">$10.00</span></td>
+                        <td><span class="cart__total-title">Cart total number of pieces </span></td>
+                        <td><span class="cart__total-price">$ @Model.TotalItemsNumber</span></td>
                     </tr>
                     <tr>
                         <td><span class="cart__total-title">Total</span></td>
-                        <td><span class="cart__total-price">$250.00</span></td>
+                        <td><span class="cart__total-price">$ @Model.TotalPrice</span></td>
                     </tr>
                 </table>
                 <a href="checkout.html" class="btn flex btn--md">
