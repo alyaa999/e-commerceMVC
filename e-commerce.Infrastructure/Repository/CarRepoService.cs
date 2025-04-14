@@ -121,5 +121,14 @@ namespace e_commerce.Infrastructure.Repository
                 }
             }
         }
+
+        public void RemoveAllFromCart(int cartId, int custid)
+        {
+            Cart cart= GetCartByCustomerId(custid);
+            cart.CartProducts = new List<CartProduct>();
+            cart.TotalItemsNumber = 0;
+            cart.TotalPrice = 0;
+            context.SaveChanges();
+        }
     }
 }

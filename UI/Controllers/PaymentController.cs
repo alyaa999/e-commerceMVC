@@ -28,11 +28,15 @@ namespace e_commerce.Web.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Checkout(OrderData data)
+        public IActionResult Checkout([FromBody] OrderData data)
         {
             decimal shippingFees = 50;
             var cart_ = repo.GetCartByCustomerId(data.customerID);
-            decimal total = cart_.TotalPrice + shippingFees;
+            decimal total;
+            if (_orderRepository.viewAllOrders(data.customerID).Count != 0)
+                total = cart_.TotalPrice + shippingFees;
+            else
+                total = cart_.TotalPrice;
 
             var options = new SessionCreateOptions
             {
@@ -93,7 +97,7 @@ namespace e_commerce.Web.Controllers
                 ShippingAddressId = shippingId,
                 TotalPrice = total,
                 OrderDate = DateTime.Now,
-                PaymentMethod = Domain.Enums.PaymentMethod.card,
+                PaymentMethod =Domain.Enums.PaymentMethod.card,
                 Status = Domain.Enums.orderstateEnum.Paid, 
                 OrderProducts = cart_.CartProducts.Select(cp => new OrderProduct
                 {
@@ -101,12 +105,14 @@ namespace e_commerce.Web.Controllers
                     Quantity = cp.Quantity,
                     UnitPrice = cp.UnitPrice,
                     ItemTotal = cp.ItemTotal
-                }).ToList()
+                }).ToList() 
             };
 
-            _orderRepository.AddOrder(order); 
-           
-            return View("SuccessPayment"); 
+            _orderRepository.AddOrder(order);
+            repo.RemoveAllFromCart(cart_.Id, customerId);
+
+
+            return View("OrderCreated"); 
         }
 
         public IActionResult Cancel()

@@ -45,7 +45,7 @@
                     </div>
                 }
             }
-            
+
         </div>
         <div class="checkout__group">
             <h3 class="section__title">Cart Totals</h3>
@@ -63,7 +63,7 @@
                         <tr>
                             <td>
                                 <img src=@Url.Content($"~/image/{item.ProductCodeNavigation.ProductImages.FirstOrDefault().ImageUrl}")
-                                     alt="no image"
+                                alt="no image"
                                 class="table__img" />
                             </td>
                             <td>
@@ -81,13 +81,26 @@
                     <tr>
                         <td><span class="order__subtitle">Shipping</span></td>
                         <td colspan="2">
-                            <span class="table__price">Free Shipping</span>
+                            @if(@ViewBag.isFirstTime){
+                                <span class="table__price">Free Shipping</span>
+                            }
+                            else{
+                                <span class="table__price">$50</span>
+                            }
                         </td>
                     </tr>
                     <tr>
                         <td><span class="order__subtitle">Total</span></td>
                         <td colspan="2">
-                            <span class="order__grand-total">$ @Model.TotalPrice</span>
+                            @if(@ViewBag.isFirstTime)
+                            {
+                                <span class="order__grand-total">$ @Model.TotalPrice</span>
+                            }
+                            else
+                            {
+                                <span class="order__grand-total">$ @(@Model.TotalPrice+50)</span>
+
+                            }
                         </td>
                     </tr>
                 </tbody>
@@ -95,21 +108,21 @@
             <div class="payment__methods">
                 <h3 class="checkout__title payment__title">Payment</h3>
                 <div class="payment__option flex">
-                    <input type="radio"
+                    <input type="radio" required
                            name="radio"
                            id="l2"
                            class="payment__input" />
                     <label for="l2" class="payment__label">Credit Card</label>
                 </div>
                 <div class="payment__option flex">
-                    <input type="radio"
+                    <input type="radio" required
                            name="radio"
                            id="l3"
                            class="payment__input" />
                     <label for="l3" class="payment__label">Cash</label>
                 </div>
             </div>
-            <a data-CustomerId="@Model.CustomerId" class="btn btn--md placeOrderBtn">Place Order</a>
+            <a data-customerid="@Model.CustomerId" class="btn btn--md placeOrderBtn">Place Order</a>
         </div>
     </div>
 </section>
@@ -130,7 +143,7 @@
 </div>
 @section Scripts {
     <script>
-        let selectedAddressId = null;
+        let selectedAddressId = @((ViewBag.Addresses as IEnumerable<Address>).FirstOrDefault(a => a.IsDefault)?.Id ?? 0);
         // Show modal function
         function showErrorModal() {
             const modal = document.getElementById('errorModal');
@@ -143,10 +156,7 @@
             }, 500);
         }
         function setAsDefault(element) {
-            Remove default class from all cards
             $('.address-card').removeClass('default-address');
-
-            Add default class to clicked card
             $(element).addClass('default-address');
             selectedAddressId = $(element).data('address-id');
         }

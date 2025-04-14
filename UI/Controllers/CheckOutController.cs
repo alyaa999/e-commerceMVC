@@ -11,16 +11,19 @@ namespace e_commerce.Web.Controllers
         // GET: CheckOutController
         private IcartRepository cartreposervice;
         private readonly IAdressRepo repo;
+        private readonly IOrderRepository OrderRepo;
 
 
-        public CheckOutController(IcartRepository _cartreposervice, IAdressRepo adressRepo)
+        public CheckOutController(IcartRepository _cartreposervice, IAdressRepo adressRepo,IOrderRepository _orderRepo)
         {
             cartreposervice = _cartreposervice;
             repo = adressRepo;
+            OrderRepo = _orderRepo;
         }
         public ActionResult Index()
         {
             Cart cart = cartreposervice.GetCartByCustomerId(1);
+            ViewBag.isFirstTime = (OrderRepo.viewAllOrders(1).Count==0?true:false);
             ViewBag.Addresses = repo.GetAllAddressAsync();
             return View(cart);
         }

@@ -13,8 +13,8 @@ namespace e_commerce.Application.Common.Interfaces
             Cart GetCartByCustomerId(int customerId);
         void AddItemToCart(int cartId, int productId, int quantity);
         public void UpdateItemQuantity(int userId, int productId, int newQuantity);
-            //void RemoveCartItem(int cartId, int productId);
-            void SaveChanges();
+        void RemoveAllFromCart(int cartId,int custid);
+        void SaveChanges();
         public void RemoveItemFromCart(int userId, int productId);
 
     }
