@@ -13,8 +13,14 @@
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
+
     <!--=============== CSS ===============-->
     <link href="~/css/styles.css" rel="stylesheet" />
+    <!-- Add this in <head> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <title>Ecommerce Website</title>
 </head>
@@ -37,14 +43,14 @@
         </div>
 
         <nav class="nav container">
-            <a href="index.html" class="nav__logo">
+            <a asp-action="Index"class="nav__logo">
                 <img class="nav__logo-img"
                      src="~/image/logo.svg"
                      alt="website logo" />
             </a>
             <div class="nav__menu" id="nav-menu">
                 <div class="nav__menu-top">
-                    <a href="index.html" class="nav__menu-logo">
+                    <a asp-action="Index"class="nav__menu-logo">
                         <img src="~/image/logo.svg" alt="">
                     </a>
                     <div class="nav__close" id="nav-close">
@@ -53,10 +59,10 @@
                 </div>
                 <ul class="nav__list">
                     <li class="nav__item">
-                        <a href="index.html" class="nav__link active-link">Home</a>
+                        <a  asp-action="Index" class="nav__link active-link">Home</a>
                     </li>
                     <li class="nav__item">
-                        <a href="shop.html" class="nav__link">Shop</a>
+                        <a asp-action="ShopNow" class="nav__link">Shop</a>
                     </li>
                     <li class="nav__item">
                         <a href="accounts.html" class="nav__link">My Account</a>
@@ -256,7 +262,7 @@
     <footer class="footer container">
         <div class="footer__container grid">
             <div class="footer__content">
-                <a href="index.html" class="footer__logo">
+                <a asp-action="Index"class="footer__logo">
                     <img src="~/image/logo.svg" alt="" class="footer__logo-img" />
                 </a>
                 <h4 class="footer__subtitle">Contact</h4>

@@ -25,9 +25,12 @@ function imgGallery() {
     smallImg = document.querySelectorAll(".details__small-img");
 
   smallImg.forEach((img) => {
-    img.addEventListener("click", function () {
-      mainImg.src = this.src;
+      img.addEventListener("click", function () {
+          const temp = mainImg.src;
+          mainImg.src = this.src;
+          this.src = temp;  
     });
+
   });
 }
 
@@ -127,3 +130,95 @@ function toggleSubcategories(id) {
     const subcategoryList = document.getElementById(id);
     subcategoryList.classList.toggle('hidden');
 }
+
+///----Pagnation-------//
+
+
+
+// this code generate two pages beore the current page and two pages ater the current page
+// also generate << >>  works if the current page is not the first or last page in the pagination
+// also  generate the first and the last page if the current page is not the first or last page in the pagination
+
+// Function to generate pagination links dynamically
+function generatePagination() {
+    const pagination = document.getElementById('pagination');
+    if (!pagination) return; // Exit if element not found
+
+    pagination.innerHTML = ''; // Clear existing links
+    const categoryId = pagination.getAttribute('CategoryId');
+    const subCategoryId = pagination.getAttribute('SubCategoryId');
+    const totalPages = parseInt(pagination.getAttribute('totalPages'), 10); 
+    const currentPage = parseInt(pagination.getAttribute('currentPage'), 10);
+    // Page numbers
+    const pageRange = 2; // Number of pages to show around current page
+    let startPage = Math.max(1, currentPage - pageRange); //2   // 1   .. 1 2
+    let endPage = Math.min(totalPages, currentPage + pageRange); // 4  
+
+    // Previous button -- all pages has pervous expect the first page   
+    const prevLi = document.createElement('li');
+    const prevLink = document.createElement('a');
+    prevLink.href = currentPage > 1 ? `?pageNumber=${currentPage - 1}&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}` : '#';
+    prevLink.className = `pagination__link icon ${startPage === 1 ? 'disabled' : ''}`; //disabled class doens't implemented 
+    prevLink.innerHTML = '<i class="fi-rs-angle-double-small-right"></i>';
+    prevLi.appendChild(prevLink);
+    pagination.appendChild(prevLi);
+
+  
+
+    // Add first page and ellipsis if needed
+    if (startPage > 1) { 
+        const firstLi = document.createElement('li');
+        const firstLink = document.createElement('a');
+        firstLink.href = `?pageNumber=1&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}`;
+        firstLink.className = 'pagination__link';
+        firstLink.textContent = '1';
+        firstLi.appendChild(firstLink);
+        pagination.appendChild(firstLi);
+
+        if (startPage > 2) {
+            const ellipsisLi = document.createElement('li');
+            ellipsisLi.innerHTML = '<span class="pagination__link">...</span>';
+            pagination.appendChild(ellipsisLi);
+        }
+    }
+
+    // Generate page links
+    for (let i = startPage; i <= endPage; i++) {
+        const pageLi = document.createElement('li');
+        const pageLink = document.createElement('a');
+        pageLink.href = `?pageNumber=${i}&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}`;
+        pageLink.className = `pagination__link ${i === currentPage ? 'active' : ''}`;
+        pageLink.textContent = i;
+        pageLi.appendChild(pageLink);
+        pagination.appendChild(pageLi);
+    }
+
+    // Add ellipsis and last page if needed  all pages has last page expect the last page
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            const ellipsisLi = document.createElement('li');
+            ellipsisLi.innerHTML = '<span class="pagination__link">...</span>';
+            pagination.appendChild(ellipsisLi);
+        }
+
+        const lastLi = document.createElement('li');
+        const lastLink = document.createElement('a');
+        lastLink.href = `?pageNumber=${totalPages}&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}`;
+        lastLink.className = 'pagination__link';
+        lastLink.textContent = totalPages;
+        lastLi.appendChild(lastLink);
+        pagination.appendChild(lastLi);
+    }
+
+    // Next button
+    const nextLi = document.createElement('li');
+    const nextLink = document.createElement('a');
+    nextLink.href = currentPage < totalPages ? `?pageNumber=${currentPage + 1}&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}` : '#';
+    nextLink.className = `pagination__link icon ${endPage === totalPages ? 'disabled' : ''}`;
+    nextLink.innerHTML = '<i class="fi-rs-angle-double-small-right"></i>';
+    nextLi.appendChild(nextLink);
+    pagination.appendChild(nextLi); 
+}
+
+// Initial pagination render
+generatePagination();

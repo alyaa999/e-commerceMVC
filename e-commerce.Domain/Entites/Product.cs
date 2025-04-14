@@ -13,12 +13,13 @@ public partial class Product
 {
     [Key]
     [Column("ID")]
+
     public int Id { get; set; }
 
     [Required]
     [StringLength(50)]
     public string Code { get; set; }
-
+    public Tager? Tag { get; set; } = null!;
     public Boolean IsApproved { get; set; }
     [Required]
     [StringLength(255)]
@@ -36,13 +37,13 @@ public partial class Product
     [Column(TypeName = "decimal(5, 2)")]
     public decimal? Discount { get; set; }
 
-    public int Stock { get; set; }
+    public int? Stock { get; set; }
 
     [Column("Sub_Category_ID")]
-    public int SubCategoryId { get; set; }
+    public int? SubCategoryId { get; set; }
 
     [Column("Seller_ID")]
-    public int SellerId { get; set; }
+    public int? SellerId { get; set; }
 
     [InverseProperty("ProductCodeNavigation")]
     public virtual ICollection<CartProduct> CartProducts { get; set; } = new List<CartProduct>();
@@ -70,4 +71,16 @@ public partial class Product
     [ForeignKey("ProductId")]
     [InverseProperty("Products")]
     public virtual ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
+}
+
+public enum Tager
+{
+    feature = 1,
+    Popular = 2,
+    New = 3,
+    BestSeller = 4,
+    HotRelease = 5,
+    BestDeal = 6,
+    TopSelling = 7,
+    Trending = 8,
 }

@@ -309,10 +309,13 @@ table {
   color: var(--first-color);
 }
 
+.pagination__link.icon.disabled {
+    display:none ;
+}
 /*=============== HOME ===============*/
 .home__container {
-  grid-template-columns: 5fr 7fr;
-  align-items: center;
+    grid-template-columns: 5fr 7fr;
+    align-items: center;
 }
 
 .home__subtitle,
@@ -623,7 +626,6 @@ table {
   position: absolute;
   left: 1.25rem;
   top: 1.25rem;
-  background-color: var(--first-color);
   color: var(--body-color);
   padding: 0.25rem 0.625rem;
   font-size: var(--tiny-font-size);
@@ -681,7 +683,12 @@ table {
   right: 1.25rem;
 }
 
-/* Active Tab */
+/* 
+    
+    
+    
+    
+    Tab */
 .tab__btn.active-tab {
   color: var(--first-color);
   background-color: var(--second-color);

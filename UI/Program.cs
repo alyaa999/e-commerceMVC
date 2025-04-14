@@ -1,4 +1,6 @@
 using e_commerce.Infrastructure.Entites;
+using e_commerce.Infrastructure.Repository;
+using e_commerce.Web.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace e_commerce
@@ -11,10 +13,14 @@ namespace e_commerce
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            // builder.Services.AddAutoMapper(typeof(MappingProfile));
+            builder.Services.AddAutoMapper(typeof(ProductProfile));
 
             builder.Services.AddDbContext<ECommerceDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            #region AddServices
+            builder.Services.AddScoped<IHomeRepository, HomeRepository>();
+            #endregion
             //builder.Services.AddApplicationServices();
             var app = builder.Build();
 
