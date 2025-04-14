@@ -73941,3 +73941,38 @@ textarea.form-control {
 }
 
 /*# sourceMappingURL=style.css.map */
+/* Return Management Styles */
+.return-image-container {
+    position: relative;
+    margin-bottom: 15px;
+}
+
+.return-image {
+    max-width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+.return-status-badge {
+    font-size: 0.9rem;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+/* Action buttons */
+.btn-action {
+    margin-right: 5px;
+    min-width: 100px;
+}
+
+/* Responsive table adjustments */
+@media (max-width: 768px) {
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}

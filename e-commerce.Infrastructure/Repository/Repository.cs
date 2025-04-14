@@ -69,7 +69,7 @@ namespace e_commerce.Infrastructure.Repository
             return await query.ToListAsync();
         }
 
-        // Alternative version that returns IQueryable for more flexibility
+  
         public IQueryable<T> GetAllIncludingQuery(params Expression<Func<T, object>>[] includeProperties)
         {
             IQueryable<T> query = _dbSet;
@@ -81,6 +81,26 @@ namespace e_commerce.Infrastructure.Repository
 
             return query;
         }
+
+        public async Task<IEnumerable<T>> FindAsync(
+      Expression<Func<T, bool>> predicate,
+      params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _dbSet;
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return await query.Where(predicate).ToListAsync();
+        }
+
+        //public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+        //{
+        //    var query = _dbSet.Where(predicate);
+        //    return await includes.Aggregate(query, (current, include) => current.Include(include)).ToListAsync();
+        //}
 
      
     }

@@ -13,11 +13,14 @@ namespace e_commerce.Application.Common.Interfaces
         Task AddAsync(T entity);
         Task DeleteAsync(int id);
         Task<IEnumerable<T>> GetAllAsync();
-        Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
+        Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
+
+        //Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, Expression<Func<Infrastructure.Entites.Return, object>>[] includes);
         Task<T> GetByIdAsync(int id);
         void Update(T entity);
         Task SaveChangesAsync();
-  
+        Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
+       
         Task<IEnumerable<T>> GetAllIncludingAsync(params Expression<Func<T, object>>[] includeProperties);
         // O
 
