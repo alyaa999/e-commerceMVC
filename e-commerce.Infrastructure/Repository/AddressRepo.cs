@@ -83,11 +83,12 @@ namespace e_commerce.Infrastructure.Repository
                     res.Street = entity.Street;
                     res.DeptNo = entity.DeptNo;
                     res.IsDefault = entity.IsDefault;
-                    context.SaveChanges();
-                    if (context.Addresses.Any(x => x.CustomerId == cid && x.IsDefault == true) && res.IsDefault == true)
+                    var defualtAddress = context.Addresses.FirstOrDefault(x => x.IsDefault == true);
+                    if (context.Addresses.Any(x => x.CustomerId == cid && x.IsDefault == true) && res.IsDefault == true && (defualtAddress.Id != res.Id))
                     {
                         throw new Exception("You can not add more than one default address");
                     }
+                    context.SaveChanges();
                 }
                 else
                 {

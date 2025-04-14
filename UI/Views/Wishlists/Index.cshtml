@@ -12,7 +12,16 @@
         <li><span class="breadcrumb__link">Wishlist</span></li>
     </ul>
 </section>
-
+@if (Model == null || !Model.Products.Any())
+{
+    <div class="container">
+        <h1>Your wishlist is empty</h1>
+        <p>Looks like you haven't added anything to your wishlist yet.</p>
+        <a asp-action="index" asp-controller="home" class="btn btn--lg">Start Shopping</a>
+    </div>
+}
+else
+{
 <section class="wishlist section--lg container">
     <div class="table__container">
         <table class="table">
@@ -61,3 +70,4 @@
         </table>
     </div>
 </section>
+}

@@ -79,7 +79,11 @@ namespace e_commerce.Infrastructure.Repository
             }
             else
             {
-                throw new Exception("Wishlist not found");
+                return Task.FromResult(new Wishlist
+                {
+                    CustomerId = customerId,
+                    Products = new List<Product>()
+                });
             }
         }
         public async Task<bool> addToWishlist(int pid)

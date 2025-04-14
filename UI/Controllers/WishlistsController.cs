@@ -29,12 +29,8 @@ namespace e_commerce.Web.Controllers
             }
             else
             {
-                var wishListItem = await repo.GetByCustomerId(id);
-                if (wishListItem == null)
-                {
-                    return NotFound();
-                }
-                return View(wishListItem);
+                var wishlist = await repo.GetByCustomerId(id);
+                return View(wishlist);
             }
 
         }

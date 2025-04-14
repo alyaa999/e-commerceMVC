@@ -4,61 +4,45 @@
     ViewData["Title"] = "Index";
 }
 
- @if(@Model.Count()==0)
- {
-     <a asp-action="Create" class="btn btn-light mx-5">Create</a>
+<div class="container">
+    @if (@Model.Count() == 0)
+    {
+        <a asp-action="Create" class="btn btn-light mx-5">Create</a>
         <div class="alert alert-info" role="alert">
             <strong>Info!</strong> No addresses found. Please create a new address.
+        </div>
+    }
+    else
+    {
+        <p>
+            <a asp-action="Create" class="btn btn-light mx-5">Create</a>
+        </p>
+
+        @foreach (var item in Model)
+        {
+            <div class="address-card" id="address">
+                <h3 class="tab__header">Shipping Address</h3>
+                <div class="address-details">
+                    <address>
+                        <span class="address-label">City:</span> @Html.DisplayFor(modelItem => item.City) <br />
+                        <span class="address-label">Street:</span> @Html.DisplayFor(modelItem => item.Street) <br />
+                        <span class="address-label">Dept No:</span> @Html.DisplayFor(modelItem => item.DeptNo) <br />
+                        <span class="address-label">Is Default:</span> @Html.DisplayFor(modelItem => item.IsDefault) <br />
+                    </address>
+                </div>
+                <div class="address-actions">
+                    <a asp-action="Edit" asp-route-id="@item.Id" asp-route-customerId="@item.CustomerId">
+                        <i class="fas fa-edit" style="color: gray;"></i>
+                    </a> |
+                    <a data-address-id="@item.Id" class="btn-delete-address">
+                        <i class="fi fi-rs-trash table__trash"></i>
+                    </a>
+                </div>
             </div>
- }
- else
- {
-<p>
-    <a asp-action="Create" class="btn btn-light mx-5">Create</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Street)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DeptNo)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsDefault)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-       
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Street)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DeptNo)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IsDefault)
-            </td>
-            <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id" asp-route-customerId="@item.CustomerId"><i class="fas fa-edit" style="color: gray;"></i></a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn-delete-address" data-address-id="@item.Id" onclick="validate(@ViewBag.Error)"><i class="fi fi-rs-trash table__trash"></i></a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-}
+        }
+    }
+</div>
+
 <script>
     function validate() {
         arguments[0] = @Html.Raw(Json.Serialize(ViewBag.Error));
@@ -69,3 +53,4 @@
             return false;
         }
     }
+</script>

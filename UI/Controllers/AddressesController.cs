@@ -14,12 +14,18 @@ namespace e_commerce.Web.Controllers
 {
     public class AddressesController : Controller
     {
+        List<string> cities;
         private readonly IMapper mapper;
         private readonly IAdressRepo repo;
         public AddressesController(IMapper mapper, IAdressRepo adressRepo)
         {
             this.mapper = mapper;
             repo = adressRepo;
+            cities = new List<string>
+            {
+                "Cairo", "Alexandria", "Giza", "Shubra El Kheima", "Port Said",
+                "Suez", "Mansoura", "Tanta", "Aswan", "Fayoum", "Luxor", "Ismailia"
+            };
         }
 
         // GET: Addresses
@@ -31,6 +37,7 @@ namespace e_commerce.Web.Controllers
         // GET: Addresses/Create
         public IActionResult Create()
         {
+            ViewBag.Cities = new SelectList(cities);
             return View();
         }
 
@@ -57,6 +64,7 @@ namespace e_commerce.Web.Controllers
                 return NotFound();
             }
             var address = repo.GetAddressById(id, 1);
+            ViewBag.Cities = new SelectList(cities);
             return View(address);
         }
 
@@ -89,7 +97,6 @@ namespace e_commerce.Web.Controllers
             }
             catch(Exception ex)
             {
-                ViewBag["Error"] = ex.Message;
                 return View(address);
             }
         }
