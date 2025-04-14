@@ -13,10 +13,9 @@ public partial class Seller
     [Key]
     [Column("ID")]
     public int Id { get; set; }
+
+    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
+
     public string ApplicationUserId { get; set; }
     public ApplicationUser ApplicationUser { get; set; }
-
-
-    [InverseProperty("Seller")]
-    public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

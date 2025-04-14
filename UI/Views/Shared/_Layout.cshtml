@@ -17,6 +17,9 @@
     <!--=============== CSS ===============-->
     <link href="~/css/styles.css" rel="stylesheet" />
 
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
     <title>Ecommerce Website</title>
 </head>
 <body>
@@ -79,7 +82,7 @@
                 </div>
             </div>
             <div class="header__user-actions">
-                <a href="wishlist.html" class="header__action-btn" title="Wishlist">
+                <a asp-controller="Wishlists" asp-action="Index" asp-route-id="1" class="header__action-btn" title="Wishlist">
                     <img src="~/image/icon-heart.svg" alt="" />
                     <span class="count">3</span>
                 </a>
@@ -218,5 +221,15 @@
     <script src="~/js/cart.js"></script>
     <script src="~/js/cartupdate.js"></script> 
     
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- SweetAlert2 for notifications -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/cartdelete.js"></script>
+    <script src="~/js/wishlist.js"></script>
+    <script src="~/js/address.js"></script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

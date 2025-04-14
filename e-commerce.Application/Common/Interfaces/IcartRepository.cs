@@ -15,5 +15,7 @@ namespace e_commerce.Application.Common.Interfaces
         public void UpdateItemQuantity(int userId, int productId, int newQuantity);
             //void RemoveCartItem(int cartId, int productId);
             void SaveChanges();
+        public void RemoveItemFromCart(int userId, int productId);
+
     }
 }

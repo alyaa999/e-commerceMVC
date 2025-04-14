@@ -1,7 +1,9 @@
 using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Infrastructure.Repository;
+using e_commerce.Web.Mappers;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace e_commerce
 {
@@ -17,8 +19,11 @@ namespace e_commerce
 
             builder.Services.AddDbContext<ECommerceDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddScoped<IWishlistRepo, WishlistRepo>();
             //builder.Services.AddApplicationServices();
             builder.Services.AddScoped<IcartRepository, CarRepoService>();
+            builder.Services.AddScoped<IAdressRepo, AddressRepo>();
+            builder.Services.AddAutoMapper(typeof(AddressProfile));
             builder.Services.AddScoped<IOrderRepository, OrderRepoService>();
             var app = builder.Build();
 

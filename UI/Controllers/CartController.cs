@@ -76,24 +76,24 @@ namespace e_commerce.Web.Controllers
         }
 
         // GET: CartController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: CartController/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult DeleteItemFromCart(int PrdId)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if (PrdId != null)
+                {
+                    cartreposervice.RemoveItemFromCart(1, PrdId);
+                }
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return Json(new { success = false, message = ex.Message });
+
             }
+
+            return Json(new { success = true });
         }
+       
     }
 }

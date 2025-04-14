@@ -21,10 +21,8 @@ public partial class Wishlist
     public string Name { get; set; }
 
     [ForeignKey("CustomerId")]
-    [InverseProperty("Wishlists")]
     public virtual Customer Customer { get; set; }
 
     [ForeignKey("WishlistId")]
-    [InverseProperty("Wishlists")]
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
 }

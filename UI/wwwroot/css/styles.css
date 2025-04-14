@@ -2143,3 +2143,176 @@ table {
     opacity: 0.7;
     cursor: not-allowed;
 }
+
+/* Overall container spacing */
+.form-container {
+    max-width: 500px; /* controls the form width, increase this value for a wider form */
+    margin: 0 auto; /* center horizontally */
+    padding: 1rem;
+}
+
+/* Form header */
+.form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+/* Optional tab-like navigation (just a visual mock) */
+.tab-nav {
+    border-bottom: 2px solid #eee;
+    margin-bottom: 1.5rem;
+}
+
+    .tab-nav .tab-link {
+        display: inline-block;
+        margin-right: 1rem;
+        font-weight: 600;
+        color: #000;
+        text-decoration: none;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid transparent;
+    }
+
+        .tab-nav .tab-link.active {
+            border-bottom-color: #000; /* active tab underline */
+        }
+
+/* Required field notice */
+.required-note {
+    color: #888;
+    margin-bottom: 1rem;
+}
+
+/* Form group spacing */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+/* Label style */
+.form-label {
+    display: inline-block;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+/* Add an asterisk to required fields */
+.required::after {
+    content: "*";
+    margin-left: 3px;
+    color: red;
+}
+
+/* Input fields - thicker border, rounded corners, consistent height, increased width */
+.form-control {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    height: 48px;
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+    width: 100%; /* Increase input width */
+}
+
+    /* Placeholder text style */
+    .form-control::placeholder {
+        color: #999;
+    }
+
+    /* On focus, highlight the border */
+    .form-control:focus {
+        border-color: #999;
+        outline: none;
+        box-shadow: none;
+    }
+
+/* Submit button styling */
+.btn-submit, .btn-back {
+    background-color: #000;
+    color: #fff;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    font-weight: 600;
+}
+
+    .btn-submit:hover {
+        background-color: #333;
+    }
+
+/* Back to list link as a button (optional) */
+.btn-back {
+    text-decoration: none;
+    color: #333;
+    background-color: #f0f0f0;
+}
+
+/* General Container Styles */
+.container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Address Card Styles */
+.address-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .address-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+/* Heading Styles */
+.tab__header {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+/* Address Details */
+.address-details {
+    margin-bottom: 15px;
+}
+
+    .address-details span {
+        font-weight: 600;
+        color: #555;
+    }
+
+/* Buttons and Actions */
+.btn-light {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    margin: 10px;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-light:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+.btn-delete-address {
+    color: red;
+    cursor: pointer;
+}
+
+    .btn-delete-address:hover {
+        color: darkred;
+    }
+
+/* No addresses info box */
+.alert-info {
+    background-color: #e9f7fb;
+    border-color: #b6e1e7;
+}

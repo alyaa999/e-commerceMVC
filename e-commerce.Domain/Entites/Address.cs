@@ -28,7 +28,7 @@ public partial class Address
     [StringLength(100)]
     public string DeptNo { get; set; }
 
-    public bool? IsDefault { get; set; }
+    public bool IsDefault { get; set; }
 
     [ForeignKey("CustomerId")]
     [InverseProperty("Addresses")]
