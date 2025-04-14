@@ -15,7 +15,16 @@
             <li><span class="breadcrumb__link">Cart</span></li>
         </ul>
     </section>
-
+    @if (Model == null || !Model.CartProducts.Any())
+    {
+        <div class="container">
+            <h1>Your cart is empty</h1>
+            <p>Looks like you haven't added anything to your cart yet.</p>
+            <a asp-action="index" asp-controller="home" class="btn btn--lg">Start Shopping</a>
+        </div>
+    }
+    else
+    { 
     <!--=============== CART ===============-->
     <section class="cart section--lg container">
         <div class="table__container">
@@ -30,7 +39,8 @@
                         <th>delete</th>
                     </tr>
                 </thead> 
-                <tbody>
+                <tbody> 
+
                 @foreach (var item in Model.CartProducts)
                 {
                         <tr class="cart-item" data-product-id="@item.ProductCodeNavigation.Id">
@@ -58,7 +68,8 @@
                 }
                 </tbody>
             </table>
-        </div>
+        </div> 
+    
 
         <div class="cart__actions">
             <a id="update-cart-btn"  class="btn flex btn__md">
@@ -123,12 +134,12 @@
                         <td><span class="cart__total-price">$ @Model.TotalPrice</span></td>
                     </tr>
                 </table>
-                <a href="checkout.html" class="btn flex btn--md">
+                <a asp-action="Index" asp-controller="CheckOut"  class="btn flex btn--md">
                     <i class="fi fi-rs-box-alt"></i> Proceed To Checkout
                 </a>
             </div>
         </div>
     </section>
 
-
+    }
 </main>

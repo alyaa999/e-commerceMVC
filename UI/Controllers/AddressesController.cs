@@ -48,12 +48,28 @@ namespace e_commerce.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(AddressVM address)
         {
-            if (ModelState.IsValid)
+            try
             {
-                repo.AddAddressAsync(mapper.Map<Address>(address), 1);
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        repo.AddAddressAsync(mapper.Map<Address>(address), 1);
+                    }
+                    catch (Exception ex)
+                    {
+                        ModelState.AddModelError("", ex.Message);
+                        ViewBag.Cities = new SelectList(cities);
+                        return View(mapper.Map<Address>(address));
+                    }
+                }
+                    return RedirectToAction("Index", "CheckOut");
             }
+            catch (Exception ex)
+            {
             return View(address);
+            }
+            
         }
 
         // GET: Addresses/Edit/5
@@ -87,10 +103,11 @@ namespace e_commerce.Web.Controllers
                    }
                    catch (Exception ex)
                    {
-                       ModelState.AddModelError("", ex.Message);
-                       return View(address_);
+                        ModelState.AddModelError("", ex.Message);
+                        ViewBag.Cities = new SelectList(cities);
+                        return View(address_);
                     }
-                   return RedirectToAction(nameof(Index));
+                   return RedirectToAction("Index","CheckOut");
                }
                return View(address_);
 
