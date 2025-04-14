@@ -25,6 +25,7 @@ namespace e_commerce
             builder.Services.AddScoped<IcartRepository, CarRepoService>();
             builder.Services.AddScoped<IAdressRepo, AddressRepo>();
             builder.Services.AddAutoMapper(typeof(AddressProfile));
+            builder.Services.AddScoped<IOrderRepository, OrderRepoService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

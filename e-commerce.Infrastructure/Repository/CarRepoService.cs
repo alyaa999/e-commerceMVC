@@ -65,7 +65,7 @@ namespace e_commerce.Infrastructure.Repository
 
         public Cart GetCartByCustomerId(int customerId)
         {
-            Cart cart= context.Carts
+            Cart cart= context.Carts 
             .Include(c => c.CartProducts)
             .ThenInclude(cp => cp.ProductCodeNavigation).ThenInclude(p=>p.ProductImages)
             .FirstOrDefault(c => c.CustomerId == customerId);

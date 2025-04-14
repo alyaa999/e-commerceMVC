@@ -22,10 +22,7 @@ namespace e_commerce.Web.Controllers
         }
 
         // GET: CartController/Details/5
-        public ActionResult Details(int id)
-        {
-            return View();
-        }
+        
 
         // GET: CartController/Create
         public ActionResult Create()

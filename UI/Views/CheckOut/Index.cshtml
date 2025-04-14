@@ -1,0 +1,192 @@
+﻿@using e_commerce.Infrastructure.Entites
+@model e_commerce.Infrastructure.Entites.Cart
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<section class="checkout section--lg">
+    <div class="checkout__container container grid">
+        <div class="checkout__group"> 
+            <h3 class="section__title">pick an Address or Add one </h3> 
+            @if (ViewBag.Addresses.Count == 0)
+            {
+                <a asp-action="Create" asp-controller="Addresses" class="btn btn-light mx-5">Create</a>
+                <div class="alert alert-info" role="alert">
+                    <strong>Info!</strong> No addresses found. Please create a new address.
+                </div>
+            }
+            else
+            {
+                <p>
+                    <a asp-action="Create" asp-controller="Addresses" id="createAddressBtn" class="btn btn-light mx-5">Create</a>
+                </p>
+
+                @foreach (var item in ViewBag.Addresses as IEnumerable<Address>)
+                {
+                    <div class="address-card @(item.IsDefault ? "default-address" : "")" id="address" onclick="setAsDefault(this)">
+                        <h3 class="tab__header">Shipping Address @(item.IsDefault ? "(Default)" : "")</h3>
+                        <div class="address-details">
+                            <address>
+                                <span class="address-label">City:</span> @Html.DisplayFor(modelItem => item.City) <br />
+                                <span class="address-label">Street:</span> @Html.DisplayFor(modelItem => item.Street) <br />
+                                <span class="address-label">Dept No:</span> @Html.DisplayFor(modelItem => item.DeptNo) <br />
+                                <span class="address-label">Is Default:</span> @Html.DisplayFor(modelItem => item.IsDefault) <br />
+                            </address>
+                        </div>
+                        <div class="address-actions">
+                            <a asp-action="Edit" asp-controller="Addresses" asp-route-id="@item.Id" asp-route-customerId="@item.CustomerId">
+                                <i class="fas fa-edit" style="color: gray;"></i>
+                            </a> |
+                            <a data-address-id="@item.Id" class="btn-delete-address">
+                                <i class="fi fi-rs-trash table__trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+            
+        </div>
+        <div class="checkout__group">
+            <h3 class="section__title">Cart Totals</h3>
+            <table class="order__table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Products</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model.CartProducts)
+                    {
+                        <tr>
+                            <td>
+                                <img src=@Url.Content($"~/image/{item.ProductCodeNavigation.ProductImages.FirstOrDefault().ImageUrl}")
+                                     alt="no image"
+                                class="table__img" />
+                            </td>
+                            <td>
+                                <h3 class="table__title"> @item.ProductCodeNavigation.Name</h3>
+                                <p class="table__quantity">x @item.Quantity</p>
+                            </td>
+                            <td><span class="table__price">$@(item.UnitPrice * item.Quantity)</span></td>
+                        </tr>
+                    }
+
+                    <tr>
+                        <td><span class="order__subtitle">Subtotal</span></td>
+                        <td colspan="2"><span class="table__price">$ @Model.TotalPrice</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="order__subtitle">Shipping</span></td>
+                        <td colspan="2">
+                            <span class="table__price">Free Shipping</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="order__subtitle">Total</span></td>
+                        <td colspan="2">
+                            <span class="order__grand-total">$ @Model.TotalPrice</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="payment__methods">
+                <h3 class="checkout__title payment__title">Payment</h3>
+                <div class="payment__option flex">
+                    <input type="radio"
+                           name="radio"
+                           id="l1"
+                           checked
+                           class="payment__input" />
+                    <label for="l1" class="payment__label">Direct Bank Transfer</label>
+                </div>
+                <div class="payment__option flex">
+                    <input type="radio"
+                           name="radio"
+                           id="l2"
+                           class="payment__input" />
+                    <label for="l2" class="payment__label">Check Payment</label>
+                </div>
+                <div class="payment__option flex">
+                    <input type="radio"
+                           name="radio"
+                           id="l3"
+                           class="payment__input" />
+                    <label for="l3" class="payment__label">Paypal</label>
+                </div>
+            </div>
+            <button class="btn btn--md">Place Order</button>
+        </div>
+    </div>
+</section>
+<!-- Modal -->
+<div id="errorModal" class="custom-modal">
+    <div class="custom-modal-content error-modal">
+        <div class="modal-header">
+            <h2 class="error-title">⚠️ Limit Exceeded</h2>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>You cannot add more than 3 addresses.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="error-button">I Understand</button>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        // Show modal function
+        function showErrorModal() {
+            const modal = document.getElementById('errorModal');
+            modal.style.display = 'block';
+
+            // Add vibration effect for emphasis
+            modal.querySelector('.custom-modal-content').classList.add('vibrate');
+            setTimeout(() => {
+                modal.querySelector('.custom-modal-content').classList.remove('vibrate');
+            }, 500);
+        }
+        function setAsDefault(element) {
+            // Remove default class from all cards
+            $('.address-card').removeClass('default-address');
+
+            // Add default class to clicked card
+            $(element).addClass('default-address');
+        }
+
+        // Close modal handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('errorModal');
+
+            // Close when clicking X
+            document.querySelector('.close-modal').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            // Close when clicking button
+            document.querySelector('.error-button').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            // Close when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Address limit checks
+            document.querySelectorAll('.edit-address-link, #createAddressBtn').forEach(element => {
+                element.addEventListener('click', function(e) {
+                    if (@ViewBag.Addresses.Count >= 3) {
+                        e.preventDefault();
+                        showErrorModal();
+                    }
+                });
+            });
+        });
+    </script>
+}

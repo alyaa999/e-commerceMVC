@@ -20,6 +20,7 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+
     <title>Ecommerce Website</title>
 </head>
 <body>
@@ -85,13 +86,13 @@
                 <a asp-controller="Wishlists" asp-action="Index" asp-route-id="1" class="header__action-btn" title="Wishlist">
                     <img src="~/image/icon-heart.svg" alt="" />
                     <span class="count">3</span>
-                </a>
+                </a> 
                 <a asp-action="viewcartproducts" asp-controller="Cart"
                    class="header__action-btn" title="Cart">
-                    <img src="~/image/icon-cart.svg" alt="" />
-                    <span class="count">3</span>
+                    <img src="~/image/icon-cart.svg" alt="" /> 
+                    <span class="count">3</span> 
                 </a>
-                <div class="header__action-btn nav__toggle" id="nav-toggle">
+                <div class="header__action-btn nav__toggle" id="nav-toggle"> 
                     <img src="~/image/menu-burger.svg" alt="">
                 </div>
             </div>
@@ -230,6 +231,6 @@
     <script src="~/js/cartdelete.js"></script>
     <script src="~/js/wishlist.js"></script>
     <script src="~/js/address.js"></script>
-    @RenderSection("Scripts", required: false)
+    @RenderSection("Scripts", required: false) 
 </body>
 </html>
