@@ -24,7 +24,7 @@
 
                 @foreach (var item in ViewBag.Addresses as IEnumerable<Address>)
                 {
-                    <div class="address-card @(item.IsDefault ? "default-address" : "")" id="address" onclick="setAsDefault(this)">
+                    <div class="address-card @(item.IsDefault ? "default-address" : "")" data-address-id="@item.Id" onclick="setAsDefault(this)">
                         <h3 class="tab__header">Shipping Address @(item.IsDefault ? "(Default)" : "")</h3>
                         <div class="address-details">
                             <address>
@@ -97,27 +97,19 @@
                 <div class="payment__option flex">
                     <input type="radio"
                            name="radio"
-                           id="l1"
-                           checked
-                           class="payment__input" />
-                    <label for="l1" class="payment__label">Direct Bank Transfer</label>
-                </div>
-                <div class="payment__option flex">
-                    <input type="radio"
-                           name="radio"
                            id="l2"
                            class="payment__input" />
-                    <label for="l2" class="payment__label">Check Payment</label>
+                    <label for="l2" class="payment__label">Credit Card</label>
                 </div>
                 <div class="payment__option flex">
                     <input type="radio"
                            name="radio"
                            id="l3"
                            class="payment__input" />
-                    <label for="l3" class="payment__label">Paypal</label>
+                    <label for="l3" class="payment__label">Cash</label>
                 </div>
             </div>
-            <button class="btn btn--md">Place Order</button>
+            <a data-CustomerId="@Model.CustomerId" class="btn btn--md placeOrderBtn">Place Order</a>
         </div>
     </div>
 </section>
@@ -138,6 +130,7 @@
 </div>
 @section Scripts {
     <script>
+        let selectedAddressId = null;
         // Show modal function
         function showErrorModal() {
             const modal = document.getElementById('errorModal');
@@ -150,11 +143,12 @@
             }, 500);
         }
         function setAsDefault(element) {
-            // Remove default class from all cards
+            Remove default class from all cards
             $('.address-card').removeClass('default-address');
 
-            // Add default class to clicked card
+            Add default class to clicked card
             $(element).addClass('default-address');
+            selectedAddressId = $(element).data('address-id');
         }
 
         // Close modal handlers

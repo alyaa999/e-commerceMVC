@@ -27,6 +27,11 @@ namespace e_commerce.Infrastructure.Repository
         {
             throw new NotImplementedException();
         }
+        public void AddOrder(Order order)
+        {
+            context.Orders.Add(order);
+            context.SaveChanges();
+        }
 
     }
 }

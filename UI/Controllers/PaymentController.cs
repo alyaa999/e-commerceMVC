@@ -1,9 +1,11 @@
 ﻿using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
+using e_commerce.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Stripe.BillingPortal;
 using Stripe.Checkout;
 using System;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using Session = Stripe.Checkout.Session;
 using SessionCreateOptions = Stripe.Checkout.SessionCreateOptions;
 using SessionService = Stripe.Checkout.SessionService;
@@ -14,19 +16,22 @@ namespace e_commerce.Web.Controllers
     {
         private readonly IcartRepository repo;
         IConfiguration _configuration;
-        public PaymentController(IConfiguration configuration,IcartRepository icartRepository)
+        private readonly IOrderRepository _orderRepository;
+        public PaymentController(IConfiguration configuration,IcartRepository icartRepository,IOrderRepository orderRepository)
         {
             _configuration = configuration;
             repo = icartRepository;
+            _orderRepository = orderRepository;
         }
         public IActionResult Index()
         {
             return View();
         }
-        public IActionResult Checkout(int shippingID, int customerID)
+        [HttpPost]
+        public IActionResult Checkout(OrderData data)
         {
             decimal shippingFees = 50;
-            var cart_ = repo.GetCartByCustomerId(customerID);
+            var cart_ = repo.GetCartByCustomerId(data.customerID);
             decimal total = cart_.TotalPrice + shippingFees;
 
             var options = new SessionCreateOptions
@@ -42,20 +47,20 @@ namespace e_commerce.Web.Controllers
                     {
                         Name = "Shopping Cart Order"
                     },
-                    UnitAmountDecimal = total * 100 // Stripe requires amount in cents
+                    UnitAmountDecimal = total * 100 
                 },
 
                 Quantity = 1
             }
-        },
+            },
                 Mode = "payment",
                 SuccessUrl = _configuration["Stripe:SuccessUrl"] + "?session_id={CHECKOUT_SESSION_ID}",
                 CancelUrl = _configuration["Stripe:CancelUrl"],
                 CustomerEmail = "aliaa@gmail.com",
                 Metadata = new Dictionary<string, string>
         {
-            { "CustomerId", customerID.ToString() },
-            { "ShippingId", shippingID.ToString() },
+            { "CustomerId", data.customerID.ToString() },
+            { "ShippingId", data.shippingID.ToString() },
             { "Total", total.ToString() }
         }
             };
@@ -63,7 +68,7 @@ namespace e_commerce.Web.Controllers
             var service = new SessionService();
             var session = service.Create(options);
 
-            return Redirect(session.Url);
+            return Json(session.Url);
         }
 
 
@@ -74,33 +79,34 @@ namespace e_commerce.Web.Controllers
 
             if (session.PaymentStatus != "paid")
             {
-                // الحالة مش مدفوعة، نرجع على Error View
                 return RedirectToAction("Cancel");
             }
 
-            // قراءة البيانات من Metadata
             var customerId = int.Parse(session.Metadata["CustomerId"]);
             var shippingId = int.Parse(session.Metadata["ShippingId"]);
             var total = decimal.Parse(session.Metadata["Total"]);
+            var cart_ = repo.GetCartByCustomerId(customerId);
 
-            // إنشاء الطلب
             var order = new Order
             {
                 CustomerId = customerId,
                 ShippingAddressId = shippingId,
                 TotalPrice = total,
                 OrderDate = DateTime.Now,
-                Status = 1 
+                PaymentMethod = Domain.Enums.PaymentMethod.card,
+                Status = Domain.Enums.orderstateEnum.Paid, 
+                OrderProducts = cart_.CartProducts.Select(cp => new OrderProduct
+                {
+                    ProductId = cp.ProductCode,
+                    Quantity = cp.Quantity,
+                    UnitPrice = cp.UnitPrice,
+                    ItemTotal = cp.ItemTotal
+                }).ToList()
             };
 
-            //repo.AD(order); // هنا بتضيفي الطلب لقاعدة البيانات
-            ////using (var context = new YourDbContext()) // لو مش بتستخدمي DI هنا
-            ////{
-            ////    context.Orders.Add(order);
-            ////    context.SaveChanges();
-            ////}
-
-            return View("SuccessPayment"); // ممكن تعملي صفحة شكرًا هنا
+            _orderRepository.AddOrder(order); 
+           
+            return View("SuccessPayment"); 
         }
 
         public IActionResult Cancel()

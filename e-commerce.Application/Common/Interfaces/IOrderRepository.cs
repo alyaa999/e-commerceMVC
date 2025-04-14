@@ -10,6 +10,8 @@ namespace e_commerce.Application.Common.Interfaces
     public interface IOrderRepository
     {
         public List<Order> viewAllOrders(int userId);
-        public void RemoveOrder(int cartId, int productId); 
+        public void RemoveOrder(int cartId, int productId);
+        public void AddOrder(Order order);
+
     }
 }
