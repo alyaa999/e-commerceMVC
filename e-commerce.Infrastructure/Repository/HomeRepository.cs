@@ -34,22 +34,21 @@ namespace e_commerce.Infrastructure.Repository
                 queryable = queryable.Where(p => p.SubCategoryId == SubCategoryId.Value);
             }
 
-            return queryable.Include(i => i.SubCategory).Include(i=>i.ProductImages);
+            return queryable.Include(i => i.SubCategory).Include(i=>i.ProductImages).Include(i=>i.Reviews);
         }
-        public List<Product> GetProductsByTag(int tagId)
+        public IQueryable<Product> GetProductsByTag(int tagId)
         {
             Tager tag = (Tager)tagId;
-            return _context.Products
-                .Where(p => p.Tag == tag)
-                .ToList();
+            return _context.Products.Include(i => i.SubCategory).Include(i => i.ProductImages).Include(i => i.Reviews)
+                .Where(p => p.Tag == tag);
         }
 
 
-        public List<Product> GetProductsByName(string name)
+        public IQueryable<Product> GetProductsByName(string name)
         {
             return _context.Products
-                .Where(p => p.Name.Contains(name))
-                .ToList();
+                .Where(p => p.Name.Contains(name)).Include(i => i.SubCategory).Include(i => i.ProductImages).Include(i => i.Reviews); 
+                
         }
         public List<Category> GetCategories()
         {
@@ -60,7 +59,9 @@ namespace e_commerce.Infrastructure.Repository
        
         public Product? GetProductById(int id)
         {
-            return _context.Products.Include(i => i.ProductImages).Include(i=>i.SubCategory.Category).FirstOrDefault(i => i.Id == id);
+            return _context.Products.Include(i => i.ProductImages).Include(i=>i.SubCategory.Category).Include(i=>i.Reviews).FirstOrDefault(i => i.Id == id);
         }
+
+       
     }
 }

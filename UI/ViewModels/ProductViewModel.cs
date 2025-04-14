@@ -17,11 +17,16 @@ namespace e_commerce.Web.ViewModels
         public string SubCategoryName { get; set; }
         public string CategoryName { get; set; }
         public List<ProductImageViewModel> Images { get; set; }
+        public List<ReviewViewMode> Reviews { get; set; }
+        
+
     }
     public class ProductImageViewModel
     {
         public string ImageUrl { get; set; }
         public bool IsPrimary { get; set; }
     }
+
+   
 
 }

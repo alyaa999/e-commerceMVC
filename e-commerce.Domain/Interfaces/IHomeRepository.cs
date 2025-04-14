@@ -12,6 +12,9 @@ namespace e_commerce.Infrastructure.Repository
         public IQueryable<Product> GetProductsByCategory(int? CategoryId, int? SubCategoryId);
         public List<Category> GetCategories();
         public Product? GetProductById(int id);
+        public IQueryable<Product> GetProductsByTag(int tagId);
+        public IQueryable<Product> GetProductsByName(string name);
+
 
 
     }

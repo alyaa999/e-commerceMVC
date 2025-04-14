@@ -15,18 +15,35 @@ namespace e_commerce.Web.Mappers
     {
         public ProductProfile()
         {
+           
             CreateMap<ProductImage, ProductImageViewModel>();
-
+            CreateMap<Review, ReviewViewMode>();
             CreateMap<Product, ProductViewModel>()
-                .ForMember(dest => dest.Tag,
-                           opt => opt.MapFrom(src => src.Tag.HasValue ? src.Tag.Value.ToString() : ""))
-                .ForMember(dest => dest.SubCategoryName,
-                           opt => opt.MapFrom(src => src.SubCategory != null ? src.SubCategory.Name : ""))
-                .ForMember(dest => dest.CategoryName,
-                           opt => opt.MapFrom(src => src.SubCategory != null && src.SubCategory.Category !=null ? src.SubCategory.Category.Name : ""))
-                .ForMember(dest => dest.Images,
-                           opt => opt.MapFrom(src => src.ProductImages));
-               
+             .ForMember(dest => dest.Tag,
+                        opt => opt.MapFrom(src => src.Tag.HasValue ? src.Tag.Value.ToString() : ""))
+             .ForMember(dest => dest.SubCategoryName,
+                        opt => opt.MapFrom(src => src.SubCategory != null ? src.SubCategory.Name : ""))
+             .ForMember(dest => dest.CategoryName,
+                        opt => opt.MapFrom(src => src.SubCategory != null && src.SubCategory.Category != null
+                            ? src.SubCategory.Category.Name : ""))
+             .ForMember(dest => dest.Images,
+                        opt => opt.MapFrom(src => src.ProductImages ?? new List<ProductImage>())) // fix here
+             .ForMember(dest => dest.Reviews,
+                        opt => opt.MapFrom(src => src.Reviews ?? new List<Review>()));
+
+
+           
+
+
+
+
+
+
+
+
+
+
+
 
 
 

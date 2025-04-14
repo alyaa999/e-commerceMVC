@@ -668,7 +668,6 @@ table {
 }
 
 .product__rating {
-  color: hsl(42, 100%, 50%);
   font-size: var(--smaller-font-size);
   margin-bottom: 0.75rem;
 }
@@ -1325,7 +1324,6 @@ table {
 }
 
 .review__rating {
-  color: hsl(24, 100%, 50%);
   margin-bottom: 0.25rem;
 }
 
@@ -2131,4 +2129,10 @@ table {
   .header__search {
     max-width: 270px;
   }
+   
+}
+
+
+.checked {
+    color:orange;
 }

@@ -26,13 +26,37 @@ public class HomeController : Controller
     {
         int pageSize = 1;
         var items = homeRepository.GetProductsByCategory(null, null);
-    
-        var paginatedList = await PaginatedList<Product>.CreateAsync(items, pageNumber, pageSize);
+        var newArrivalsProducts = homeRepository.GetProductsByTag(3); //3 is new Arrival
+        var TrendingProducts = homeRepository.GetProductsByTag(8); //8 is trending 
+        var HotReleaseProducts = homeRepository.GetProductsByTag(5); //5 is HotReleaseProduct
+        var BestSellerProducts = homeRepository.GetProductsByTag(4); //4 is BestSeller
+        var DealsProducts = homeRepository.GetProductsByTag(6); //6 is Deals    
 
-        var products= paginatedList.ToList();
-        var productViewModels = _mapper.Map<List<ProductViewModel>>(products);
-       
-        return View(productViewModels);
+
+        var paginatedList = await PaginatedList<Product>.CreateAsync(items, pageNumber, pageSize);
+        var newArrivals = await PaginatedList<Product>.CreateAsync(newArrivalsProducts, 1, 4);
+        var trending = await PaginatedList<Product>.CreateAsync(TrendingProducts, 1, 4);
+        var hotRelease = await PaginatedList<Product>.CreateAsync(HotReleaseProducts, 1, 4);
+        var BestSeller = await PaginatedList<Product>.CreateAsync(BestSellerProducts, 1, 4);
+        var Deals = await PaginatedList<Product>.CreateAsync(DealsProducts, 1, 4);
+
+
+        var homeViewModel = new HomeViewModel
+        {
+            Products = _mapper.Map<List<ProductViewModel>>(paginatedList?.ToList() ?? new List<Product>()),
+           NewArrivalsProducts = _mapper.Map<List<ProductViewModel>>(newArrivals?.ToList() ?? new List<Product>()),
+            Trending = _mapper.Map<List<ProductViewModel>>(trending?.ToList() ?? new List<Product>()),
+            HotRelease = _mapper.Map<List<ProductViewModel>>(hotRelease?.ToList() ?? new List<Product>()),
+            BestDeal = _mapper.Map<List<ProductViewModel>>(Deals?.ToList() ?? new List<Product>() ),
+            TopSelling = _mapper.Map<List<ProductViewModel>>(BestSeller?.ToList() ?? new List<Product>())
+        };
+
+
+
+
+
+
+        return View(homeViewModel);
     }
     public async  Task<IActionResult> ShopNow( int? CategoryId , int? SubCategoryId , int pageNumber = 1)
     {
@@ -53,19 +77,19 @@ public class HomeController : Controller
     }
     public async Task<IActionResult> ProductDetials(int id)
     {
-        var product = homeRepository.GetProductById(id);    
-        var productViewModel = _mapper.Map<ProductViewModel>(product);  
+        var product = homeRepository.GetProductById(id);
+        var relatedProduct = homeRepository.GetProductsByCategory(null, product.SubCategoryId);
+        var relatedProductViewModels = _mapper.Map<List<ProductViewModel>>(relatedProduct);
+        var productViewModel = _mapper.Map<ProductViewModel>(product);
+        //productViewModel.RelatedProduct = relatedProductViewModels;
+
+
         return View(productViewModel);
     }
 
-    public IActionResult Privacy()
-    {
-        return View();
-    }
+ 
+   
+   
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
+   
 }
