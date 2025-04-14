@@ -96,12 +96,26 @@ namespace e_commerce.Infrastructure.Repository
             return await query.Where(predicate).ToListAsync();
         }
 
+
+        //public Task<string?> GetSingleWithIncludesAsync(Func<object, bool> value1, Func<object, object> value2, Func<object, object> value3, Func<object, object> value4, Func<object, object> value5)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+
+
+
+        //public Task<string?> GetOrderWithDetailsAsync(int id)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
         //public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
         //{
         //    var query = _dbSet.Where(predicate);
         //    return await includes.Aggregate(query, (current, include) => current.Include(include)).ToListAsync();
         //}
 
-     
+
     }
 }

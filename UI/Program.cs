@@ -1,5 +1,7 @@
 using e_commerce.Application.Common.Interfaces;
+using e_commerce.Infrastructure;
 using e_commerce.Infrastructure.Entites;
+
 using e_commerce.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +19,7 @@ namespace e_commerce
             builder.Services.AddDbContext<ECommerceDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             //builder.Services.AddApplicationServices();
+
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             var app = builder.Build();
 

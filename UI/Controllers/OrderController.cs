@@ -43,7 +43,8 @@ namespace e_commerce.Web.Controllers
                 // Get orders with included Customer and ApplicationUser
                 var orders = await _orderRepo.GetAllIncludingAsync(
                     o => o.Customer,
-                    o => o.Customer.ApplicationUser
+                    o => o.Customer.ApplicationUser,
+                    o => o.OrderProducts
                 );
 
                 // Apply status filter if provided
@@ -88,14 +89,23 @@ namespace e_commerce.Web.Controllers
         {
             try
             {
-                var order = await _orderRepo.GetByIdAsync(id);
-                if (order == null)
+                var order = await _orderRepo.GetAllIncludingAsync(
+                    o => o.Customer,
+                    o => o.Customer.ApplicationUser,
+                    o => o.OrderProducts
+
+                );
+
+              
+                var selectedOrder = order.FirstOrDefault(o => o.Id == id);
+
+                if (selectedOrder == null)
                 {
                     TempData["ErrorMessage"] = "Order not found.";
                     return RedirectToAction(nameof(Index));
                 }
 
-                return View(order);
+                return View(selectedOrder);
             }
             catch (Exception ex)
             {

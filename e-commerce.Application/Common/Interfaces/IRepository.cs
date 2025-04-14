@@ -22,7 +22,8 @@ namespace e_commerce.Application.Common.Interfaces
         Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate);
        
         Task<IEnumerable<T>> GetAllIncludingAsync(params Expression<Func<T, object>>[] includeProperties);
-        // O
+
+     
 
 
     }

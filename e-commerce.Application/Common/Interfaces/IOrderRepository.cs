@@ -16,5 +16,9 @@ namespace e_commerce.Application.Common.Interfaces
         Task ConfirmOrderAsync(int id);
         Task CancelOrderAsync(int id, string reason = null);
         Task UpdateAsync(Order order);
+       
+            Task<Order?> GetOrderWithDetailsAsync(int id);
+    
+
     }
 }
