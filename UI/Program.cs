@@ -4,6 +4,7 @@ using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.Mappers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Stripe;
 
 namespace e_commerce
 {
@@ -32,9 +33,8 @@ namespace e_commerce
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseRouting();
-
+            StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
             app.UseAuthorization();
-
 
             app.MapStaticAssets();
             app.MapControllerRoute(
