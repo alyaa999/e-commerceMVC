@@ -44,12 +44,14 @@ namespace e_commerce.Web.Controllers
                     },
                     UnitAmountDecimal = total * 100 // Stripe requires amount in cents
                 },
+
                 Quantity = 1
             }
         },
                 Mode = "payment",
                 SuccessUrl = _configuration["Stripe:SuccessUrl"] + "?session_id={CHECKOUT_SESSION_ID}",
                 CancelUrl = _configuration["Stripe:CancelUrl"],
+                CustomerEmail = "aliaa@gmail.com",
                 Metadata = new Dictionary<string, string>
         {
             { "CustomerId", customerID.ToString() },
@@ -88,23 +90,22 @@ namespace e_commerce.Web.Controllers
                 ShippingAddressId = shippingId,
                 TotalPrice = total,
                 OrderDate = DateTime.Now,
-                Status = 1 // مدفوع
+                Status = 1 
             };
 
-            // حفظ الطلب
-            // مثال باستخدام EF
-            //using (var context = new YourDbContext()) // لو مش بتستخدمي DI هنا
-            //{
-            //    context.Orders.Add(order);
-            //    context.SaveChanges();
-            //}
+            //repo.AD(order); // هنا بتضيفي الطلب لقاعدة البيانات
+            ////using (var context = new YourDbContext()) // لو مش بتستخدمي DI هنا
+            ////{
+            ////    context.Orders.Add(order);
+            ////    context.SaveChanges();
+            ////}
 
-            return View(); // ممكن تعملي صفحة شكرًا هنا
+            return View("SuccessPayment"); // ممكن تعملي صفحة شكرًا هنا
         }
 
         public IActionResult Cancel()
         {
-            return View();
+            return View("CancelPayment");
         }
     } 
 }
