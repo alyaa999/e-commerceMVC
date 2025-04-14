@@ -1,4 +1,10 @@
-﻿<section class="accounts section--lg">
+﻿@model IEnumerable<e_commerce.Infrastructure.Entites.Order>
+
+@{
+    ViewData["Title"] = "getAllCustOrder";
+}
+
+<section class="accounts section--lg">
     <div class="accounts__container container grid">
         <div class="account__tabs">
             <p class="account__tab active-tab" data-target="#dashboard">
@@ -43,29 +49,30 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>#1357</td>
-                                <td>March 19, 2022</td>
-                                <td>Processing</td>
-                                <td>$125.00</td>
-                                <td><a href="#" class="view__order">View</a></td>
-                            </tr>
-                            <tr>
-                                <td>#2468</td>
-                                <td>June 29, 2022</td>
-                                <td>Completed</td>
-                                <td>$364.00</td>
-                                <td><a href="#" class="view__order">View</a></td>
-                            </tr>
-                            <tr>
-                                <td>#2366</td>
-                                <td>August 02, 2022</td>
-                                <td>Completed</td>
-                                <td>$280.00</td>
-                                <td><a href="#" class="view__order">View</a></td>
-                            </tr>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.OrderDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Status)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TotalPrice)
+                                    </td>
+                                    <td>
+                                        <a asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit" style="color: gray;"></i></a> &nbsp;&nbsp; | &nbsp;&nbsp;
+                                        <a asp-action="Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i> </a> &nbsp;&nbsp; | &nbsp;&nbsp;
+                                        <a asp-action="Delete" asp-route-id="@item.Id"><i class="fi fi-rs-trash table__trash"></i></a>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
-                    </table>
+                    </table> 
                 </div>
             </div>
             <div class="tab__content" content id="update-profile">
@@ -116,3 +123,5 @@
         </div>
     </div>
 </section>
+
+
