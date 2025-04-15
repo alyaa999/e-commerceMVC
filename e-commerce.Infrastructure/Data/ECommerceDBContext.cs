@@ -48,24 +48,7 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
 
     {
         base.OnModelCreating(modelBuilder);
-        #region removeIdentityToSeekingData 
-
-        modelBuilder.Entity<Product>(entity =>
-        {
-            entity.Property(p => p.Id)
-                  .ValueGeneratedNever(); // Disable identity
-        });
-        modelBuilder.Entity<Category>(entity =>
-        {
-            entity.Property(p => p.Id)
-                  .ValueGeneratedNever(); // Disable identity
-        });
-        modelBuilder.Entity<SubCategory>(entity =>
-        {
-            entity.Property(p => p.Id)
-                  .ValueGeneratedNever(); // Disable identity
-        });
-        #endregion
+        
 
         #region Database_Relations
         modelBuilder.Entity<IdentityUserLogin<string>>(entity =>

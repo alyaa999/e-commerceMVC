@@ -903,7 +903,7 @@ table {
 
 /*=============== NEWSLETTER ===============*/
 .newsletter {
-  background-color: hsl(166, 23%, 74%);
+    background-color: var(--first-color-alt);
 }
 
 .home__newsletter {

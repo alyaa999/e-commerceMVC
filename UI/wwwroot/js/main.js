@@ -126,11 +126,17 @@ function toggleCategories() {
     }
 }
 
-function toggleSubcategories(id) {
-    const subcategoryList = document.getElementById(id);
-    subcategoryList.classList.toggle('hidden');
-}
+function toggleSubcategories(btn, categoryName) {
+    console.log(btn);   
+    const subcategoryList = document.getElementById(categoryName);
 
+    if (subcategoryList) {
+        subcategoryList.classList.toggle('hidden');
+        btn.textContent = btn.textContent == '-' ? '+' : '-';
+
+
+    }
+}
 ///----Pagnation-------//
 
 
@@ -149,6 +155,7 @@ function generatePagination() {
     const subCategoryId = pagination.getAttribute('SubCategoryId');
     const totalPages = parseInt(pagination.getAttribute('totalPages'), 10); 
     const currentPage = parseInt(pagination.getAttribute('currentPage'), 10);
+    console.log(categoryId);
     // Page numbers
     const pageRange = 2; // Number of pages to show around current page
     let startPage = Math.max(1, currentPage - pageRange); //2   // 1   .. 1 2

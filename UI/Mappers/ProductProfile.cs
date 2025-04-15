@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using e_commerce.Infrastructure.Entites;
-using e_commerce.Web.ViewModels;
+using e_commerce.Web.ViewModels.Home;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace e_commerce.Web.Mappers
@@ -18,6 +18,9 @@ namespace e_commerce.Web.Mappers
            
             CreateMap<ProductImage, ProductImageViewModel>();
             CreateMap<Review, ReviewViewMode>();
+        
+            CreateMap<SubCategory, SubCategoryViewModel>();
+                
             CreateMap<Product, ProductViewModel>()
              .ForMember(dest => dest.Tag,
                         opt => opt.MapFrom(src => src.Tag.HasValue ? src.Tag.Value.ToString() : ""))
@@ -30,9 +33,14 @@ namespace e_commerce.Web.Mappers
                         opt => opt.MapFrom(src => src.ProductImages ?? new List<ProductImage>())) // fix here
              .ForMember(dest => dest.Reviews,
                         opt => opt.MapFrom(src => src.Reviews ?? new List<Review>()));
+            CreateMap<Category, CategoryViewModel>()
+                .ForMember(des => des.subCategory,
+                    opt => opt.MapFrom(src => src.SubCategories));
 
 
-           
+
+
+
 
 
 

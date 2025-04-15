@@ -1,6 +1,6 @@
 ﻿using Microsoft.Identity.Client;
 
-namespace e_commerce.Web.ViewModels
+namespace e_commerce.Web.ViewModels.Home
 {
     public class ProductViewModel
     {

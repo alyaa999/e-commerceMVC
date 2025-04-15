@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace e_commerce.Web.ViewModels
+namespace e_commerce.Web.ViewModels.Home
 {
     public class PaginatedList<T> : List<T>
     {
@@ -11,7 +11,7 @@ namespace e_commerce.Web.ViewModels
         {
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-            this.AddRange(items);
+            AddRange(items);
         }
 
         public bool HasPreviousPage => PageIndex > 1;

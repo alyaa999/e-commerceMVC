@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using e_commerce.Web.ViewModels.Home
+@{
+    var categories = ViewBag.Categories as List<CategoryViewModel>;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -6,12 +10,12 @@
 
     <!--=============== FLATICON ===============-->
     <link rel="stylesheet"
-          href="https://cdn-uicons.flaticon.com/2.0.0/uicons-regular-straight/css/uicons-regular-straight.css" />
-    
+    href="https://cdn-uicons.flaticon.com/2.0.0/uicons-regular-straight/css/uicons-regular-straight.css" />
+
 
     <!--=============== SWIPER CSS ===============-->
     <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
 
     <!--=============== CSS ===============-->
@@ -45,8 +49,8 @@
         <nav class="nav container">
             <a asp-action="Index"class="nav__logo">
                 <img class="nav__logo-img"
-                     src="~/image/logo.svg"
-                     alt="website logo" />
+                src="~/image/logo.svg"
+                alt="website logo" />
             </a>
             <div class="nav__menu" id="nav-menu">
                 <div class="nav__menu-top">
@@ -71,7 +75,7 @@
                         <a href="compare.html" class="nav__link">Compare</a>
                     </li>
                     <li class="nav__item relative">
-                        <a href="#" class="nav__link" onclick="toggleCategories(event)">Categories</a>
+                        <a href="#" class="nav__link" onclick="toggleCategories()">Categories</a>
                         <ul id="category-menu" class="absolute hidden z-50 left-0 top-full mt-2 w-max bg-white shadow-lg rounded-md">
                             <li>
                                 <div class="p-4 categoriesMenu">
@@ -81,10 +85,10 @@
                                         <div class="group">
                                             <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
                                                 <div class="flex items-center space-x-3">
-                                                    <i class="fas fa-tv text-blue-500"></i>
+                                                    <i class="fas fa-tv text-pink-500"></i>
                                                     <a href="#" class="text-gray-800 font-medium">Electronics</a>
                                                 </div>
-                                                <button onclick="toggleSubcategories('electronics-sub')" class="text-gray-400 group-hover:text-gray-600">
+                                                <button onclick="toggleSubcategories(this,'electronics-sub')" class="text-gray-400 group-hover:text-gray-600">
                                                     +
                                                 </button>
                                             </div>
@@ -99,10 +103,10 @@
                                         <div class="group">
                                             <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
                                                 <div class="flex items-center space-x-3">
-                                                    <i class="fas fa-tshirt text-purple-500"></i>
+                                                    <i class="fas fa-tshirt text-pink-500"></i>
                                                     <a href="#" class="text-gray-800 font-medium">Clothing</a>
                                                 </div>
-                                                <button onclick="toggleSubcategories('clothing-sub')" class="text-gray-400 group-hover:text-gray-600">
+                                                <button onclick="toggleSubcategories(this,'clothing-sub')" class="text-gray-400 group-hover:text-gray-600">
                                                     +
                                                 </button>
                                             </div>
@@ -116,7 +120,7 @@
                                         <div class="group">
                                             <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
                                                 <div class="flex items-center space-x-3">
-                                                    <i class="fas fa-home text-green-500"></i>
+                                                    <i class="fas fa-home text-pink-500"></i>
                                                     <a href="#" class="text-gray-800 font-medium">Home</a>
                                                 </div>
                                                 <button onclick="toggleSubcategories('home-sub')" class="text-gray-400 group-hover:text-gray-600">
@@ -134,10 +138,10 @@
                                         <div class="group">
                                             <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
                                                 <div class="flex items-center space-x-3">
-                                                    <i class="fas fa-book text-red-500"></i>
+                                                    <i class="fas fa-book text-pink-500"></i>
                                                     <a href="#" class="text-gray-800 font-medium">Books</a>
                                                 </div>
-                                                <button onclick="toggleSubcategories('books-sub')" class="text-gray-400 group-hover:text-gray-600">
+                                                <button onclick="toggleSubcategories(this,'books-sub')" class="text-gray-400 group-hover:text-gray-600">
                                                     +
                                                 </button>
                                             </div>
@@ -151,10 +155,10 @@
                                         <div class="group">
                                             <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
                                                 <div class="flex items-center space-x-3">
-                                                    <i class="fas fa-football-ball text-orange-500"></i>
+                                                    <i class="fas fa-football-ball text-pink-500"></i>
                                                     <a href="#" class="text-gray-800 font-medium">Sports</a>
                                                 </div>
-                                                <button onclick="toggleSubcategories('sports-sub')" class="text-gray-400 group-hover:text-gray-600">
+                                                <button onclick="toggleSubcategories(this,'sports-sub')" class="text-gray-400 group-hover:text-gray-600">
                                                     +
                                                 </button>
                                             </div>
@@ -171,7 +175,7 @@
                                                     <i class="fas fa-spa text-pink-500"></i>
                                                     <a href="#" class="text-gray-800 font-medium">Beauty</a>
                                                 </div>
-                                                <button onclick="toggleSubcategories('beauty-sub')" class="text-gray-400 group-hover:text-gray-600">
+                                                <button onclick="toggleSubcategories(this,'beauty-sub')" class="text-gray-400 group-hover:text-gray-600">
                                                     +
                                                 </button>
                                             </div>
@@ -179,25 +183,37 @@
                                                 <li><a href="#" class="block text-sm text-gray-600 hover:text-pink-600 hover:bg-gray-50 px-3 py-1 rounded">Skincare</a></li>
                                                 <li><a href="#" class="block text-sm text-gray-600 hover:text-pink-600 hover:bg-gray-50 px-3 py-1 rounded">Makeup</a></li>
                                             </ul>
-                                        </div>
-                                        <!--AnotherCategories Dynamic-->
-                                        <div class="group">
-                                            <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
-                                                <div class="flex items-center space-x-3">
-                                                    <i class="fas fa-star text-yellow-400"></i>
-                                                    <a href="#" class="text-gray-800 font-medium">Categeroy</a>
+                                            </div>
+                                            <!--AnotherCategories Dynamic-->
+                                                @foreach(var item in categories)
+                                                {
+                                                    <div class="group">
+                                                        <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
+                                                            <div class="flex items-center space-x-3">
+                                                                <i class="fas fa-star text-pink-400"></i>
+                                                        <a asp-action="ShopNow"  asp-route-CategoryId="@item.Id" class="text-gray-800 font">@item.Name</a>
+                                                            </div>
+                                                    <button onclick="toggleSubcategories(this,'@item.Name')" class="text-gray-400 group-hover:text-gray-600" >
+                                                                +
+                                                            </button>
+                                                        </div>
+
+                                                        @if (item.subCategory != null)
+                                                        {
+                                                            <ul id="@item.Name" class="ml-8 mt-1 space-y-1 hidden">
+                                                                @foreach (var sub in item.subCategory)
+                                                                {
+                                                                  <li><a asp-action="ShopNow" asp-route-CategoryId="@item.Id"   asp-route-SubCategoryId="@item.subCategory" class="block text-sm text-gray-600 hover:text-pink-600 hover:bg-gray-50 px-3 py-1 rounded">@sub.Name</a></li>
+                                                                }
+                                                            </ul>
+                                                        }
+
+                                                      
                                                 </div>
-                                                <button onclick="toggleSubcategories('beauty-sub')" class="text-gray-400 group-hover:text-gray-600">
-                                                    +
-                                                </button>
-                                            </div>
-                                            <ul id="beauty-sub" class="ml-8 mt-1 space-y-1 hidden">
-                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-pink-600 hover:bg-gray-50 px-3 py-1 rounded">Skincare</a></li>
-                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-pink-600 hover:bg-gray-50 px-3 py-1 rounded">Makeup</a></li>
-                                            </ul>
-                                        </div>
+                                            }
+                                     
                                        
-                                    </div>
+                                        </div>
                                 </div>
                             </li>
                         </ul>
@@ -208,12 +224,15 @@
                     </li>
                 </ul>
                 <div class="header__search">
-                    <input type="text"
-                           placeholder="Search For Items..."
-                           class="form__input" />
-                    <button class="search__btn">
-                        <img src="~/image/search.png" alt="search icon" />
-                    </button>
+                    <form asp-action="SearchByName" method="get">
+                        <input type="text"
+                               placeholder="Search For Items..."
+                               class="form__input" name="Name" />
+                        <button class="search__btn" type="submit">
+                            <img src="~/image/search.png" alt="search icon" />
+                        </button>
+                    </form>
+                  
                 </div>
             </div>
             <div class="header__user-actions">

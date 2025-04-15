@@ -1,4 +1,6 @@
-﻿namespace e_commerce.Web.ViewModels
+﻿using e_commerce.Infrastructure.Entites;
+
+namespace e_commerce.Web.ViewModels.Home
 {
     public class HomeViewModel
     {

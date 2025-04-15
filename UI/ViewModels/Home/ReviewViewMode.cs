@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
 
-namespace e_commerce.Web.ViewModels
+namespace e_commerce.Web.ViewModels.Home
 {
     public class ReviewViewMode
     {
