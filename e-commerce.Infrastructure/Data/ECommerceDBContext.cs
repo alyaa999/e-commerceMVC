@@ -50,6 +50,7 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
         base.OnModelCreating(modelBuilder);
 
 
+
         modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
         {
             entity.HasKey(e => e.UserId);
@@ -139,7 +140,7 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
                 entity.HasKey(e => new { e.OrderId, e.ProductId }).HasName("PK__Order_Pr__48672C2257690B3E");
 
                 entity.HasOne(d => d.Order).WithMany(p => p.OrderProducts)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__Order_Pro__Order__5441852A");
 
                 entity.HasOne(d => d.Product).WithMany(p => p.OrderProducts)

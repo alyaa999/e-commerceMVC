@@ -38,7 +38,7 @@
             <div class="tab__content" content id="orders">
                 <h3 class="tab__header">Your Orders</h3>
                 <div class="tab__body">
-                    <table class="placed__order-table">
+                    <table class="placed__order-table" id="ordersTable">
                         <thead>
                             <tr>
                                 <th>Orders</th>
@@ -67,7 +67,7 @@
                                     <td>
                                         <a asp-action="Edit" asp-route-id="@item.Id"><i class="fas fa-edit" style="color: gray;"></i></a> &nbsp;&nbsp; | &nbsp;&nbsp;
                                         <a asp-action="Details" asp-route-id="@item.Id"><i class="fa-solid fa-circle-info"></i> </a> &nbsp;&nbsp; | &nbsp;&nbsp;
-                                        <a asp-action="Delete" asp-route-id="@item.Id"><i class="fi fi-rs-trash table__trash"></i></a>
+                                        <a class="cancel-order-btn" data-order-id="@item.Id"><i class="fi fi-rs-trash table__trash"></i></a>
                                     </td>
                                 </tr>
                             }

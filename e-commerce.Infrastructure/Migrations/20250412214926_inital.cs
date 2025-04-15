@@ -463,7 +463,8 @@ namespace e_commerce.Infrastructure.Migrations
                         name: "FK__Order_Pro__Order__5441852A",
                         column: x => x.Order_ID,
                         principalTable: "Order",
-                        principalColumn: "ID");
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK__Order_Pro__Produ__5535A963",
                         column: x => x.Product_ID,
