@@ -14,6 +14,8 @@ namespace e_commerce.Infrastructure.Repository
         public Product? GetProductById(int id);
         public IQueryable<Product> GetProductsByTag(int tagId);
         public IQueryable<Product> GetProductsByName(string name);
+        public List<string> GetBrands();
+
 
 
 

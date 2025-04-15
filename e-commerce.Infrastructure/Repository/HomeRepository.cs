@@ -56,7 +56,11 @@ namespace e_commerce.Infrastructure.Repository
                 .ToList();
 
         }
-       
+        public List<string> GetBrands()
+        {
+            return _context.Products.Select(i => i.Brand).Distinct().ToList();
+        }
+
         public Product? GetProductById(int id)
         {
             return _context.Products.Include(i => i.ProductImages).Include(i=>i.SubCategory.Category).Include(i=>i.Reviews).FirstOrDefault(i => i.Id == id);

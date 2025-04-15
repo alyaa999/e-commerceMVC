@@ -133,6 +133,7 @@ function toggleSubcategories(btn, categoryName) {
     if (subcategoryList) {
         subcategoryList.classList.toggle('hidden');
         btn.textContent = btn.textContent == '-' ? '+' : '-';
+//        btn.textContent.style = "bold";
 
 
     }

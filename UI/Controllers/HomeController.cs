@@ -76,7 +76,7 @@ public class HomeController : Controller
     {
         int pageSize = 1;
         var items = homeRepository.GetProductsByCategory(CategoryId, SubCategoryId);
-
+        var brands = homeRepository.GetBrands();
         var paginatedList = await PaginatedList<Product>.CreateAsync(items, pageNumber, pageSize);
 
         var products = paginatedList.ToList();
@@ -86,6 +86,7 @@ public class HomeController : Controller
         ViewData["SubCategoryId"] = SubCategoryId;
         ViewData["TotalPages"] = paginatedList.TotalPages; 
         ViewData["PageNumber"]=pageNumber;
+        ViewData["Brands"] = brands;
 
         return View(productViewModels);
     }

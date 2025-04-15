@@ -25,11 +25,114 @@
 
         <!-- Main Content: Products -->
         <div class="products__main">
-            <div class="tab__btns">
-                <span class="tab__btn active-tab" data-target="#featured">Featured</span>
-                <span class="tab__btn" data-target="#popular">Popular</span>
-                <span class="tab__btn" data-target="#new-added">New Added</span>
+            <div class="relative mt-6">
+                <!-- Slider Container -->
+                <div class="relative mx-10">
+                    <!-- Slider Container -->
+                    <div class="overflow-hidden">
+                        <ul class="Slider flex gap-4 transition-transform duration-300" id="categorySlider">
+                            <!-- Category Cards -->
+                            <li class="min-w-[calc(50%-8px)] md:min-w-[calc(25%-12px)] flex-shrink-0">
+                                <div class="flex items-center justify-between p-4 bg-white rounded-xl shadow hover:shadow-md transition">
+                                    <div class="flex items-center gap-5">
+                                        <div class="p-2 rounded-full bg-pink-100 text-pink-600">
+                                            <i class="fas fa-book"></i>
+                                        </div>
+                                        <span class="text-lg font-bold text-gray-800">Fashion</span> <!-- Changed -->
+                                    </div>
+                                    <button class="text-gray-500 hover:text-gray-700 text-xl">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </li>
+                            <li class="min-w-[calc(50%-8px)] md:min-w-[calc(25%-12px)] flex-shrink-0">
+                                <div class="flex items-center justify-between p-4 bg-white rounded-xl shadow hover:shadow-md transition">
+                                    <div class="flex items-center gap-5">
+                                        <div class="p-2 rounded-full bg-blue-100 text-blue-600">
+                                            <i class="fas fa-utensils"></i>
+                                        </div>
+                                        <span class="text-lg font-bold text-gray-800">Food</span> <!-- Changed -->
+                                    </div>
+                                    <button class="text-gray-500 hover:text-gray-700 text-xl">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </li>
+                            <!-- Other category items with same text-lg font-bold changes -->
+                        </ul>
+                    </div>
+
+                  
+                </div>
+
+                <!-- Navigation Arrows -->
+                <button class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 z-10" id="prevButton">
+                    <i class="fi-rs-angle-double-small-left text-gray-600"></i>
+                </button>
+                <button class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white p-2 rounded-full shadow-md hover:bg-gray-100 z-10" id="nextButton">
+                    <i class="fi-rs-angle-double-small-right text-gray-600"></i>
+                </button>
             </div>
+
+            <style>
+                /* Hide the scrollbar */
+                .overflow-hidden {
+                    -ms-overflow-style: none; /* IE and Edge */
+                    scrollbar-width: none; /* Firefox */
+                }
+
+                    .overflow-hidden::-webkit-scrollbar {
+                        display: none; /* Chrome, Safari and Opera */
+                    }
+            </style>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const slider = document.getElementById('categorySlider');
+                    const prevButton = document.getElementById('prevButton');
+                    const nextButton = document.getElementById('nextButton');
+                    const cards = document.querySelectorAll('#categorySlider li');
+
+                    let currentPosition = 0;
+                    const cardWidth = cards[0].offsetWidth + 16; // width + gap
+                    const visibleCards = window.innerWidth >= 768 ? 4 : 2; // responsive card count
+
+                    function updateSlider() {
+                        slider.style.transform = `translateX(-${currentPosition * cardWidth}px)`;
+
+                        // Disable prev button if at start
+                        prevButton.disabled = currentPosition === 0;
+
+                        // Disable next button if at end
+                        const maxPosition = cards.length - visibleCards;
+                        nextButton.disabled = currentPosition >= maxPosition;
+                    }
+
+                    prevButton.addEventListener('click', function() {
+                        if (currentPosition > 0) {
+                            currentPosition--;
+                            updateSlider();
+                        }
+                    });
+
+                    nextButton.addEventListener('click', function() {
+                        const maxPosition = cards.length - visibleCards;
+                        if (currentPosition < maxPosition) {
+                            currentPosition++;
+                            updateSlider();
+                        }
+                    });
+
+                    // Handle window resize
+                    window.addEventListener('resize', function() {
+                        cardWidth = cards[0].offsetWidth + 16;
+                        updateSlider();
+                    });
+
+                    // Initialize
+                    updateSlider();
+                });
+            </script>
 
             <div class="tab__items">
                 <div class="tab__item active-tab" content id="featured">
