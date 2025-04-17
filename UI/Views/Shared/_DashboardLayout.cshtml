@@ -1,0 +1,39 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+
+@functions {
+    bool IsActive(string action, string controller)
+    {
+        var routeData = ViewContext.RouteData;
+        var currentAction = routeData.Values["action"]?.ToString();
+        var currentController = routeData.Values["controller"]?.ToString();
+
+        return string.Equals(action, currentAction, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(controller, currentController, StringComparison.OrdinalIgnoreCase);
+    }
+}
+
+
+<section class="accounts section--lg">
+    <div class="accounts__container container grid">
+        <div class="account__tabs">
+<a class="account__tab @(IsActive("Index", "MyAccount") ? "account__tab--active" : "")" 
+   href="@Url.Action("Index", "MyAccount")">Dashboard</a>
+
+<a class="account__tab @(IsActive("UpdateProfile", "MyAccount") ? "account__tab--active" : "")" 
+   href="@Url.Action("UpdateProfile", "MyAccount")">Update Profile</a>
+
+<a class="account__tab @(IsActive("ChangePassword", "MyAccount") ? "account__tab--active" : "")" 
+   href="@Url.Action("ChangePassword", "MyAccount")">Change Password</a>
+
+<a class="account__tab" href="@Url.Action("Logout", "Account")">Logout</a>
+
+        </div>
+
+        <div class="tabs__content">
+            @RenderBody()
+        </div>
+    </div>
+</section>
