@@ -17,7 +17,7 @@ namespace e_commerce.Domain.DTOS
         public int? PriceFilter { get; set; }
         public string Name { get; set; }
         public List<string> BrandFilter { get; set; }
-        public List<int?> TagFilter { get; set; }
+        public List<Tager?> TagFilter { get; set; }
 
     }
 }

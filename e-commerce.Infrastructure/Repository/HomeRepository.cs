@@ -38,31 +38,25 @@ namespace e_commerce.Infrastructure.Repository
             {
                 queryable = queryable.Where(p => p.SubCategoryId == shopDTO.SubCategoryId.Value);
             }
-            if(shopDTO.TagFilter!=null)
+            if (shopDTO.BrandFilter != null && shopDTO.BrandFilter.Any())
             {
-                foreach(var item in shopDTO.TagFilter)
+                // Create OR condition for brands (products matching ANY of the selected brands)
+                queryable = queryable.Where(p => shopDTO.BrandFilter.Contains(p.Brand));
+            }
+
+            if (shopDTO.PriceFilter.HasValue)
+            {
+                queryable = queryable.Where(p => p.Price >= 0 && p.Price <= shopDTO.PriceFilter.Value);
+            }
+
+            if (shopDTO.TagFilter != null && shopDTO.TagFilter.Any())
+            {
+               
+                queryable = queryable.Where(p =>
                 {
-                    Tager tag = (Tager)item;
-                    queryable = queryable.Where(i => i.Tag == tag);
-
-
-                }
+                    return p.Tag.Any(pt => shopDTO.TagFilter.Contains((Tager)pt));
+                });
             }
-
-            if (shopDTO.BrandFilter !=null)
-            {
-                foreach(var item in shopDTO.BrandFilter)
-                {
-                    queryable = queryable.Where(p => p.Brand == item);
-
-                }
-
-            }
-            if(shopDTO.PriceFilter.HasValue)
-            {
-                queryable = queryable.Where(p => p.Price >= 0 && p.Price <= shopDTO.PriceFilter);
-            }
-           
             return queryable.Include(i => i.SubCategory).Include(i=>i.ProductImages).Include(i=>i.Reviews);
         }
        
