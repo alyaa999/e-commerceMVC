@@ -2,6 +2,8 @@
 using e_commerce.Infrastructure.Entites;
 using System;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,5 +35,9 @@ namespace e_commerce.Infrastructure.Repository
             context.SaveChanges();
         }
 
+        public Order viewCustOrder(int userId,int orderID)
+        {
+            return context.Orders.Include(o => o.OrderProducts).ThenInclude(op=>op.Product).ThenInclude(p=>p.ProductImages).FirstOrDefault(o => ((o.Id == orderID) && (o.CustomerId == userId)));
+        }
     }
 }

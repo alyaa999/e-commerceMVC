@@ -1,9 +1,13 @@
 ﻿using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
+using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using e_commerce.Infrastructure.Entites;
+
 using Stripe;
+using Stripe.Climate;
 
 namespace e_commerce.Web.Controllers
 {
@@ -11,24 +15,29 @@ namespace e_commerce.Web.Controllers
     {
         public IOrderRepository IOrderRepo { get; }
         private readonly IcartRepository repo;
+        private readonly IAdressRepo ADDrepo;
 
         // GET: orderController
-        public orderController(IOrderRepository _orderrepo, IcartRepository _repo)
+        public orderController(IOrderRepository _orderrepo, IcartRepository _repo, IAdressRepo aDDrepo)
         {
             IOrderRepo = _orderrepo;
             this.repo = _repo;
+            ADDrepo = aDDrepo;
         }
         public ActionResult getAllCustOrder()
         {
             
             return View(IOrderRepo.viewAllOrders(1));
         }
-       
+
 
         // GET: orderController/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(int custID,int orderID,int addressID)
         {
-            return View();
+            Infrastructure.Entites.Order order = IOrderRepo.viewCustOrder(custID, orderID);
+            ViewBag.isFirstTime = (order.TotalPrice==order.OrderProducts.Sum(op=>op.ItemTotal) ? true : false);
+            ViewBag.Addresse = ADDrepo.GetAddressById(addressID,custID);
+            return View(order);
         }
 
         // GET: orderController/Create
@@ -42,7 +51,7 @@ namespace e_commerce.Web.Controllers
                 total = cart_.TotalPrice + shippingFees;
             else
                 total = cart_.TotalPrice;
-            Order order = new Order
+            Infrastructure.Entites.Order order = new Infrastructure.Entites.Order
             {
                 CustomerId = data.customerID,
                 ShippingAddressId = data.shippingID,

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace e_commerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class inital : Migration
+    public partial class removereturnImage : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -238,7 +238,7 @@ namespace e_commerce.Infrastructure.Migrations
                     City = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Street = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     DeptNo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    IsDefault = table.Column<bool>(type: "bit", nullable: true, defaultValue: false)
+                    IsDefault = table.Column<bool>(type: "bit", nullable: false, defaultValue: false)
                 },
                 constraints: table =>
                 {
@@ -481,11 +481,18 @@ namespace e_commerce.Infrastructure.Migrations
                     Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Order_ID = table.Column<int>(type: "int", nullable: false),
                     Product_ID = table.Column<int>(type: "int", nullable: false),
+                    custId = table.Column<int>(type: "int", nullable: false),
                     Return_Date = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK__Returns__3214EC274E77FA1B", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Returns_Customer_custId",
+                        column: x => x.custId,
+                        principalTable: "Customer",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK__Returns__Order_I__6E01572D",
                         column: x => x.Order_ID,
@@ -496,28 +503,6 @@ namespace e_commerce.Infrastructure.Migrations
                         column: x => x.Product_ID,
                         principalTable: "Product",
                         principalColumn: "ID");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Return_Image",
-                columns: table => new
-                {
-                    ID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Return_ID = table.Column<int>(type: "int", nullable: false),
-                    Image_URL = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    Is_Primary = table.Column<bool>(type: "bit", nullable: true, defaultValue: false),
-                    Display_Order = table.Column<int>(type: "int", nullable: true, defaultValue: 0)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK__Return_I__3214EC27A7EF9997", x => x.ID);
-                    table.ForeignKey(
-                        name: "FK__Return_Im__Retur__73BA3083",
-                        column: x => x.Return_ID,
-                        principalTable: "Returns",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -617,9 +602,9 @@ namespace e_commerce.Infrastructure.Migrations
                 column: "Product_ID");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Return_Image_Return_ID",
-                table: "Return_Image",
-                column: "Return_ID");
+                name: "IX_Returns_custId",
+                table: "Returns",
+                column: "custId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Returns_Order_ID",
@@ -688,7 +673,7 @@ namespace e_commerce.Infrastructure.Migrations
                 name: "Product_Wishlist");
 
             migrationBuilder.DropTable(
-                name: "Return_Image");
+                name: "Returns");
 
             migrationBuilder.DropTable(
                 name: "Review");
@@ -701,9 +686,6 @@ namespace e_commerce.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Wishlist");
-
-            migrationBuilder.DropTable(
-                name: "Returns");
 
             migrationBuilder.DropTable(
                 name: "Order");

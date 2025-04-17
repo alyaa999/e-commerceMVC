@@ -23,6 +23,10 @@ public partial class Return
 
     [Column("Product_ID")]
     public int ProductId { get; set; }
+    [ForeignKey("Customer")]
+    public int custId { get; set; }
+    public  Customer? Customer { get; set; }
+
 
     [Column("Return_Date", TypeName = "datetime")]
     public DateTime? ReturnDate { get; set; }
@@ -35,6 +39,4 @@ public partial class Return
     [InverseProperty("Returns")]
     public virtual Product Product { get; set; }
 
-    [InverseProperty("Return")]
-    public virtual ICollection<ReturnImage> ReturnImages { get; set; } = new List<ReturnImage>();
 }

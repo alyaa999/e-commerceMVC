@@ -23,6 +23,7 @@ public partial class Customer
     public virtual ICollection<Review> Reviews { get; set; } = new List<Review>();
 
     public virtual ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
+    public virtual ICollection<Return>? Returns { get; set; } = new List<Return>();
 
     public string ApplicationUserId { get; set; }
     public ApplicationUser ApplicationUser { get; set; }

@@ -32,7 +32,6 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Return> Returns { get; set; }
 
-    public virtual DbSet<ReturnImage> ReturnImages { get; set; }
 
     public virtual DbSet<Review> Reviews { get; set; }
 
@@ -187,15 +186,7 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
                     .HasConstraintName("FK__Returns__Product__6EF57B66");
             });
 
-            modelBuilder.Entity<ReturnImage>(entity =>
-            {
-                entity.HasKey(e => e.Id).HasName("PK__Return_I__3214EC27A7EF9997");
-
-                entity.Property(e => e.DisplayOrder).HasDefaultValue(0);
-                entity.Property(e => e.IsPrimary).HasDefaultValue(false);
-
-                entity.HasOne(d => d.Return).WithMany(p => p.ReturnImages).HasConstraintName("FK__Return_Im__Retur__73BA3083");
-            });
+           
 
             modelBuilder.Entity<Review>(entity =>
             {
