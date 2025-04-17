@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using e_commerce.Infrastructure.Entites;
+using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,6 +18,9 @@ namespace e_commerce.Domain.Entites
         [Required]
         [StringLength(50)]
         public string LastName { get; set; }
+
+        public Customer? Customer { get; set; }
+        public Seller? Seller { get; set; }
     }
 
 }

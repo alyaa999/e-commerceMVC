@@ -10,9 +10,15 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
+    href="https://cdn-uicons.flaticon.com/2.0.0/uicons-regular-straight/css/uicons-regular-straight.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
     <!--=============== SWIPER CSS ===============-->
     <link rel="stylesheet"
-          href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
     <!--=============== CSS ===============-->
     <link href="~/css/styles.css" rel="stylesheet" />
@@ -35,17 +41,29 @@
                 <p class="header__alert-news">
                     Super Values Deals - Save more coupons
                 </p>
-                <a href="login-register.html" class="header__top-action">
-                    Log In / Sign Up
-                </a>
+                @if (!User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Account" asp-action="Register" class="header__top-action">
+                        Log In 
+                    </a>
+                    @* <a asp-controller="Account" asp-action="Login" class="header__top-action">
+                        Sign Up
+                    </a> *@
+                }else
+                {
+                    <a asp-controller="Account" asp-action="Logout" class="header__top-action">
+                        Sign Out
+                    </a>
+                }
+
             </div>
         </div>
 
         <nav class="nav container">
             <a href="index.html" class="nav__logo">
                 <img class="nav__logo-img"
-                     src="~/image/logo.svg"
-                     alt="website logo" />
+                src="~/image/logo.svg"
+                alt="website logo" />
             </a>
             <div class="nav__menu" id="nav-menu">
                 <div class="nav__menu-top">
@@ -60,18 +78,34 @@
                     <li class="nav__item">
                         <a href="index.html" class="nav__link active-link">Home</a>
                     </li>
-                    <li class="nav__item">
-                        <a href="shop.html" class="nav__link">Shop</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="accounts.html" class="nav__link">My Account</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="compare.html" class="nav__link">Compare</a>
-                    </li>
-                    <li class="nav__item">
-                        <a href="login-register.html" class="nav__link">Login</a>
-                    </li>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav__item">
+                            <a asp-controller="Account" asp-action="Register" class="nav__link">Register</a>
+                        </li>
+                        <li class="nav__item">
+                            <a asp-controller="Account" asp-action="Login" class="nav__link" asp-route-returnurl="@Context.Request.Path">Login</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="nav__item">
+                            <a href="shop.html" class="nav__link">Shop</a>
+                        </li>
+                        <li class="nav__item">
+                            <a asp-controller="MyAccount" asp-action="Index" class="nav__link">My Account</a>
+                        </li>
+                        <li class="nav__item">
+                            <a href="compare.html" class="nav__link">Compare</a>
+                        </li>
+                        <li class="nav__item">
+                            <a> Hello @User.Identity.Name</a>
+                        </li>
+                        <li class="nav__item">
+                            <a asp-controller="Account" asp-action="Logout" class="nav__link">Logout</a>
+                        </li>
+                    }
+
                 </ul>
                 <div class="header__search">
                     <input type="text"

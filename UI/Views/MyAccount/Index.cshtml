@@ -1,0 +1,13 @@
+﻿@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="tab__content active-tab" content id="dashboard">
+    <h3 class="tab__header">Hello @User.Identity.Name</h3>
+    <div class="tab__body">
+        <p class="tab__description">
+            From your account dashboard you can view your orders, update profile or change your password.
+        </p>
+    </div>
+</div>
