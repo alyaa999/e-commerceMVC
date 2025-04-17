@@ -1,5 +1,6 @@
 ﻿using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,31 @@ namespace e_commerce.Infrastructure.Repository
         {
             context.Orders.Add(order);
             context.SaveChanges();
+        }
+        public void UpdateOrder(Order order)
+        {
+            var existingOrder = context.Orders.Find(order.Id);
+            if (existingOrder != null)
+            {
+                context.Orders.Update(order);
+                context.SaveChanges();
+            }
+        }
+        public Order GetOrderById(int orderId)
+        {
+            return context.Orders
+            .Include(o => o.OrderProducts)
+            .FirstOrDefault(o => o.Id == orderId);
+        }
+        public void DeleteOrder(int orderId)
+        {
+            var order = context.Orders.Find(orderId);
+            if (order != null)
+            {
+                context.Orders.Remove(order);
+                context.SaveChanges();
+            }
+        }
         }
 
         public Order viewCustOrder(int userId,int orderID)

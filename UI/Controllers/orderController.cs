@@ -4,6 +4,7 @@ using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.ViewModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using e_commerce.Infrastructure.Entites;
 
 using Stripe;
@@ -97,24 +98,33 @@ namespace e_commerce.Web.Controllers
         }
 
         // GET: orderController/Delete/5
+        [HttpPost]
         public ActionResult Delete(int id)
         {
-            return View();
+            var canceledOrder = IOrderRepo.GetOrderById(id);
+            if (DateTime.Now.Day - canceledOrder.OrderDate.Value.Day <= 3 && canceledOrder.OrderDate.Value.Year == DateTime.Now.Year && DateTime.Now.Month == canceledOrder.OrderDate.Value.Month)
+            {
+                if (canceledOrder.Status == Domain.Enums.orderstateEnum.Paid)
+                {
+                    try
+                    {
+                        return Json(new { success = true, message = "Refund requested. Proceed with the refund process." });
+                    }
+                    catch (Exception ex)
+                    {
+                        return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
+                    }
+                }
+                else if (canceledOrder.Status == Domain.Enums.orderstateEnum.PaymentPending)
+                {
+                    IOrderRepo.DeleteOrder(id);
+                    return Json(new { success = true, message = "Your order has been cancelled successfully." });
+                }
+            }
+            return Json(new { success = false, message = "You cannot cancel the order after 3 days." });
         }
 
-        // POST: orderController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
-        {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
-        }
+
+
     }
 }

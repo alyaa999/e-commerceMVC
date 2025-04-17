@@ -31,6 +31,8 @@ public partial class Order
     [Column("Shipping_Address_ID")]
     public int ShippingAddressId { get; set; }
 
+    public string? PaymentIntentId { get; set; }
+
     [ForeignKey("CustomerId")]
     [InverseProperty("Orders")]
     public virtual Customer Customer { get; set; }
