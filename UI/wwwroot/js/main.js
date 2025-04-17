@@ -154,9 +154,12 @@ function generatePagination() {
     pagination.innerHTML = ''; // Clear existing links
     const categoryId = pagination.getAttribute('CategoryId');
     const subCategoryId = pagination.getAttribute('SubCategoryId');
+    const PriceFilter = pagination.getAttribute('PriceFilter');
+    const BrandFilter = pagination.getAttribute('BrandFilter');
+    const TagFilter = pagination.getAttribute('TagFilter');
+    const Name = pagination.getAttribute('Name');
     const totalPages = parseInt(pagination.getAttribute('totalPages'), 10); 
     const currentPage = parseInt(pagination.getAttribute('currentPage'), 10);
-    console.log(categoryId);
     // Page numbers
     const pageRange = 2; // Number of pages to show around current page
     let startPage = Math.max(1, currentPage - pageRange); //2   // 1   .. 1 2
@@ -165,7 +168,8 @@ function generatePagination() {
     // Previous button -- all pages has pervous expect the first page   
     const prevLi = document.createElement('li');
     const prevLink = document.createElement('a');
-    prevLink.href = currentPage > 1 ? `?pageNumber=${currentPage - 1}&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}` : '#';
+    prevLink.href = currentPage > 1 ? `?pageNumber=${currentPage - 1}&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}
+    &PriceFilter=${PriceFilter}&BrandFilter=${BrandFilter}&TagFilte=${TagFilter}&Name=${Name}` : '#';
     prevLink.className = `pagination__link icon ${startPage === 1 ? 'disabled' : ''}`; //disabled class doens't implemented 
     prevLink.innerHTML = '<i class="fi-rs-angle-double-small-right"></i>';
     prevLi.appendChild(prevLink);
@@ -177,7 +181,8 @@ function generatePagination() {
     if (startPage > 1) { 
         const firstLi = document.createElement('li');
         const firstLink = document.createElement('a');
-        firstLink.href = `?pageNumber=1&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}`;
+        firstLink.href = `?pageNumber=1${currentPage - 1}&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}
+    &PriceFilter=${pricefilter}&BrandFilter=${BrandFilter}&TagFilte=${TagFilter}&Name=${Name}`;
         firstLink.className = 'pagination__link';
         firstLink.textContent = '1';
         firstLi.appendChild(firstLink);
@@ -194,7 +199,8 @@ function generatePagination() {
     for (let i = startPage; i <= endPage; i++) {
         const pageLi = document.createElement('li');
         const pageLink = document.createElement('a');
-        pageLink.href = `?pageNumber=${i}&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}`;
+        pageLink.href = `?pageNumber=${i}&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}
+    &PriceFilter=${pricefilter}&BrandFilter=${BrandFilter}&TagFilte=${TagFilter}&Name=${Name}`;
         pageLink.className = `pagination__link ${i === currentPage ? 'active' : ''}`;
         pageLink.textContent = i;
         pageLi.appendChild(pageLink);
@@ -211,7 +217,9 @@ function generatePagination() {
 
         const lastLi = document.createElement('li');
         const lastLink = document.createElement('a');
-        lastLink.href = `?pageNumber=${totalPages}&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}`;
+        lastLink.href = `?pageNumber=${totalPages}&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}
+    &PriceFilter=${pricefilter}&BrandFilter=${BrandFilter}&TagFilte=${TagFilter}&Name=${Name}`;
+
         lastLink.className = 'pagination__link';
         lastLink.textContent = totalPages;
         lastLi.appendChild(lastLink);
@@ -221,7 +229,8 @@ function generatePagination() {
     // Next button
     const nextLi = document.createElement('li');
     const nextLink = document.createElement('a');
-    nextLink.href = currentPage < totalPages ? `?pageNumber=${currentPage + 1}&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}` : '#';
+    nextLink.href = currentPage < totalPages ? `?pageNumber=${currentPage +1}&CategoryId=${categoryId}&SubCategoryId=${subCategoryId}
+    &PriceFilter=${pricefilter}&BrandFilter=${BrandFilter}&TagFilte=${TagFilter}&Name=${Name}` : '#';
     nextLink.className = `pagination__link icon ${endPage === totalPages ? 'disabled' : ''}`;
     nextLink.innerHTML = '<i class="fi-rs-angle-double-small-right"></i>';
     nextLi.appendChild(nextLink);
@@ -230,3 +239,17 @@ function generatePagination() {
 
 // Initial pagination render
 generatePagination();
+
+//-----------------------------------------------------------//
+
+function pricefilter() {
+    const priceInput = document.getElementById('PriceFilter');
+    const userInput = document.getElementById('userInput');
+    priceInput.addEventListener('input', () => {
+        const value = priceInput.value;
+        userInput.textContent = `$${value}`;
+    });
+
+
+}
+pricefilter();

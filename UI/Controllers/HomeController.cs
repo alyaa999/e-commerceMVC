@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using AutoMapper;
+using e_commerce.Domain.DTOS;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.Models;
@@ -56,12 +57,12 @@ public class HomeController : Controller
 
         var homeViewModel = new HomeViewModel
         {
-            Products = _mapper.Map<List<ProductViewModel>>(paginatedList?.ToList() ?? new List<Product>()),
-           NewArrivalsProducts = _mapper.Map<List<ProductViewModel>>(newArrivals?.ToList() ?? new List<Product>()),
-            Trending = _mapper.Map<List<ProductViewModel>>(trending?.ToList() ?? new List<Product>()),
-            HotRelease = _mapper.Map<List<ProductViewModel>>(hotRelease?.ToList() ?? new List<Product>()),
-            BestDeal = _mapper.Map<List<ProductViewModel>>(Deals?.ToList() ?? new List<Product>() ),
-            TopSelling = _mapper.Map<List<ProductViewModel>>(BestSeller?.ToList() ?? new List<Product>()),
+            Products = _mapper.Map<List<ProductViewModel>>(paginatedList?.ToList()),
+           NewArrivalsProducts = _mapper.Map<List<ProductViewModel>>(newArrivals?.ToList()),
+            Trending = _mapper.Map<List<ProductViewModel>>(trending?.ToList()),
+            HotRelease = _mapper.Map<List<ProductViewModel>>(hotRelease?.ToList()),
+            BestDeal = _mapper.Map<List<ProductViewModel>>(Deals?.ToList() ),
+            TopSelling = _mapper.Map<List<ProductViewModel>>(BestSeller?.ToList()),
 
         };
 
@@ -72,24 +73,38 @@ public class HomeController : Controller
 
         return View(homeViewModel);
     }
-    public async  Task<IActionResult> ShopNow( int? CategoryId , int? SubCategoryId , int pageNumber = 1)
+    //In AutoMapper, mapping a valid source object (like a list) will usually return an empty list, not null, even if the source list is empty or null.
+    public async  Task<IActionResult> ShopNow(ShopViewModel ShopVm,int pageNumber= 1)
     {
         int pageSize = 1;
-        var items = homeRepository.GetProductsByCategory(CategoryId, SubCategoryId);
+        var shopDTO = _mapper.Map<ShopDTO>(ShopVm);
+        var items = homeRepository.GetProducts(shopDTO);
         var brands = homeRepository.GetBrands();
+        var tagers = homeRepository.GetTagers();
         var paginatedList = await PaginatedList<Product>.CreateAsync(items, pageNumber, pageSize);
 
-        var products = paginatedList.ToList();
-        var productViewModels = _mapper.Map<List<ProductViewModel>>(products);
-        ViewData["productCount"] = items.Count();
-        ViewData["CategoryId"] = CategoryId;
-        ViewData["SubCategoryId"] = SubCategoryId;
-        ViewData["TotalPages"] = paginatedList.TotalPages; 
-        ViewData["PageNumber"]=pageNumber;
-        ViewData["Brands"] = brands;
 
-        return View(productViewModels);
+        var products = paginatedList.ToList();
+        var shopViewMode = new ShopViewModel()
+        {
+            CategoryId = ShopVm.CategoryId,
+            SubCategoryId = ShopVm.SubCategoryId,
+            BrandFilter = ShopVm.BrandFilter,
+            PriceFilter = ShopVm.PriceFilter,
+            TagFilter = ShopVm.TagFilter,
+            PageNumber = pageNumber,
+            productCount = products.Count(),
+            TotalPages = paginatedList.TotalPages,
+            Brands = brands,
+            tagers = tagers,
+            Name = ShopVm.Name,
+            Products = _mapper.Map<List<ProductViewModel>>(products)
+        };
+      
+
+        return View(shopViewMode);
     }
+    
     public async Task<IActionResult> ProductDetials(int id)
     {
         var product = homeRepository.GetProductById(id);
@@ -103,17 +118,7 @@ public class HomeController : Controller
         return View(productDetails);
     }
 
-    public async Task<IActionResult> SearchByName(string Name )
-    {
-        var items = homeRepository.GetProductsByName(Name);
-        var paginatedList = await PaginatedList<Product>.CreateAsync(items, 1, 4);
-        var products = paginatedList.ToList();
-        var productViewModels = _mapper.Map<List<ProductViewModel>>(products);
-        ViewData["productCount"] = items.Count();
-        ViewData["TotalPages"] = paginatedList.TotalPages;
-        ViewData["PageNumber"] = 1;
-        return View("ShopNow", productViewModels);
-    }
+  
 
    
  

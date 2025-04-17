@@ -1,68 +1,83 @@
 ﻿@using e_commerce.Web.ViewModels.Home
 
 
-@model List<ProductViewModel> 
+@model ShopViewModel
 
 <!--=============== PRODUCTS ===============-->
 
 <section class="products container section--lg" style="display:flex">
     <div class="filters-container">
-        <div class="filters">
-            <!-- Price Filter -->
-            <div class="filter-group">
-                <h3 class="filter-title">Price</h3>
-                <div class="price-range">
-                    <input type="range" id="price-max" min="0" max="1000" value="1000" step="10">
+        <form method="get" asp-action="ShopNow">
+            <div class="filters">
+                <!-- Price Filter -->
+                <div class="filter-group">
+                    <h3 class="filter-title">Price</h3>
+                    <div class="price-range">
+                        <input type="range" id="PriceFilter" name="PriceFilter" min="0" max="1000" value="@Model.PriceFilter" step="10">
+                    </div>
+                    <div class="price-values">
+                        <span id="min-price-value">$0</span>
+                        <span id="userInput"> @Model.PriceFilter </span>
+                        <span id="max-price-value">$1000</span>
+                    </div>
                 </div>
-                <div class="price-values">
-                    <span id="min-price-value">$0</span>
-                    <span> - </span>
-                    <span id="max-price-value">$1000</span>
-                </div>
-            </div>
 
-            <!-- Brand Filter -->
-            <div class="filter-group">
-                <h3 class="filter-title">Brand</h3>
-                <div class="brand-options">
-                    @foreach (var brand in ViewBag.Brands)
-                    {
+                <!-- Brand Filter -->
+                <div class="filter-group">
+                    <div class="brand-options">
+                        <h3 class="filter-title">Brand</h3>
+                        <ul>
+                            @foreach (var brand in Model.Brands)
+                            {
+                                <li>
+                                    <div class="checkbox-option">
+                                        <input type="checkbox" id="brand-@brand" name="BrandFilter" value="@brand"
+                                        @(Model.BrandFilter != null && Model.BrandFilter.Contains(brand) ? "checked" : "") />
+                                        <label for="brand-@brand">@brand</label>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+
+                <!-- Tag Filter -->
+                <div class="filter-group">
+                    <h3 class="filter-title">Tags</h3>
+                    <div class="tag-options">
                         <div class="checkbox-option">
-                            <label for="brand-@brand">@brand</label>
+                            <input type="checkbox" id="tag-new" name="tag" value="New">
+                            <label for="tag-new">New Arrivals</label>
                         </div>
-                    }
-                </div>
-            </div>
-
-            <!-- Tag Filter -->
-            <div class="filter-group">
-                <h3 class="filter-title">Tags</h3>
-                <div class="tag-options">
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="tag-new" name="tag" value="New">
-                        <label for="tag-new">New Arrivals</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="tag-bestseller" name="tag" value="BestSeller">
-                        <label for="tag-bestseller">Best Sellers</label>
-                    </div>
-                    <div class="checkbox-option">
-                        <input type="checkbox" id="tag-trending" name="tag" value="Trending">
-                        <label for="tag-trending">Trending</label>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="tag-bestseller" name="tag" value="BestSeller">
+                            <label for="tag-bestseller">Best Sellers</label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="tag-trending" name="tag" value="Trending">
+                            <label for="tag-trending">Trending</label>
+                        </div>
                     </div>
                 </div>
+                <!-- Hidden fields for other properties -->
+                <input type="hidden" name="CategoryId" value="@Model.CategoryId" />
+                <input type="hidden" name="SubCategoryId" value="@Model.SubCategoryId" />
+                <input type="hidden" name="PageNumber" value="@Model.PageNumber" />
+
+                <button id="apply-filters" class="btn-try btn-primary">Apply Filters</button>
+
+                <a href="@Url.Action("ShopNow", "Home")" id="reset-filters" class="btn-try btn-secondary">Reset</a>
             </div>
 
-            <button id="apply-filters" class="btn-try btn-primary">Apply Filters</button>
-            <button id="reset-filters" class="btn-try btn-secondary">Reset</button>
-        </div>
+        </form>
     </div>
     
     <div style="margin:20px">
-        <p class="total__products">We found <span>@ViewData["productCount"]</span> items for you!</p>
+        <p class="total__products">We found <span>@Model.productCount</span> items for you!</p>
 
         <div class="products__container grid">
-            @foreach (var item in Model)
+            @foreach (var item in Model.Products)
             {
                 <div class="product__item">
                     <div class="product__banner">
@@ -162,7 +177,10 @@
    
    
 </section>
-<ul class="pagination" id="pagination" SubCategoryId="@ViewData["SubCategoryId"]" CategoryId="@ViewData["CategoryId"]" TotalPages="@ViewData["TotalPages"]" currentPage="@ViewData["PageNumber"]">
+<ul class="pagination" id="pagination" BrandFilter="@Model.BrandFilter"
+PriceFilter="@Model.PriceFilter" TagFilter="@Model.TagFilter"
+SubCategoryId="@Model.SubCategoryId" CategoryId="@Model.CategoryId" 
+TotalPages="@Model.TotalPages" currentPage="@Model.PageNumber"  Name="@Model.Name">
 </ul>
 
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using e_commerce.Domain.DTOS;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Web.ViewModels.Home;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -15,7 +16,8 @@ namespace e_commerce.Web.Mappers
     {
         public ProductProfile()
         {
-           
+
+            CreateMap<ShopViewModel, ShopDTO>();
             CreateMap<ProductImage, ProductImageViewModel>();
             CreateMap<Review, ReviewViewMode>();
         
