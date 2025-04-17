@@ -72,19 +72,19 @@ namespace e_commerce
             });
 
 
-            //builder.Services.AddAuthentication()
-            //    .AddGoogle(options =>
-            //    {
-            //        options.ClientId = "301550065314-ec3i6m9102daudbhr0nvi075j5ne9hd2.apps.googleusercontent.com";
-            //        options.ClientSecret = "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";
-            //    });
+            builder.Services.AddAuthentication()
+                .AddGoogle(options =>
+                {
+                    options.ClientId = "";
+                    options.ClientSecret = "";
+                });
 
-            //builder.Services.AddAuthentication()
-            //    .AddFacebook(options =>
-            //    {
-            //        options.ClientId = "612541185137585";
-            //        options.ClientSecret = "21d28beaac7ae0f5473dc0c923606798";
-            //    });
+            builder.Services.AddAuthentication()
+                .AddFacebook(options =>
+                {
+                    options.ClientId = "";
+                    options.ClientSecret = "";
+                });
 
 
 
