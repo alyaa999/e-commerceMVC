@@ -15,7 +15,8 @@ public partial class Seller
     public int Id { get; set; }
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
-
     public string ApplicationUserId { get; set; }
+
+    [ForeignKey(nameof(ApplicationUserId))]
     public ApplicationUser ApplicationUser { get; set; }
 }

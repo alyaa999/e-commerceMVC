@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using e_commerce.Infrastructure.Entites;
 
@@ -11,9 +12,11 @@ using e_commerce.Infrastructure.Entites;
 namespace e_commerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    partial class ECommerceDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250418175620_update")]
+    partial class update
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -283,7 +286,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Address", (string)null);
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Cart", b =>
@@ -318,7 +321,7 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasIndex(new[] { "CustomerId" }, "UQ__Cart__8CB286B8700ED883")
                         .IsUnique();
 
-                    b.ToTable("Cart", (string)null);
+                    b.ToTable("Cart");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.CartProduct", b =>
@@ -347,7 +350,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductCode");
 
-                    b.ToTable("Cart_Product", (string)null);
+                    b.ToTable("Cart_Product");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Category", b =>
@@ -367,7 +370,7 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Category__3214EC2794A91D88");
 
-                    b.ToTable("Category", (string)null);
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Customer", b =>
@@ -389,7 +392,7 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
-                    b.ToTable("Customer", (string)null);
+                    b.ToTable("Customer");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Order", b =>
@@ -436,7 +439,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ShippingAddressId");
 
-                    b.ToTable("Order", (string)null);
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.OrderProduct", b =>
@@ -465,7 +468,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Order_Product", (string)null);
+                    b.ToTable("Order_Product");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Product", b =>
@@ -529,7 +532,7 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasIndex(new[] { "Code" }, "UQ__Product__A25C5AA733C60312")
                         .IsUnique();
 
-                    b.ToTable("Product", (string)null);
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.ProductImage", b =>
@@ -568,7 +571,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Product_Image", (string)null);
+                    b.ToTable("Product_Image");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Return", b =>
@@ -615,7 +618,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("custId");
 
-                    b.ToTable("Returns", (string)null);
+                    b.ToTable("Returns");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Review", b =>
@@ -655,7 +658,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Review", (string)null);
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Seller", b =>
@@ -677,7 +680,7 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
-                    b.ToTable("Seller", (string)null);
+                    b.ToTable("Seller");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.SubCategory", b =>
@@ -703,7 +706,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Sub_Category", (string)null);
+                    b.ToTable("Sub_Category");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Wishlist", b =>
@@ -729,7 +732,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Wishlist", (string)null);
+                    b.ToTable("Wishlist");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
