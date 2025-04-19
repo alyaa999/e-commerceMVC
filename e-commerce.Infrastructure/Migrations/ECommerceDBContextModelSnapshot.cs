@@ -283,7 +283,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Address", (string)null);
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Cart", b =>
@@ -318,7 +318,7 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasIndex(new[] { "CustomerId" }, "UQ__Cart__8CB286B8700ED883")
                         .IsUnique();
 
-                    b.ToTable("Cart", (string)null);
+                    b.ToTable("Cart");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.CartProduct", b =>
@@ -347,7 +347,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductCode");
 
-                    b.ToTable("Cart_Product", (string)null);
+                    b.ToTable("Cart_Product");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Category", b =>
@@ -367,7 +367,7 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Category__3214EC2794A91D88");
 
-                    b.ToTable("Category", (string)null);
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Customer", b =>
@@ -386,16 +386,10 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Customer__3214EC27B75DE14A");
 
-<<<<<<< HEAD
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
-                    b.ToTable("Customer", (string)null);
-=======
-                    b.HasIndex("ApplicationUserId");
-
                     b.ToTable("Customer");
->>>>>>> Marwafeature
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Order", b =>
@@ -450,7 +444,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ShippingAddressId");
 
-                    b.ToTable("Order", (string)null);
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.OrderProduct", b =>
@@ -479,7 +473,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Order_Product", (string)null);
+                    b.ToTable("Order_Product");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Product", b =>
@@ -549,7 +543,7 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasIndex(new[] { "Code" }, "UQ__Product__A25C5AA733C60312")
                         .IsUnique();
 
-                    b.ToTable("Product", (string)null);
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.ProductImage", b =>
@@ -588,7 +582,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Product_Image", (string)null);
+                    b.ToTable("Product_Image");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Return", b =>
@@ -633,7 +627,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("custId");
 
-                    b.ToTable("Returns", (string)null);
+                    b.ToTable("Returns");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Review", b =>
@@ -673,7 +667,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Review", (string)null);
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Seller", b =>
@@ -692,16 +686,10 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Seller__3214EC272DFE5864");
 
-<<<<<<< HEAD
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
-                    b.ToTable("Seller", (string)null);
-=======
-                    b.HasIndex("ApplicationUserId");
-
                     b.ToTable("Seller");
->>>>>>> Marwafeature
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.SubCategory", b =>
@@ -727,7 +715,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Sub_Category", (string)null);
+                    b.ToTable("Sub_Category");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Wishlist", b =>
@@ -753,7 +741,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Wishlist", (string)null);
+                    b.ToTable("Wishlist");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -866,13 +854,8 @@ namespace e_commerce.Infrastructure.Migrations
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Customer", b =>
                 {
                     b.HasOne("e_commerce.Domain.Entites.ApplicationUser", "ApplicationUser")
-<<<<<<< HEAD
                         .WithOne("Customer")
                         .HasForeignKey("e_commerce.Infrastructure.Entites.Customer", "ApplicationUserId")
-=======
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
->>>>>>> Marwafeature
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -998,13 +981,8 @@ namespace e_commerce.Infrastructure.Migrations
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Seller", b =>
                 {
                     b.HasOne("e_commerce.Domain.Entites.ApplicationUser", "ApplicationUser")
-<<<<<<< HEAD
                         .WithOne("Seller")
                         .HasForeignKey("e_commerce.Infrastructure.Entites.Seller", "ApplicationUserId")
-=======
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
->>>>>>> Marwafeature
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

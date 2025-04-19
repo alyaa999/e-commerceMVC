@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-    using e_commerce.Infrastructure.Entites;
-    using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
-    using System.Linq;
-    using System.Threading.Tasks;
+using e_commerce.Infrastructure.Entites;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 using e_commerce.Application.Common.Interfaces;
 using System.Linq.Expressions;
 
 namespace e_commerce.Web.Controllers
-    {
+{
 
     public class AdminReturnsController : Controller
     {
@@ -17,7 +17,6 @@ namespace e_commerce.Web.Controllers
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<Product> _productRepository;
         private readonly ILogger<AdminReturnsController> _logger;
-
         public AdminReturnsController(
             IRepository<Return> returnRepository,
             IRepository<Order> orderRepository,
@@ -91,48 +90,47 @@ namespace e_commerce.Web.Controllers
         }
 
         [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Approve(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Approve(int id)
+        {
+            var returnRequest = await _returnRepository.GetByIdAsync(id);
+            if (returnRequest == null)
             {
-                var returnRequest = await _returnRepository.GetByIdAsync(id);
-                if (returnRequest == null)
-                {
-                    return NotFound();
-                }
-
-                returnRequest.Status = "Approved";
-                returnRequest.ReturnDate = DateTime.Now;
-                _returnRepository.Update(returnRequest);
-                await _returnRepository.SaveChangesAsync();
-
-                // Here you would typically add logic for:
-                // - Processing refund
-                // - Updating inventory
-                // - Notifying customer
-
-                TempData["SuccessMessage"] = "Return request has been approved successfully.";
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
 
-            [HttpPost]
-            [ValidateAntiForgeryToken]
-            public async Task<IActionResult> Reject(int id, string rejectionReason)
+            returnRequest.Status = Domain.Enums.ReturnStatusEnum.Approved;
+            returnRequest.ReturnDate = DateTime.Now;
+            _returnRepository.Update(returnRequest);
+            await _returnRepository.SaveChangesAsync();
+            // Here you would typically add logic for:
+            // - Processing refund
+            // - Updating inventory
+            // - Notifying customer
+
+            TempData["SuccessMessage"] = "Return request has been approved successfully.";
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Reject(int id, string rejectionReason)
+        {
+            var returnRequest = await _returnRepository.GetByIdAsync(id);
+            if (returnRequest == null)
             {
-                var returnRequest = await _returnRepository.GetByIdAsync(id);
-                if (returnRequest == null)
-                {
-                    return NotFound();
-                }
-
-                returnRequest.Status = "Rejected";
-                returnRequest.Reason += $"\n\nRejection Reason: {rejectionReason}";
-                _returnRepository.Update(returnRequest);
-                await _returnRepository.SaveChangesAsync();
-
-                // Here you would typically add logic for notifying customer
-
-                TempData["SuccessMessage"] = "Return request has been rejected.";
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
+
+            returnRequest.Status = Domain.Enums.ReturnStatusEnum.Rejected;
+            returnRequest.Reason += $"\n\nRejection Reason: {rejectionReason}";
+            _returnRepository.Update(returnRequest);
+            await _returnRepository.SaveChangesAsync();
+
+            // Here you would typically add logic for notifying customer
+
+            TempData["SuccessMessage"] = "Return request has been rejected.";
+            return RedirectToAction(nameof(Index));
         }
     }
+}

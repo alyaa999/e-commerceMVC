@@ -8,8 +8,8 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h6 class="m-0 font-weight-bold text-primary">Return Request #@Model.Id</h6>
-        <span class="badge @(Model.Status == "Approved" ? "badge-success" :
-                           Model.Status == "Rejected" ? "badge-danger" : "badge-warning")">
+        <span class="badge @(Model.Status == e_commerce.Domain.Enums.ReturnStatusEnum.Approved ? "badge-success" :
+                           Model.Status == e_commerce.Domain.Enums.ReturnStatusEnum.Rejected ? "badge-danger" : "badge-warning")">
             @Model.Status
         </span>
     </div>
@@ -48,30 +48,7 @@
             </div>
         </div>
 
-        <div class="row mt-4">
-            <div class="col-12">
-                <h5>Return Images</h5>
-                <hr />
-                <div class="row">
-                    @foreach (var image in Model.ReturnImages)
-                    {
-                        <div class="col-md-3 mb-3">
-                            <div class="card">
-                                <img src="@image.ImageUrl" class="card-img-top" alt="Return image" style="height: 200px; object-fit: cover;">
-                                <div class="card-body text-center">
-                                    @if (image.IsPrimary == true)
-                                    {
-                                        <span class="badge badge-primary">Primary</span>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-
-        @if (Model.Status != "Approved" && Model.Status != "Rejected")
+        @if (Model.Status != e_commerce.Domain.Enums.ReturnStatusEnum.Approved && Model.Status != e_commerce.Domain.Enums.ReturnStatusEnum.Rejected)
 
         {
 
@@ -82,12 +59,11 @@
                             <h5 class="m-0">Process Return</h5>
                         </div>
                         <div class="card-body">
-                            <form asp-action="Approve" method="post" class="d-inline">
-                                <input type="hidden" name="id" value="@Model.Id" />
-                                <button type="submit" class="btn btn-success">
+                            <div class="d-inline">
+                                <button class="btn btn-success approve_return" data-orderid="@Model.OrderId" data-rid="@Model.Id">
                                     <i class="fas fa-check"></i> Approve Return
                                 </button>
-                            </form>
+                            </div>
                             <form asp-action="Reject" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to reject this return?');">
                                 <input type="hidden" name="id" value="@Model.Id" />
                                 <button type="submit" class="btn btn-danger">

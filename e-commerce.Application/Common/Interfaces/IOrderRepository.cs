@@ -13,21 +13,13 @@ namespace e_commerce.Application.Common.Interfaces
     {
         public List<Order> viewAllOrders(int userId);
         public Order viewCustOrder(int userId, int orderID);
-        Task<Order> GetByIdAsync(int id);
-        Task<Order> GetByIdWithDetailsAsync(int id);
-        Task<IEnumerable<Order>> GetAllWithDetailsAsync();
-        Task ConfirmOrderAsync(int id);
-        Task CancelOrderAsync(int id, string reason = null);
-        Task UpdateAsync(Order order);
-       
-            Task<Order?> GetOrderWithDetailsAsync(int id);
-    
         public void RemoveOrder(int cartId, int productId);
         public void AddOrder(Order order);
         public void UpdateOrder(Order order);
         public Order GetOrderById(int orderId);
         public void DeleteOrder(int orderId);
         public Order getOrderByOrderID(int userId, int ordID);
+
 
     }
 }

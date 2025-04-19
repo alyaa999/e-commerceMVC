@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace e_commerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class newone : Migration
+    public partial class intial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -297,13 +297,15 @@ namespace e_commerce.Infrastructure.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Brand = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     DESC = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Discount = table.Column<decimal>(type: "decimal(5,2)", nullable: true, defaultValue: 0m),
                     Stock = table.Column<int>(type: "int", nullable: false),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Sub_Category_ID = table.Column<int>(type: "int", nullable: false),
                     Seller_ID = table.Column<int>(type: "int", nullable: false)
                 },
@@ -333,9 +335,10 @@ namespace e_commerce.Infrastructure.Migrations
                     Status = table.Column<int>(type: "int", nullable: false),
                     Payment_Method = table.Column<int>(type: "int", nullable: false),
                     Payment_Status = table.Column<int>(type: "int", nullable: false),
-                    Return_Status = table.Column<int>(type: "int", nullable: false),
+                    Return_Status = table.Column<int>(type: "int", nullable: true),
                     Total_Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    Shipping_Address_ID = table.Column<int>(type: "int", nullable: false)
+                    Shipping_Address_ID = table.Column<int>(type: "int", nullable: false),
+                    PaymentIntentId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -561,7 +564,8 @@ namespace e_commerce.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Customer_ApplicationUserId",
                 table: "Customer",
-                column: "ApplicationUserId");
+                column: "ApplicationUserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Order_Customer_ID",
@@ -632,7 +636,8 @@ namespace e_commerce.Infrastructure.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Seller_ApplicationUserId",
                 table: "Seller",
-                column: "ApplicationUserId");
+                column: "ApplicationUserId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Sub_Category_Category_ID",

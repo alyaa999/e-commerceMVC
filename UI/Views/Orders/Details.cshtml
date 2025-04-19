@@ -26,7 +26,7 @@
             <p><strong>Total Amount:</strong> @Model.TotalPrice.ToString("C")</p>
             <p>
                 <strong>Status:</strong>
-                <span class="badge @GetOrderStatusClass(Model.Status)">
+                <span class="badge @GetOrderStatusClass((int)Model.Status)">
                     @if (Enum.IsDefined(typeof(e_commerce.Web.Controllers.OrdersController.OrderStatus), Model.Status))
                     {
                         @Enum.GetName(typeof(e_commerce.Web.Controllers.OrdersController.OrderStatus), Model.Status)

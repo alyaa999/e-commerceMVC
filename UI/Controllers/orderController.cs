@@ -50,7 +50,7 @@ namespace e_commerce.Web.Controllers
                 // Apply status filter if provided
                 if (status.HasValue)
                 {
-                    orders = orders.Where(o => o.Status == status.Value).ToList();
+                    orders = orders.Where(o => (int)o.Status == status.Value).ToList();
                 }
 
                 // Apply customer search filter if provided
@@ -125,7 +125,7 @@ namespace e_commerce.Web.Controllers
 
                 if (status.HasValue)
                 {
-                    orders = orders.Where(o => o.Status == status.Value).ToList();
+                    orders = orders.Where(o => (int)o.Status == status.Value).ToList();
                 }
 
                 var csv = GenerateOrdersCsv(orders);
@@ -158,7 +158,7 @@ namespace e_commerce.Web.Controllers
 
             foreach (var order in orders)
             {
-                var statusName = GetStatusName(order.Status);
+                var statusName = GetStatusName((int)order.Status);
                 sb.AppendLine($"\"{order.Id}\",\"{order.CustomerId}\",\"{order.OrderDate:yyyy-MM-dd}\",\"{order.TotalPrice}\",\"{statusName}\",\"{order.OrderProducts?.Count ?? 0}\"");
             }
 
@@ -183,13 +183,13 @@ namespace e_commerce.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                if (!CanBeConfirmed(order.Status))
+                if (!CanBeConfirmed((int)order.Status))
                 {
-                    TempData["ErrorMessage"] = $"Order cannot be confirmed in its current state ({GetStatusName(order.Status)}).";
+                    TempData["ErrorMessage"] = $"Order cannot be confirmed in its current state ({GetStatusName((int)order.Status)}).";
                     return RedirectToAction(nameof(Index));
                 }
 
-                order.Status = (int)OrderStatus.Confirmed;
+                order.Status = (Domain.Enums.orderstateEnum)OrderStatus.Confirmed;
                 _orderRepo.Update(order);
                 await _orderRepo.SaveChangesAsync(); // Add this line
 
@@ -217,13 +217,13 @@ namespace e_commerce.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                if (!CanBeCancelled(order.Status))
+                if (!CanBeCancelled((int)order.Status))
                 {
-                    TempData["ErrorMessage"] = $"Order cannot be cancelled in its current state ({GetStatusName(order.Status)}).";
+                    TempData["ErrorMessage"] = $"Order cannot be cancelled in its current state ({GetStatusName((int)order.Status)}).";
                     return RedirectToAction(nameof(Index));
                 }
 
-                order.Status = (int)OrderStatus.Cancelled;
+                order.Status = (Domain.Enums.orderstateEnum)OrderStatus.Cancelled;
                 _orderRepo.Update(order);
                 await _orderRepo.SaveChangesAsync(); // Add this line
 

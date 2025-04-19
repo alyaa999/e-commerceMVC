@@ -1,4 +1,5 @@
-﻿@* @model e_commerce.Web.ViewModels.AdminOrdersViewModel *@
+﻿@using e_commerce.Infrastructure.Entites
+@* @model e_commerce.Web.ViewModels.AdminOrdersViewModel *@
 
 @* @{ *@
 @*     ViewData["Title"] = "Orders Management"; *@
@@ -65,7 +66,7 @@
 @*                 <th>Date</th> *@
 @*                 <th>Amount</th> *@
 @*                 <th>Status</th> *@
-             
+
 @*                 <th>Actions</th> *@
 @*             </tr> *@
 @*         </thead> *@
@@ -128,7 +129,6 @@
 @*     </table> *@
 @* </div> *@
 @model e_commerce.Web.ViewModels.AdminOrdersViewModel
-
 @{
     ViewData["Title"] = "Orders Management";
     Layout = "_AdminLayout";
@@ -167,7 +167,7 @@
                 <div class="col-md-4">
                     <label for="customerSearch" class="form-label">Customer Search</label>
                     <input type="text" name="customerSearch" id="customerSearch" class="form-control" 
-                           value="@Model.CustomerSearch" placeholder="Email or ID" />
+                    value="@Model.CustomerSearch" placeholder="Email or ID" />
                 </div>
                 <div class="col-md-4">
                     <label for="status" class="form-label">Order Status</label>
@@ -228,7 +228,7 @@
                     <tbody>
                         @foreach (var order in Model.Ordersbb ?? Enumerable.Empty<Order>())
                         {
-                            var statusValue = order?.Status ?? -1;
+                            var statusValue = order?.Status != null ? (int)order.Status : -1;
                             var statusName = Enum.GetName(typeof(e_commerce.Web.Controllers.OrdersController.OrderStatus), statusValue) ?? "Unknown";
 
                             var statusClass = statusValue switch

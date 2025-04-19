@@ -102,6 +102,7 @@ namespace e_commerce
             builder.Services.AddAutoMapper(typeof(AddressProfile));
             builder.Services.AddScoped<IOrderRepository, OrderRepoService>();
             builder.Services.AddScoped<IReturnRepository, returnRepoService>();
+            builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())
@@ -122,6 +123,7 @@ namespace e_commerce
             app.UseAuthorization();
 
             app.MapStaticAssets();
+            app.UseStaticFiles();
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")

@@ -142,7 +142,7 @@ namespace e_commerce.Web.Controllers
                 var refundService = new Stripe.RefundService();
                 var refund = refundService.Create(refundOptions);
 
-                order.Status = Domain.Enums.orderstateEnum.Refunded;
+                order.PaymentStatus = Domain.Enums.PaymentStatusEnum.Refunded;
                 _orderRepository.UpdateOrder(order);
 
                 return Json(new { success = true, message = $"Your money has been refunded (${order.TotalPrice}) successfully." });
