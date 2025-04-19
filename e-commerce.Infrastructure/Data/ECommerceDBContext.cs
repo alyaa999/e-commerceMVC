@@ -256,7 +256,6 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
             });
         }
 
-        #endregion
 
    
 

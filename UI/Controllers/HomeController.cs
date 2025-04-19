@@ -5,6 +5,7 @@ using e_commerce.Infrastructure.Entites;
 using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.Models;
 using e_commerce.Web.ViewModels.Home;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
