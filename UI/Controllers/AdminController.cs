@@ -171,7 +171,7 @@ public class AdminController : Controller
         var productsWithSellers = new List<Product>();
         foreach (var product in productsQuery.ToList())
         {
-            product.Seller = await _sellerRepo.GetByIdAsync(product.SellerId);
+            product.Seller = await _sellerRepo.GetByIdAsync((int)product.SellerId);
             productsWithSellers.Add(product);
         }
 

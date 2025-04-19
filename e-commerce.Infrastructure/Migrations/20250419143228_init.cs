@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace e_commerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -63,6 +65,19 @@ namespace e_commerce.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK__Category__3214EC2794A91D88", x => x.ID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tager",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tager", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -297,21 +312,28 @@ namespace e_commerce.Infrastructure.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Tag = table.Column<int>(type: "int", nullable: true),
+                    TagId = table.Column<int>(type: "int", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Brand = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     DESC = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Discount = table.Column<decimal>(type: "decimal(5,2)", nullable: true, defaultValue: 0m),
-                    Stock = table.Column<int>(type: "int", nullable: false),
+                    Stock = table.Column<int>(type: "int", nullable: true),
                     IsApproved = table.Column<bool>(type: "bit", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Sub_Category_ID = table.Column<int>(type: "int", nullable: false),
-                    Seller_ID = table.Column<int>(type: "int", nullable: false)
+                    Sub_Category_ID = table.Column<int>(type: "int", nullable: true),
+                    Seller_ID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK__Product__3214EC278B3FF41B", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_Product_Tager_TagId",
+                        column: x => x.TagId,
+                        principalTable: "Tager",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK__Product__Seller___4222D4EF",
                         column: x => x.Seller_ID,
@@ -509,6 +531,21 @@ namespace e_commerce.Infrastructure.Migrations
                         principalColumn: "ID");
                 });
 
+            migrationBuilder.InsertData(
+                table: "Tager",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "feature" },
+                    { 2, "Popular" },
+                    { 3, "New" },
+                    { 4, "BestSeller" },
+                    { 5, "HotRelease" },
+                    { 6, "BestDeal" },
+                    { 7, "TopSelling" },
+                    { 8, "Trending" }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Address_Customer_ID",
                 table: "Address",
@@ -589,6 +626,11 @@ namespace e_commerce.Infrastructure.Migrations
                 name: "IX_Product_Sub_Category_ID",
                 table: "Product",
                 column: "Sub_Category_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Product_TagId",
+                table: "Product",
+                column: "TagId");
 
             migrationBuilder.CreateIndex(
                 name: "UQ__Product__A25C5AA733C60312",
@@ -701,6 +743,9 @@ namespace e_commerce.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Address");
+
+            migrationBuilder.DropTable(
+                name: "Tager");
 
             migrationBuilder.DropTable(
                 name: "Seller");
