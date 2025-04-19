@@ -17,9 +17,11 @@ namespace e_commerce
 {
     public class Program
     {
-        public static async Task SeedRolesAsync(IServiceProvider serviceProvider)
+        public static async Task SeedRolesAndUsersAsync(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var dbContext = serviceProvider.GetRequiredService<ECommerceDBContext>(); // Replace with your real DbContext name
 
             string[] roles = { "Customer", "Seller", "Admin" };
 
@@ -30,7 +32,65 @@ namespace e_commerce
                     await roleManager.CreateAsync(new IdentityRole(role));
                 }
             }
+
+            var emails = new[]
+            {
+                "alqtta04@gmail.com",
+                "yasmeensaffan@gmail.com",
+                  "ebtihalali736@gmail.com",
+            "aliaamohamed3.2003@gmail.com",
+            "alyaamamoon999@gmail.com"
+            };
+
+            foreach (var email in emails)
+            {
+                var user = await userManager.FindByEmailAsync(email);
+                if (user == null)
+                {
+                    user = new IdentityUser
+                    {
+                        UserName = email.Split('@')[0],
+                        Email = email,
+                        EmailConfirmed = true
+                    };
+
+                    var result = await userManager.CreateAsync(user, "Default@123");
+
+                    if (!result.Succeeded)
+                        continue;
+                }
+
+                // Assign all roles
+                foreach (var role in roles)
+                {
+                    if (!await userManager.IsInRoleAsync(user, role))
+                    {
+                        await userManager.AddToRoleAsync(user, role);
+                    }
+                }
+
+                // Add to Customer table if not exists
+                if (!dbContext.Customers.Any(c => c.ApplicationUserId == user.Id))
+                {
+                    dbContext.Customers.Add(new Infrastructure.Entites.Customer
+                    {
+                        ApplicationUserId = user.Id
+                    });
+                }
+
+                // Add to Seller table if not exists
+                if (!dbContext.Sellers.Any(s => s.ApplicationUserId == user.Id))
+                {
+                    dbContext.Sellers.Add(new Seller
+                    {
+                        ApplicationUserId = user.Id
+                    });
+                }
+
+                await dbContext.SaveChangesAsync();
+            }
         }
+
 
 
         public static async Task Main(string[] args)
@@ -115,7 +175,7 @@ namespace e_commerce
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                await SeedRolesAsync(services);
+                await SeedRolesAndUsersAsync(services);
             }
 
             // Configure the HTTP request pipeline.

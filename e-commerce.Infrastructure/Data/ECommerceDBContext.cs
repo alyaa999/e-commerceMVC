@@ -46,18 +46,10 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-
     {
+        ModelBuilderExtensions.Seed(modelBuilder);
         base.OnModelCreating(modelBuilder);
-        var tags = Enum.GetValues(typeof(Tager))
-            .Cast<Tager>()
-            .Select(e => new Tag
-            {
-                Id = (int)e,
-                Name = e.ToString()
-            });
-
-        modelBuilder.Entity<Tag>().HasData(tags);
+       
 
 
         modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
