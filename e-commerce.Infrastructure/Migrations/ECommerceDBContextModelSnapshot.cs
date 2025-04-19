@@ -418,7 +418,7 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasColumnName("Payment_Status");
 
-                    b.Property<int>("ReturnStatus")
+                    b.Property<int?>("ReturnStatus")
                         .HasColumnType("int")
                         .HasColumnName("Return_Status");
 
