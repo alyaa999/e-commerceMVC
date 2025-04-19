@@ -22,8 +22,4 @@
     <ProjectReference Include="..\e-commerce.Infrastructure\e-commerce.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
-
 </Project>

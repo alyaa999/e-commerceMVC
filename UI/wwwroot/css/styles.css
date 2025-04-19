@@ -2545,3 +2545,77 @@ table {
         transform: translateX(0);
     }
 }
+/* Admin Dashboard Styles */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 20px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+    table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        padding: 12px 15px;
+    }
+
+    table td {
+        padding: 12px 15px;
+        vertical-align: middle;
+    }
+
+.badge {
+    padding: 6px 10px;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.btn {
+    padding: 8px 15px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* Filter section styles */
+.filter-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-header .row {
+        flex-direction: column;
+    }
+
+    .card-header .col-md-6 {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+}

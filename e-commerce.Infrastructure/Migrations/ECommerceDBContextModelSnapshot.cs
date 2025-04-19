@@ -386,10 +386,16 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Customer__3214EC27B75DE14A");
 
+<<<<<<< HEAD
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
                     b.ToTable("Customer", (string)null);
+=======
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Customer");
+>>>>>>> origin/Marwafeature
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Order", b =>
@@ -487,6 +493,9 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Desc")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -496,6 +505,9 @@ namespace e_commerce.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(5, 2)")
                         .HasDefaultValue(0m);
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
@@ -674,10 +686,16 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Seller__3214EC272DFE5864");
 
+<<<<<<< HEAD
                     b.HasIndex("ApplicationUserId")
                         .IsUnique();
 
                     b.ToTable("Seller", (string)null);
+=======
+                    b.HasIndex("ApplicationUserId");
+
+                    b.ToTable("Seller");
+>>>>>>> origin/Marwafeature
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.SubCategory", b =>
@@ -842,8 +860,13 @@ namespace e_commerce.Infrastructure.Migrations
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Customer", b =>
                 {
                     b.HasOne("e_commerce.Domain.Entites.ApplicationUser", "ApplicationUser")
+<<<<<<< HEAD
                         .WithOne("Customer")
                         .HasForeignKey("e_commerce.Infrastructure.Entites.Customer", "ApplicationUserId")
+=======
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+>>>>>>> origin/Marwafeature
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -969,8 +992,13 @@ namespace e_commerce.Infrastructure.Migrations
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Seller", b =>
                 {
                     b.HasOne("e_commerce.Domain.Entites.ApplicationUser", "ApplicationUser")
+<<<<<<< HEAD
                         .WithOne("Seller")
                         .HasForeignKey("e_commerce.Infrastructure.Entites.Seller", "ApplicationUserId")
+=======
+                        .WithMany()
+                        .HasForeignKey("ApplicationUserId")
+>>>>>>> origin/Marwafeature
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -1,0 +1,33 @@
+﻿@model e_commerce.Infrastructure.Entites.Product
+
+<tr>
+    <td>
+        @Model.Id
+    </td>
+    <td>
+        @Model.Name
+    </td>
+    <td>
+        @Model.Desc
+    </td>
+    <td>
+        @Model.SubCategory.Name
+    </td>
+    <td>
+        <div>
+            <img style="width:auto;" src="~/Uploads/@Model.ProductImages" alt="test img">
+        </div>
+    </td>
+    <td>
+        @Model.Seller.Id
+    </td>
+    <td class="text-nowrap">
+        <div class="btn-list mt-4">
+
+            <a href="/Admin/RejectProduct/@Model.Id" class="btn ripple btn-danger"><i class="fe fe-trash-2"> </i> Reject</a>
+            <a href="/Admin/ApproveProduct/@Model.Id" class="btn ripple btn-success me-2"><i class="fe fe-check"> </i> Approve</a>
+
+
+        </div>
+    </td>
+</tr>
