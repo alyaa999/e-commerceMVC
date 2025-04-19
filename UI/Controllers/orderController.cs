@@ -27,15 +27,6 @@ namespace e_commerce.Web.Controllers
             _customerRepo = customerRepo;
         }
 
-        public enum OrderStatus
-        {
-            Pending = 0,
-            Confirmed = 1,
-            Shipped = 2,
-            Delivered = 3,
-            Cancelled = 4,
-            Returned = 5
-        }
         public async Task<IActionResult> Index(int? status = null, string customerSearch = null)
         {
             try
