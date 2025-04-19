@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using e_commerce.Infrastructure.Entites;
+using e_commerce.Domain.Enums;
 
 namespace e_commerce.Web.Controllers
 {
@@ -27,15 +28,15 @@ namespace e_commerce.Web.Controllers
             _customerRepo = customerRepo;
         }
 
-        public enum OrderStatus
-        {
-            Pending = 0,
-            Confirmed = 1,
-            Shipped = 2,
-            Delivered = 3,
-            Cancelled = 4,
-            Returned = 5
-        }
+        //public enum OrderStatus
+        //{
+        //    Pending = 0,
+        //    Confirmed = 1,
+        //    Shipped = 2,
+        //    Delivered = 3,
+        //    Cancelled = 4,
+        //    Returned = 5
+        //}
         public async Task<IActionResult> Index(int? status = null, string customerSearch = null)
         {
             try
@@ -50,7 +51,7 @@ namespace e_commerce.Web.Controllers
                 // Apply status filter if provided
                 if (status.HasValue)
                 {
-                    orders = orders.Where(o => o.Status == status.Value).ToList();
+                    orders = orders.Where(o =>  o.Status == (orderstateEnum) (status.Value)).ToList();
                 }
 
                 // Apply customer search filter if provided
@@ -125,7 +126,7 @@ namespace e_commerce.Web.Controllers
 
                 if (status.HasValue)
                 {
-                    orders = orders.Where(o => o.Status == status.Value).ToList();
+                    orders = orders.Where(o => o.Status == (orderstateEnum) status.Value).ToList();
                 }
 
                 var csv = GenerateOrdersCsv(orders);
@@ -143,12 +144,12 @@ namespace e_commerce.Web.Controllers
 
         private bool CanBeConfirmed(int status)
         {
-            return status == (int)OrderStatus.Pending;
+            return status == (int)orderstateEnum.Pending;
         }
 
         private bool CanBeCancelled(int status)
         {
-            return status == (int)OrderStatus.Pending || status == (int)OrderStatus.Confirmed;
+            return status == (int)orderstateEnum.Pending || status == (int)orderstateEnum.Confirmed;
         }
 
         private string GenerateOrdersCsv(IEnumerable<Order> orders)
@@ -158,7 +159,7 @@ namespace e_commerce.Web.Controllers
 
             foreach (var order in orders)
             {
-                var statusName = GetStatusName(order.Status);
+                var statusName = GetStatusName((int)order.Status);
                 sb.AppendLine($"\"{order.Id}\",\"{order.CustomerId}\",\"{order.OrderDate:yyyy-MM-dd}\",\"{order.TotalPrice}\",\"{statusName}\",\"{order.OrderProducts?.Count ?? 0}\"");
             }
 
@@ -167,7 +168,7 @@ namespace e_commerce.Web.Controllers
 
         private string GetStatusName(int status)
         {
-            return Enum.GetName(typeof(OrderStatus), status) ?? status.ToString();
+            return Enum.GetName(typeof(orderstateEnum), status) ?? status.ToString();
         }
 
         [HttpPost]
@@ -183,13 +184,13 @@ namespace e_commerce.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                if (!CanBeConfirmed(order.Status))
+                if (!CanBeConfirmed((int)order.Status))
                 {
-                    TempData["ErrorMessage"] = $"Order cannot be confirmed in its current state ({GetStatusName(order.Status)}).";
+                    TempData["ErrorMessage"] = $"Order cannot be confirmed in its current state ({GetStatusName((int)order.Status)}).";
                     return RedirectToAction(nameof(Index));
                 }
 
-                order.Status = (int)OrderStatus.Confirmed;
+                order.Status =  orderstateEnum.Confirmed;
                 _orderRepo.Update(order);
                 await _orderRepo.SaveChangesAsync(); // Add this line
 
@@ -217,13 +218,13 @@ namespace e_commerce.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                if (!CanBeCancelled(order.Status))
+                if (!CanBeCancelled((int)order.Status))
                 {
-                    TempData["ErrorMessage"] = $"Order cannot be cancelled in its current state ({GetStatusName(order.Status)}).";
+                    TempData["ErrorMessage"] = $"Order cannot be cancelled in its current state ({GetStatusName((int)order.Status)}).";
                     return RedirectToAction(nameof(Index));
                 }
 
-                order.Status = (int)OrderStatus.Cancelled;
+                order.Status = orderstateEnum.Cancelled;
                 _orderRepo.Update(order);
                 await _orderRepo.SaveChangesAsync(); // Add this line
 

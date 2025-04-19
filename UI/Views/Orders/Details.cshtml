@@ -1,4 +1,5 @@
-﻿@model e_commerce.Infrastructure.Entites.Order
+﻿@using e_commerce.Domain.Enums
+@model e_commerce.Infrastructure.Entites.Order
 @{
     ViewData["Title"] = "Order Details";
     Layout = "_AdminLayout";
@@ -26,10 +27,10 @@
             <p><strong>Total Amount:</strong> @Model.TotalPrice.ToString("C")</p>
             <p>
                 <strong>Status:</strong>
-                <span class="badge @GetOrderStatusClass(Model.Status)">
-                    @if (Enum.IsDefined(typeof(e_commerce.Web.Controllers.OrdersController.OrderStatus), Model.Status))
+                <span class="badge @GetOrderStatusClass((int)Model.Status)">
+                    @if (Enum.IsDefined(typeof(orderstateEnum), Model.Status))
                     {
-                        @Enum.GetName(typeof(e_commerce.Web.Controllers.OrdersController.OrderStatus), Model.Status)
+                        @Enum.GetName(typeof(orderstateEnum), Model.Status)
                     }
                     else
                     {
