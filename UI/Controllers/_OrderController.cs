@@ -11,14 +11,14 @@ using Stripe.Climate;
 
 namespace e_commerce.Web.Controllers
 {
-    public class orderController : Controller
+    public class _OrderController : Controller
     {
         public IOrderRepository IOrderRepo { get; }
         private readonly IcartRepository repo;
         private readonly IAdressRepo ADDrepo;
 
         // GET: orderController
-        public orderController(IOrderRepository _orderrepo, IcartRepository _repo, IAdressRepo aDDrepo)
+        public _OrderController(IOrderRepository _orderrepo, IcartRepository _repo, IAdressRepo aDDrepo)
         {
             IOrderRepo = _orderrepo;
             this.repo = _repo;
