@@ -12,13 +12,8 @@ using e_commerce.Infrastructure.Entites;
 namespace e_commerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-<<<<<<<< HEAD:e-commerce.Infrastructure/Migrations/20250410194911_first.Designer.cs
-    [Migration("20250410194911_first")]
-    partial class first
-========
     [Migration("20250412164941_FinishAdminParts")]
     partial class FinishAdminParts
->>>>>>>> Marwafeature:e-commerce.Infrastructure/Migrations/20250412164941_FinishAdminParts.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

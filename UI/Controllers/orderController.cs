@@ -1,130 +1,241 @@
-﻿using e_commerce.Application.Common.Interfaces;
-using e_commerce.Infrastructure.Entites;
-using e_commerce.Infrastructure.Repository;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using e_commerce.Application.Common.Interfaces;
 using e_commerce.Web.ViewModels;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using e_commerce.Infrastructure.Entites;
-
-using Stripe;
-using Stripe.Climate;
 
 namespace e_commerce.Web.Controllers
 {
-    public class orderController : Controller
+    public class OrdersController : Controller
     {
-        public IOrderRepository IOrderRepo { get; }
-        private readonly IcartRepository repo;
-        private readonly IAdressRepo ADDrepo;
+        private readonly IRepository<Order> _orderRepo;
+        private readonly IRepository<Customer> _customerRepo;
+        private readonly ILogger<OrdersController> _logger;
 
-        // GET: orderController
-        public orderController(IOrderRepository _orderrepo, IcartRepository _repo, IAdressRepo aDDrepo)
+        public OrdersController(
+            IRepository<Order> orderRepo,
+            ILogger<OrdersController> logger,
+            IRepository<Customer> customerRepo)
         {
-            IOrderRepo = _orderrepo;
-            this.repo = _repo;
-            ADDrepo = aDDrepo;
-        }
-        public ActionResult getAllCustOrder()
-        {
-            
-            return View(IOrderRepo.viewAllOrders(1));
+            _orderRepo = orderRepo;
+            _logger = logger;
+            _customerRepo = customerRepo;
         }
 
-
-        // GET: orderController/Details/5
-        public ActionResult Details(int custID,int orderID,int addressID)
+        public enum OrderStatus
         {
-            Infrastructure.Entites.Order order = IOrderRepo.viewCustOrder(custID, orderID);
-            ViewBag.isFirstTime = (order.TotalPrice==order.OrderProducts.Sum(op=>op.ItemTotal) ? true : false);
-            ViewBag.Addresse = ADDrepo.GetAddressById(addressID,custID);
-            return View(order);
+            Pending = 0,
+            Confirmed = 1,
+            Shipped = 2,
+            Delivered = 3,
+            Cancelled = 4,
+            Returned = 5
         }
-
-        // GET: orderController/Create
-        [HttpPost]
-        public ActionResult Create([FromBody] OrderData data)
-        {
-            decimal shippingFees = 50;
-            var cart_ = repo.GetCartByCustomerId(data.customerID);
-            decimal total;
-            if (IOrderRepo.viewAllOrders(data.customerID).Count != 0)
-                total = cart_.TotalPrice + shippingFees;
-            else
-                total = cart_.TotalPrice;
-            Infrastructure.Entites.Order order = new Infrastructure.Entites.Order
-            {
-                CustomerId = data.customerID,
-                ShippingAddressId = data.shippingID,
-                TotalPrice = total,
-                OrderDate = DateTime.Now,
-                PaymentMethod = Domain.Enums.PaymentMethod.cash,
-                Status = (Domain.Enums.orderstateEnum)Domain.Enums.PaymentStatusEnum.PaymentPending,
-                OrderProducts = cart_.CartProducts.Select(cp => new OrderProduct
-                {
-                    ProductId = cp.ProductCode,
-                    Quantity = cp.Quantity,
-                    UnitPrice = cp.UnitPrice,
-                    ItemTotal = cp.ItemTotal
-                }).ToList()
-            };
-
-            IOrderRepo.AddOrder(order);
-            repo.RemoveAllFromCart(cart_.Id, data.customerID);
-            return View();
-        }
-
-       
-
-        // GET: orderController/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        // POST: orderController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public async Task<IActionResult> Index(int? status = null, string customerSearch = null)
         {
             try
             {
+                // Get orders with included Customer and ApplicationUser
+                var orders = await _orderRepo.GetAllIncludingAsync(
+                    o => o.Customer,
+                    o => o.Customer.ApplicationUser,
+                    o => o.OrderProducts
+                );
+
+                // Apply status filter if provided
+                if (status.HasValue)
+                {
+                    orders = orders.Where(o => o.Status == status.Value).ToList();
+                }
+
+                // Apply customer search filter if provided
+                if (!string.IsNullOrEmpty(customerSearch))
+                {
+                    orders = orders.Where(o =>
+                        o.Id.ToString().Contains(customerSearch) ||
+                        (o.Customer?.ApplicationUser != null && (
+                            o.Customer.ApplicationUser.FirstName.Contains(customerSearch, StringComparison.OrdinalIgnoreCase) ||
+                            o.Customer.ApplicationUser.Email.Contains(customerSearch, StringComparison.OrdinalIgnoreCase))
+                        ))
+                    .ToList();
+                }
+
+                var model = new AdminOrdersViewModel
+                {
+                    Ordersbb = orders.ToList(),
+                    StatusFilter = status,
+                    CustomerSearch = customerSearch
+                };
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving orders");
+                TempData["ErrorMessage"] = "An error occurred while loading orders.";
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
+
+
+
+        public async Task<IActionResult> Details(int id)
+        {
+            try
+            {
+                var order = await _orderRepo.GetAllIncludingAsync(
+                    o => o.Customer,
+                    o => o.Customer.ApplicationUser,
+                    o => o.OrderProducts
+
+                );
+
+              
+                var selectedOrder = order.FirstOrDefault(o => o.Id == id);
+
+                if (selectedOrder == null)
+                {
+                    TempData["ErrorMessage"] = "Order not found.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(selectedOrder);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error retrieving order details {id}");
+                TempData["ErrorMessage"] = "Error loading order details.";
                 return RedirectToAction(nameof(Index));
             }
-            catch
-            {
-                return View();
-            }
         }
 
-        // GET: orderController/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ExportToCsv(int? status = null)
         {
-            var canceledOrder = IOrderRepo.GetOrderById(id);
-            if (DateTime.Now.Day - canceledOrder.OrderDate.Value.Day <= 3 && canceledOrder.OrderDate.Value.Year == DateTime.Now.Year && DateTime.Now.Month == canceledOrder.OrderDate.Value.Month)
+            try
             {
-                if (canceledOrder.Status == Domain.Enums.orderstateEnum.Paid)
+                var orders = await _orderRepo.GetAllAsync();
+
+                if (status.HasValue)
                 {
-                    try
-                    {
-                        return Json(new { success = true, message = "Refund requested. Proceed with the refund process." });
-                    }
-                    catch (Exception ex)
-                    {
-                        return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
-                    }
+                    orders = orders.Where(o => o.Status == status.Value).ToList();
                 }
-                else if (canceledOrder.Status == Domain.Enums.orderstateEnum.PaymentPending)
-                {
-                    IOrderRepo.DeleteOrder(id);
-                    return Json(new { success = true, message = "Your order has been cancelled successfully." });
-                }
+
+                var csv = GenerateOrdersCsv(orders);
+                var fileName = $"Orders_{DateTime.Now:yyyyMMddHHmmss}.csv";
+
+                return File(Encoding.UTF8.GetBytes(csv), "text/csv", fileName);
             }
-            return Json(new { success = false, message = "You cannot cancel the order after 3 days." });
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error exporting orders to CSV");
+                TempData["ErrorMessage"] = "Error exporting orders.";
+                return RedirectToAction(nameof(Index));
+            }
         }
 
+        private bool CanBeConfirmed(int status)
+        {
+            return status == (int)OrderStatus.Pending;
+        }
 
+        private bool CanBeCancelled(int status)
+        {
+            return status == (int)OrderStatus.Pending || status == (int)OrderStatus.Confirmed;
+        }
 
+        private string GenerateOrdersCsv(IEnumerable<Order> orders)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("Order ID,Customer ID,Date,Amount,Status,Item Count");
+
+            foreach (var order in orders)
+            {
+                var statusName = GetStatusName(order.Status);
+                sb.AppendLine($"\"{order.Id}\",\"{order.CustomerId}\",\"{order.OrderDate:yyyy-MM-dd}\",\"{order.TotalPrice}\",\"{statusName}\",\"{order.OrderProducts?.Count ?? 0}\"");
+            }
+
+            return sb.ToString();
+        }
+
+        private string GetStatusName(int status)
+        {
+            return Enum.GetName(typeof(OrderStatus), status) ?? status.ToString();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Confirm(int id)
+        {
+            try
+            {
+                var order = await _orderRepo.GetByIdAsync(id);
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Order not found.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                if (!CanBeConfirmed(order.Status))
+                {
+                    TempData["ErrorMessage"] = $"Order cannot be confirmed in its current state ({GetStatusName(order.Status)}).";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                order.Status = (int)OrderStatus.Confirmed;
+                _orderRepo.Update(order);
+                await _orderRepo.SaveChangesAsync(); // Add this line
+
+                TempData["SuccessMessage"] = $"Order #{id} confirmed successfully.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error confirming order {id}");
+                TempData["ErrorMessage"] = $"Error confirming order #{id}.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Cancel(int id)
+        {
+            try
+            {
+                var order = await _orderRepo.GetByIdAsync(id);
+                if (order == null)
+                {
+                    TempData["ErrorMessage"] = "Order not found.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                if (!CanBeCancelled(order.Status))
+                {
+                    TempData["ErrorMessage"] = $"Order cannot be cancelled in its current state ({GetStatusName(order.Status)}).";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                order.Status = (int)OrderStatus.Cancelled;
+                _orderRepo.Update(order);
+                await _orderRepo.SaveChangesAsync(); // Add this line
+
+                TempData["SuccessMessage"] = $"Order #{id} cancelled successfully.";
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Error cancelling order {id}");
+                TempData["ErrorMessage"] = $"Error cancelling order #{id}.";
+                return RedirectToAction(nameof(Index));
+            }
+        }
     }
 }
