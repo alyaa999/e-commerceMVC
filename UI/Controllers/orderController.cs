@@ -58,7 +58,7 @@ namespace e_commerce.Web.Controllers
                 TotalPrice = total,
                 OrderDate = DateTime.Now,
                 PaymentMethod = Domain.Enums.PaymentMethod.cash,
-                Status = Domain.Enums.orderstateEnum.PaymentPending,
+                Status = (Domain.Enums.orderstateEnum)Domain.Enums.PaymentStatusEnum.PaymentPending,
                 OrderProducts = cart_.CartProducts.Select(cp => new OrderProduct
                 {
                     ProductId = cp.ProductCode,

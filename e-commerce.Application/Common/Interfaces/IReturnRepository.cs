@@ -11,5 +11,7 @@ namespace e_commerce.Application.Common.Interfaces
     {
         List<Return> getAllCustomerReturns(int custID);
         void AddReturnRequest(List<Return> returns);
+        List<Order> getOrdersCanReturn(int userID);
+
     }
 }

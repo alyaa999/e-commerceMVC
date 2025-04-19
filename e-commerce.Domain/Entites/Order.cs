@@ -25,6 +25,12 @@ public partial class Order
     [Column("Payment_Method")]
     public PaymentMethod PaymentMethod { get; set; }
 
+    [Column("Payment_Status")]
+    public PaymentStatusEnum PaymentStatus { get; set; }
+
+    [Column("Return_Status")]
+    public ReturnStatusEnum ReturnStatus { get; set; }
+
     [Column("Total_Price", TypeName = "decimal(10, 2)")]
     public decimal TotalPrice { get; set; }
 

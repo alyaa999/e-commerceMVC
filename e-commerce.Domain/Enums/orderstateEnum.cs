@@ -9,9 +9,6 @@ namespace e_commerce.Domain.Enums
     public enum orderstateEnum
     {
 
-        PaymentPending,   //cash method
-        Paid,            // Payment confirmed
-
         // Processing states
         Processing,       // Order is being prepared (inventory check, packaging)
         Shipped,          // Order dispatched with tracking infoالاورد خلص وجاهز انه يتشحن 
@@ -22,8 +19,6 @@ namespace e_commerce.Domain.Enums
 
         // Cancellation/return states
         Cancelled,        // Order cancelled before shipping
-        ReturnRequested,  // Customer initiated a return
-        Returned,         // Item returned and refund processed
-        Refunded          // Money returned to customer
     }
+
 }

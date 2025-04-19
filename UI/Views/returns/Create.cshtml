@@ -4,51 +4,16 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
-
-<h4>Return</h4> 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            
-            <div class="form-group">
-                <label asp-for="OrderId" class="control-label"></label>
-
-            </div>
-            <div class="form-group"> 
-                <label asp-for="ProductId" class="control-label"></label>
-                <select asp-for="ProductId" class ="form-control" asp-items="ViewBag.ProductId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="Reason" class="control-label"></label>
-                <input asp-for="Reason" class="form-control" />
-                <span asp-validation-for="Reason" class="text-danger"></span>
-            </div>
-            <i class="fa-solid fa-plus"></i>
-            
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" /> 
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
 @{
     ViewData["Title"] = "Create Return";
 }
-<h2>إنشاء ترجيع</h2>
+<h2>Add Return Request</h2>
 
 <form asp-action="Create" method="post">
     <div class="form-group">
-        <label for="OrderId">اختر الطلب</label>
+        <label for="OrderId">Choose Order</label>
         <select class="form-control" id="OrderId" name="OrderId" asp-items="ViewBag.OrderId">
-            <option value="">-- اختر الطلب --</option>
+            <option value="">-- Choose Order --</option>
         </select>
     </div>
 
@@ -59,7 +24,10 @@
     </button>
 
     <div class="form-group mt-4">
-        <button type="submit" class="btn btn-primary">حفظ</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+    <div>
+        <a asp-action="returnsIndexForm">Back to List</a>
     </div>
 </form>
 
@@ -69,7 +37,7 @@
     }
 
     <script>
-                            let selectedProducts = [];
+        let selectedProducts = [];
         let allProducts = []; // Store all products for the order
 
         $('#OrderId').on('change', function () {

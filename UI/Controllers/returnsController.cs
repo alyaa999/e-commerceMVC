@@ -1,4 +1,6 @@
 ﻿using e_commerce.Application.Common.Interfaces;
+using e_commerce.Domain.Enums;
+using e_commerce.Infrastructure.Entites;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -9,13 +11,15 @@ namespace e_commerce.Web.Controllers
     {
         // GET: returnsController
         IOrderRepository orderRepository;
-        public returnsController(IOrderRepository _repo)
+        IReturnRepository returnRepository;
+        public returnsController(IOrderRepository _repo,IReturnRepository repository)
         {
             orderRepository = _repo;
+            returnRepository = repository;
         } 
         public ActionResult returnsIndexForm()
         {
-            return View();
+            return View(returnRepository.getAllCustomerReturns(1));
         }
 
         // GET: returnsController/Details/5
@@ -27,7 +31,7 @@ namespace e_commerce.Web.Controllers
         // GET: returnsController/Create
         public ActionResult Create()
         {
-            ViewBag.OrderId = new SelectList(orderRepository.viewAllOrders(1), "Id", "Id");
+            ViewBag.OrderId = new SelectList(returnRepository.getOrdersCanReturn(1), "Id", "Id");
             return View();
         }
         [HttpGet]
@@ -42,11 +46,26 @@ namespace e_commerce.Web.Controllers
         // POST: returnsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(int OrderId, List<int> ProductId, List<string> Reason)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var returnList = new List<Return>();
+                for (int i = 0; i < ProductId.Count; i++)
+                {
+                    var returnRequest = new Return
+                    {
+                        OrderId = OrderId,
+                        ProductId = ProductId[i],
+                        Reason = Reason[i],
+                        custId = 1, // Assuming a static customer ID for now
+                        Status = ReturnStatusEnum.Pending,
+                        ReturnDate = DateTime.Now,
+                    };
+                    returnList.Add(returnRequest);
+                }
+                    returnRepository.AddReturnRequest(returnList);
+                    return RedirectToAction(nameof(returnsIndexForm));
             }
             catch
             {
