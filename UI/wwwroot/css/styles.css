@@ -2545,3 +2545,23 @@ table {
         transform: translateX(0);
     }
 }
+.return-item {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #fdfafd;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+}
+
+    .return-item:hover {
+        background-color: #f2edf5;
+    }
+
+.remove-item i {
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.remove-item:hover i {
+    transform: scale(1.2);
+}

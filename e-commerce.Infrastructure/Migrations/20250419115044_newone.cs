@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace e_commerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class IntialCreate : Migration
+    public partial class newone : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -332,6 +332,8 @@ namespace e_commerce.Infrastructure.Migrations
                     Order_Date = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Payment_Method = table.Column<int>(type: "int", nullable: false),
+                    Payment_Status = table.Column<int>(type: "int", nullable: false),
+                    Return_Status = table.Column<int>(type: "int", nullable: false),
                     Total_Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Shipping_Address_ID = table.Column<int>(type: "int", nullable: false)
                 },
@@ -479,7 +481,7 @@ namespace e_commerce.Infrastructure.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     Order_ID = table.Column<int>(type: "int", nullable: false),
                     Product_ID = table.Column<int>(type: "int", nullable: false),
                     custId = table.Column<int>(type: "int", nullable: false),

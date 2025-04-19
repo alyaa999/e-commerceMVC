@@ -99,7 +99,7 @@ namespace e_commerce
             builder.Services.AddScoped<IAdressRepo, AddressRepo>();
             builder.Services.AddAutoMapper(typeof(AddressProfile));
             builder.Services.AddScoped<IOrderRepository, OrderRepoService>();
-          
+            builder.Services.AddScoped<IReturnRepository, returnRepoService>();
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())

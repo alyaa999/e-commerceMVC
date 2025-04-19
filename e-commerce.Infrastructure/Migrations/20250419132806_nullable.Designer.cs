@@ -12,8 +12,8 @@ using e_commerce.Infrastructure.Entites;
 namespace e_commerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    [Migration("20250417212515_IntialCreate")]
-    partial class IntialCreate
+    [Migration("20250419132806_nullable")]
+    partial class nullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -417,6 +417,14 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasColumnName("Payment_Method");
 
+                    b.Property<int>("PaymentStatus")
+                        .HasColumnType("int")
+                        .HasColumnName("Payment_Status");
+
+                    b.Property<int?>("ReturnStatus")
+                        .HasColumnType("int")
+                        .HasColumnName("Return_Status");
+
                     b.Property<int>("ShippingAddressId")
                         .HasColumnType("int")
                         .HasColumnName("Shipping_Address_ID");
@@ -597,10 +605,8 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasColumnName("Return_Date")
                         .HasDefaultValueSql("(getdate())");
 
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<int>("custId")
                         .HasColumnType("int");

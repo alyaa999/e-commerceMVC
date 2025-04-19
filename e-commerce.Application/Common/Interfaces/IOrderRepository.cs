@@ -17,5 +17,7 @@ namespace e_commerce.Application.Common.Interfaces
         public void UpdateOrder(Order order);
         public Order GetOrderById(int orderId);
         public void DeleteOrder(int orderId);
+        public Order getOrderByOrderID(int userId, int ordID);
+
     }
 }
