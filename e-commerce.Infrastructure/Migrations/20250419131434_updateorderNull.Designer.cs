@@ -12,8 +12,8 @@ using e_commerce.Infrastructure.Entites;
 namespace e_commerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    [Migration("20250419111409_enums")]
-    partial class enums
+    [Migration("20250419131434_updateorderNull")]
+    partial class updateorderNull
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -421,7 +421,7 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasColumnName("Payment_Status");
 
-                    b.Property<int>("ReturnStatus")
+                    b.Property<int?>("ReturnStatus")
                         .HasColumnType("int")
                         .HasColumnName("Return_Status");
 
