@@ -9,6 +9,7 @@ namespace e_commerce.Application.Common.Interfaces
 {
     public interface IReturnRepository
     {
-        //List<Return> getAllCustomerReturns(int custID);
+        List<Return> getAllCustomerReturns(int custID);
+        void AddReturnRequest(List<Return> returns);
     }
 }

@@ -21,9 +21,14 @@ namespace e_commerce.Infrastructure.Repository
 
         public List<Order> viewAllOrders(int userId)
         {
-            return context.Orders
+            return context.Orders.Include(o=>o.OrderProducts)
         .Where(o => o.CustomerId == userId)
         .ToList();
+        }
+        public Order getOrderByOrderID(int userId,int ordID)
+        {
+            return context.Orders.Include(o => o.OrderProducts).ThenInclude(op=>op.Product)
+        .FirstOrDefault(o => o.CustomerId == userId&&o.Id==ordID); 
         }
         public void RemoveOrder(int cartId, int productId)
         {

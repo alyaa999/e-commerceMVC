@@ -1,0 +1,162 @@
+﻿@model e_commerce.Infrastructure.Entites.Return
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Return</h4> 
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group">
+                <label asp-for="OrderId" class="control-label"></label>
+
+            </div>
+            <div class="form-group"> 
+                <label asp-for="ProductId" class="control-label"></label>
+                <select asp-for="ProductId" class ="form-control" asp-items="ViewBag.ProductId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Reason" class="control-label"></label>
+                <input asp-for="Reason" class="form-control" />
+                <span asp-validation-for="Reason" class="text-danger"></span>
+            </div>
+            <i class="fa-solid fa-plus"></i>
+            
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" /> 
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@{
+    ViewData["Title"] = "Create Return";
+}
+<h2>إنشاء ترجيع</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="OrderId">اختر الطلب</label>
+        <select class="form-control" id="OrderId" name="OrderId" asp-items="ViewBag.OrderId">
+            <option value="">-- اختر الطلب --</option>
+        </select>
+    </div>
+
+    <div id="returnItemsContainer" class="mt-3"></div>
+
+    <button type="button" class="btn btn-success mt-2 d-none" id="addItemBtn">
+        <i class="fa fa-plus"></i>
+    </button>
+
+    <div class="form-group mt-4">
+        <button type="submit" class="btn btn-primary">حفظ</button>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+                            let selectedProducts = [];
+        let allProducts = []; // Store all products for the order
+
+        $('#OrderId').on('change', function () {
+            $('#returnItemsContainer').html('');
+            selectedProducts = [];
+            const orderId = $(this).val();
+
+            if (!orderId) {
+                $('#addItemBtn').addClass('d-none');
+                return;
+            }
+
+            $('#addItemBtn').removeClass('d-none');
+            loadInitialProducts(orderId); // Load products but don't create a row yet
+        });
+
+        function loadInitialProducts(orderId) {
+            $.ajax({
+                url: '/returns/GetProductsByOrderId',
+                type: 'GET',
+                data: { orderId },
+                success: function (products) {
+                    if (!products || !Array.isArray(products)) {
+                        alert("Failed to load products. Please check the Order ID.");
+                        return;
+                    }
+                    allProducts = products; // Store all products
+                }
+            });
+        }
+
+        $('#addItemBtn').on('click', function () {
+            const orderId = $('#OrderId').val();
+            if (!orderId) return;
+
+            // Filter available products
+            const availableProducts = allProducts.filter(p =>
+                !selectedProducts.includes(p.productId.toString())
+            );
+
+            if (availableProducts.length === 0) {
+                alert("All products are already selected.");
+                return;
+            }
+
+            createProductRow(availableProducts);
+        });
+
+        function createProductRow(availableProducts) {
+            let productOptions = '<option value="">-- Select Product --</option>';
+            availableProducts.forEach(p => {
+                productOptions += `<option value="${p.productId}">${p.name}</option>`;
+            });
+
+            const row = $(`
+                <div class="return-item row mb-2">
+                    <div class="col-md-5">
+                        <select name="ProductId" class="form-control product-select">
+                            ${productOptions}
+                        </select>
+                    </div>
+                    <div class="col-md-5">
+                        <input type="text" name="Reason" class="form-control" placeholder="Reason for return" required />
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger remove-item">X</button>
+                    </div>
+                </div>
+            `);
+
+            row.find('.product-select').on('change', function () {
+                const selectedVal = $(this).val();
+                if (selectedVal) {
+                    // Update selected products
+                    selectedProducts = $('.product-select').map(function() {
+                        return $(this).val();
+                    }).get().filter(Boolean);
+                }
+            });
+
+            row.find('.remove-item').on('click', function () {
+                const val = row.find('.product-select').val();
+                selectedProducts = selectedProducts.filter(p => p !== val);
+                row.remove();
+            });
+
+            $('#returnItemsContainer').append(row);
+        }
+    </script>
+}

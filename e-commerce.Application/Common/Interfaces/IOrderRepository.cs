@@ -14,6 +14,7 @@ namespace e_commerce.Application.Common.Interfaces
 
         public void RemoveOrder(int cartId, int productId);
         public void AddOrder(Order order);
+        public Order getOrderByOrderID(int userId, int ordID);
 
     }
 }

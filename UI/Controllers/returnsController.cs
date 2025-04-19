@@ -1,11 +1,18 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using e_commerce.Application.Common.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace e_commerce.Web.Controllers
 {
     public class returnsController : Controller
     {
         // GET: returnsController
+        IOrderRepository orderRepository;
+        public returnsController(IOrderRepository _repo)
+        {
+            orderRepository = _repo;
+        } 
         public ActionResult returnsIndexForm()
         {
             return View();
@@ -20,7 +27,16 @@ namespace e_commerce.Web.Controllers
         // GET: returnsController/Create
         public ActionResult Create()
         {
+            ViewBag.OrderId = new SelectList(orderRepository.viewAllOrders(1), "Id", "Id");
             return View();
+        }
+        [HttpGet]
+        public JsonResult GetProductsByOrderId(int orderId)
+        {
+            var order = orderRepository.getOrderByOrderID(1, orderId);
+            var products = order?.OrderProducts.Select(p => new { p.ProductId, p.Product.Name }).ToList();
+            if (products == null) return Json(new List<object>());
+            return Json(products);
         }
 
         // POST: returnsController/Create
