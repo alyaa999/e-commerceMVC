@@ -100,7 +100,6 @@ namespace e_commerce.Web.Controllers
                 OrderDate = DateTime.Now,
                 PaymentMethod =Domain.Enums.PaymentMethod.card,
                 Status = (Domain.Enums.orderstateEnum)Domain.Enums.PaymentStatusEnum.Paid, 
-                Status = Domain.Enums.orderstateEnum.Paid,
                 PaymentIntentId = paymentIntentId,
                 OrderProducts = cart_.CartProducts.Select(cp => new OrderProduct
                 {
