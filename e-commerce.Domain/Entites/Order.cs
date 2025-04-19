@@ -38,7 +38,9 @@ public partial class Order
     public virtual Customer Customer { get; set; }
 
     [InverseProperty("Order")]
+
     public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+    
 
     [InverseProperty("Order")]
     public virtual ICollection<Return> Returns { get; set; } = new List<Return>();

@@ -65,5 +65,40 @@ namespace e_commerce.Infrastructure.Repository
         {
             return context.Orders.Include(o => o.OrderProducts).ThenInclude(op=>op.Product).ThenInclude(p=>p.ProductImages).FirstOrDefault(o => ((o.Id == orderID) && (o.CustomerId == userId)));
         }
+
+        public Task<Order> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Order> GetByIdWithDetailsAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<Order>> GetAllWithDetailsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ConfirmOrderAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task CancelOrderAsync(int id, string reason = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(Order order)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Order?> GetOrderWithDetailsAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

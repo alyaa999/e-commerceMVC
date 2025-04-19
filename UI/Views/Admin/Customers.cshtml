@@ -1,0 +1,64 @@
+﻿@model IEnumerable<e_commerce.Infrastructure.Entites.Customer>
+
+@{
+    ViewData["Title"] = "Customers Management";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Customers</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <i class="fas fa-users me-1"></i>
+                    All Customers
+                </div>
+                <div class="col-md-6 text-end">
+                    <form asp-action="Customers" method="get">
+                        <div class="input-group">
+                            <input type="text" name="searchString" class="form-control" placeholder="Search customers..." value="@ViewData["CurrentFilter"]" />
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fi fi-rs-search"></i> Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Registration Date</th>
+                            <th>Total Orders</th>
+                            <th>Total Spent</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                @* <td>@item.Name</td> *@
+                                @* <td>@item.Email</td> *@
+                                @* <td>@item.RegistrationDate.ToString("d")</td> *@
+                                @* <td>@item.TotalOrders</td> *@
+                                @* <td>@item.TotalSpent.ToString("C")</td> *@
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-primary">View</a>
+                                    <a href="#" class="btn btn-sm btn-info">Orders</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

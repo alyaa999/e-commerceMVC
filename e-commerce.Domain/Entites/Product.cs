@@ -20,9 +20,15 @@ public partial class Product
     [Required]
     [StringLength(50)]
     public string Code { get; set; }
+<<<<<<< HEAD
     public Tager? Tag { get; set; } = null!;
     public int? TagId { get; set; }
     public Boolean IsApproved { get; set; }
+=======
+    //public string ApplicationUserId { get; set; }
+    //public ApplicationUser ApplicationUser { get; set; }
+
+>>>>>>> e6f163dc5df16e86e77f96743fb6683aae2cc8a9
     [Required]
     [StringLength(255)]
     public string Name { get; set; }
@@ -40,6 +46,15 @@ public partial class Product
     public decimal? Discount { get; set; }
 
     public int? Stock { get; set; }
+
+    [Required]
+    [Column(TypeName = "bit")]
+    public bool IsApproved { get; set; } = false;
+
+
+    public bool IsActive { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
 
     [Column("Sub_Category_ID")]
     public int? SubCategoryId { get; set; }
@@ -74,6 +89,7 @@ public partial class Product
     [ForeignKey("SubCategoryId")]
     [InverseProperty("Products")]
     public virtual SubCategory SubCategory { get; set; }
+
 
     [ForeignKey("ProductId")]
     [InverseProperty("Products")]

@@ -45,6 +45,8 @@ namespace e_commerce
                 );
             // builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+            builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddDbContext<ECommerceDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -106,6 +108,8 @@ namespace e_commerce
             builder.Services.AddAutoMapper(typeof(AddressProfile));
             builder.Services.AddScoped<IOrderRepository, OrderRepoService>();
           
+
+            builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())
