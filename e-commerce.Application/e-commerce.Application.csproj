@@ -15,10 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\" />
+    <ProjectReference Include="..\e-commerce.Domain\e-commerce.Domain.csproj" />
   </ItemGroup>
 
 </Project>
