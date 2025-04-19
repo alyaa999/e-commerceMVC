@@ -20,15 +20,8 @@ public partial class Product
     [Required]
     [StringLength(50)]
     public string Code { get; set; }
-<<<<<<< HEAD
     public Tager? Tag { get; set; } = null!;
     public int? TagId { get; set; }
-    public Boolean IsApproved { get; set; }
-=======
-    //public string ApplicationUserId { get; set; }
-    //public ApplicationUser ApplicationUser { get; set; }
-
->>>>>>> e6f163dc5df16e86e77f96743fb6683aae2cc8a9
     [Required]
     [StringLength(255)]
     public string Name { get; set; }
