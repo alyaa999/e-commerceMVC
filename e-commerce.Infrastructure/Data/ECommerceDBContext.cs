@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace e_commerce.Infrastructure.Entites;
 
@@ -247,6 +248,9 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
             });
         }
     }
-}
+  
+        
+    }
+
 
 

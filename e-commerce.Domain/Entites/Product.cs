@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using e_commerce.Domain.Entites;
 using Microsoft.EntityFrameworkCore;
 using IndexAttribute = Microsoft.EntityFrameworkCore.IndexAttribute;
 
@@ -18,8 +19,9 @@ public partial class Product
     [Required]
     [StringLength(50)]
     public string Code { get; set; }
+    //public string ApplicationUserId { get; set; }
+    //public ApplicationUser ApplicationUser { get; set; }
 
-    public Boolean IsApproved { get; set; }
     [Required]
     [StringLength(255)]
     public string Name { get; set; }
@@ -37,6 +39,15 @@ public partial class Product
     public decimal? Discount { get; set; }
 
     public int Stock { get; set; }
+
+    [Required]
+    [Column(TypeName = "bit")]
+    public bool IsApproved { get; set; } = false;
+
+
+    public bool IsActive { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
 
     [Column("Sub_Category_ID")]
     public int SubCategoryId { get; set; }
@@ -66,6 +77,7 @@ public partial class Product
     [ForeignKey("SubCategoryId")]
     [InverseProperty("Products")]
     public virtual SubCategory SubCategory { get; set; }
+
 
     [ForeignKey("ProductId")]
     [InverseProperty("Products")]

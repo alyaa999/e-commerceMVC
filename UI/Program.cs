@@ -38,6 +38,8 @@ namespace e_commerce
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddControllersWithViews();
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddControllersWithViews(
                 conf => conf.Filters.Add(new AuthorizeFilter())
                 );
