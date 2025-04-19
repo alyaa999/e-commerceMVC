@@ -1,9 +1,11 @@
 ﻿using e_commerce.Application.Common.Interfaces;
 using e_commerce.Domain.Enums;
 using e_commerce.Infrastructure.Entites;
+using e_commerce.Infrastructure.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
@@ -12,14 +14,17 @@ namespace e_commerce.Web.Controllers
         // GET: returnsController
         IOrderRepository orderRepository;
         IReturnRepository returnRepository;
-        public returnsController(IOrderRepository _repo,IReturnRepository repository)
+        private ICustRepo custrepo;
+        public returnsController(IOrderRepository _repo,IReturnRepository repository, ICustRepo _custrepo)
         {
             orderRepository = _repo;
             returnRepository = repository;
+            custrepo = _custrepo;
         } 
         public ActionResult returnsIndexForm()
         {
-            return View(returnRepository.getAllCustomerReturns(1));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(returnRepository.getAllCustomerReturns(custrepo.getcustomerid(userId).Id));
         }
 
         // GET: returnsController/Details/5
@@ -31,13 +36,15 @@ namespace e_commerce.Web.Controllers
         // GET: returnsController/Create
         public ActionResult Create()
         {
-            ViewBag.OrderId = new SelectList(returnRepository.getOrdersCanReturn(1), "Id", "Id");
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ViewBag.OrderId = new SelectList(returnRepository.getOrdersCanReturn(custrepo.getcustomerid(userId).Id), "Id", "Id");
             return View();
         }
         [HttpGet]
         public JsonResult GetProductsByOrderId(int orderId)
         {
-            var order = orderRepository.getOrderByOrderID(1, orderId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var order = orderRepository.getOrderByOrderID(custrepo.getcustomerid(userId).Id, orderId);
             var products = order?.OrderProducts.Select(p => new { p.ProductId, p.Product.Name }).ToList();
             if (products == null) return Json(new List<object>());
             return Json(products);
@@ -50,6 +57,7 @@ namespace e_commerce.Web.Controllers
         {
             try
             {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 var returnList = new List<Return>();
                 for (int i = 0; i < ProductId.Count; i++)
                 {
@@ -58,7 +66,7 @@ namespace e_commerce.Web.Controllers
                         OrderId = OrderId,
                         ProductId = ProductId[i],
                         Reason = Reason[i],
-                        custId = 1, // Assuming a static customer ID for now
+                        custId = custrepo.getcustomerid(userId).Id, // Assuming a static customer ID for now
                         Status = ReturnStatusEnum.Pending,
                         ReturnDate = DateTime.Now,
                     };

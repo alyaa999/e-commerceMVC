@@ -44,11 +44,11 @@
                 @foreach (var item in Model.CartProducts)
                 {
                         <tr class="cart-item" data-product-id="@item.ProductCodeNavigation.Id">
-                            <td>
+                            <td> 
                                 <img src=@Url.Content($"~/image/{item.ProductCodeNavigation.ProductImages.FirstOrDefault().ImageUrl}")
                                      alt="no image"
                                      class="table__img" />
-                            </td> 
+                            </td>  
                             <td>
                                 <h3 class="table__title">
                                     @item.ProductCodeNavigation.Name

@@ -29,7 +29,7 @@ namespace e_commerce.Web.Controllers
         }
         [HttpPost]
         public IActionResult Checkout([FromBody] OrderData data)
-        {
+        { 
             decimal shippingFees = 50;
             var cart_ = repo.GetCartByCustomerId(data.customerID);
             decimal total;

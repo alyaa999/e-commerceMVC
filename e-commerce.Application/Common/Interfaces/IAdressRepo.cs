@@ -11,7 +11,7 @@ namespace e_commerce.Application.Common.Interfaces
     {
         void AddAddressAsync(Address address,int cid);
         void DeleteAddressAsync(int id,int cid);
-        List<Address> GetAllAddressAsync();
+        List<Address> GetAllAddressAsync(int userID);
         void UpdateAddress(Address address,int cid,int addID);
         public Address GetAddressById(int id, int cID);
     }

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Application.Common.Interfaces;
+using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
@@ -14,22 +15,26 @@ namespace e_commerce.Web.Controllers
     {
         private readonly ECommerceDBContext _context;
         private readonly IWishlistRepo repo;
-        public WishlistsController(ECommerceDBContext context,IWishlistRepo repository)
+        private ICustRepo custrepo;
+        public WishlistsController(ECommerceDBContext context,IWishlistRepo repository, ICustRepo _custrepo)
         {
             _context = context;
             repo = repository;
+            custrepo = _custrepo;
         }
 
         // GET: Wishlists
-        public async Task<IActionResult> Index(int id)
+        public async Task<IActionResult> Index()
         {
-            if (id == null)
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (userId == null)
             {
                 return NotFound();
             }
             else
             {
-                var wishlist = await repo.GetByCustomerId(id);
+                var wishlist = await repo.GetByCustomerId(custrepo.getcustomerid(userId).Id);
                 return View(wishlist);
             }
 
