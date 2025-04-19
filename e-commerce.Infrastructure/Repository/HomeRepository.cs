@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using e_commerce.Domain.DTOS;
+using e_commerce.Domain.Entites;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 namespace e_commerce.Infrastructure.Repository
 {
     public class HomeRepository : IHomeRepository
@@ -24,11 +26,12 @@ namespace e_commerce.Infrastructure.Repository
         public IQueryable<Product> GetProducts(ShopDTO shopDTO)
         {
             IQueryable<Product> queryable = _context.Products;
-             if(shopDTO.Name!=null)
-             {
-                queryable.Where(p => p.Name.Contains(shopDTO.Name));
-             }
-           
+
+            if (!string.IsNullOrWhiteSpace(shopDTO.Name))
+            {
+                queryable = queryable.Where(p => p.Name.ToLower().Contains(shopDTO.Name.ToLower()));
+            }
+
             if (shopDTO.CategoryId.HasValue)
             {
                 queryable = queryable.Where(p => p.SubCategory.CategoryId == shopDTO.CategoryId.Value);
@@ -38,9 +41,9 @@ namespace e_commerce.Infrastructure.Repository
             {
                 queryable = queryable.Where(p => p.SubCategoryId == shopDTO.SubCategoryId.Value);
             }
-            if (shopDTO.BrandFilter != null && shopDTO.BrandFilter.Any())
+
+            if (shopDTO.BrandFilter?.Any() == true)
             {
-                // Create OR condition for brands (products matching ANY of the selected brands)
                 queryable = queryable.Where(p => shopDTO.BrandFilter.Contains(p.Brand));
             }
 
@@ -49,20 +52,17 @@ namespace e_commerce.Infrastructure.Repository
                 queryable = queryable.Where(p => p.Price >= 0 && p.Price <= shopDTO.PriceFilter.Value);
             }
 
-            if (shopDTO.TagFilter != null && shopDTO.TagFilter.Any())
-            {
-               
-                queryable = queryable.Where(p =>
-                {
-                    return p.Tag.Any(pt => shopDTO.TagFilter.Contains((Tager)pt));
-                });
-            }
-            return queryable.Include(i => i.SubCategory).Include(i=>i.ProductImages).Include(i=>i.Reviews);
+
+
+
+
+            return queryable
+                .Include(p => p.SubCategory)
+                .Include(p => p.ProductImages)
+                .Include(p => p.Reviews);
         }
-       
 
 
-    
         public List<Category> GetCategories()
         {
             return _context.Categories.Include(i=>i.SubCategories)
@@ -74,11 +74,9 @@ namespace e_commerce.Infrastructure.Repository
             return _context.Products.Select(i => i.Brand).Distinct().ToList();
         }
        
-        public List<Tager> GetTagers()
+        public List<Tag> GetTagers()
         {
-            return  Enum.GetValues(typeof(Tager))
-                             .Cast<Tager>()
-                             .ToList();
+            return _context.Tags.ToList();
 
         }
         public IQueryable<Product> GetProductsByCategory(int? CategoryId, int? SubCategoryId)
@@ -101,7 +99,7 @@ namespace e_commerce.Infrastructure.Repository
         {
             return _context.Products
                 .Include(i=>i.SubCategory.Category)
-                .Include(i=>i.ProductImages).Where(i => i.Tag == (Tager)Tager);
+                .Include(i=>i.ProductImages).Where(i => i.TagId == Tager);
         }
 
         public Product? GetProductById(int id)

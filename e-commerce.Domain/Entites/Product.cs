@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using e_commerce.Domain.Entites;
 using Microsoft.EntityFrameworkCore;
 using IndexAttribute = Microsoft.EntityFrameworkCore.IndexAttribute;
 
@@ -20,6 +21,7 @@ public partial class Product
     [StringLength(50)]
     public string Code { get; set; }
     public Tager? Tag { get; set; } = null!;
+    public int? TagId { get; set; }
     public Boolean IsApproved { get; set; }
     [Required]
     [StringLength(255)]
@@ -63,6 +65,11 @@ public partial class Product
     [ForeignKey("SellerId")]
     [InverseProperty("Products")]
     public virtual Seller Seller { get; set; }
+
+    [ForeignKey("TagId")]
+
+    public virtual  Tag? TagObj { get; set; }
+
 
     [ForeignKey("SubCategoryId")]
     [InverseProperty("Products")]

@@ -46,18 +46,17 @@
                 <div class="filter-group">
                     <h3 class="filter-title">Tags</h3>
                     <div class="tag-options">
-                        <div class="checkbox-option">
-                            <input type="checkbox" id="tag-new" name="tag" value="New">
-                            <label for="tag-new">New Arrivals</label>
-                        </div>
-                        <div class="checkbox-option">
-                            <input type="checkbox" id="tag-bestseller" name="tag" value="BestSeller">
-                            <label for="tag-bestseller">Best Sellers</label>
-                        </div>
-                        <div class="checkbox-option">
-                            <input type="checkbox" id="tag-trending" name="tag" value="Trending">
-                            <label for="tag-trending">Trending</label>
-                        </div>
+                        @foreach (var tager in Model.tagers)
+                        {
+                            <div class="checkbox-option">
+                                <input type="checkbox" id="brand-@tager.Id" name="TagFilter" value="@tager.Id"
+                                @(Model.TagFilter != null && Model.TagFilter.Contains(tager.Id) ? "checked" : "")>
+                                <label for="tag-new">@tager.Name</label>
+                            </div>
+                        }
+
+                       
+                       
                     </div>
                 </div>
                 <!-- Hidden fields for other properties -->

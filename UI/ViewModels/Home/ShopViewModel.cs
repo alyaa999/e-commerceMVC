@@ -1,4 +1,6 @@
-﻿using e_commerce.Infrastructure.Entites;
+﻿using e_commerce.Domain.Entites;
+using e_commerce.Infrastructure.Entites;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace e_commerce.Web.ViewModels.Home
 {
@@ -14,8 +16,14 @@ namespace e_commerce.Web.ViewModels.Home
         public List<int?> TagFilter { get; set; }
         public string Name { get; set; }
         public List<string>? Brands { get; set; }
-        public List<Tager> tagers { get; set; }
+        public List<TagViewModel> tagers { get; set; }
         public List<ProductViewModel>? Products { get; set; }
         
+    }
+
+    public class TagViewModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }    
     }
 }

@@ -37,54 +37,43 @@ public class HomeController : Controller
     public async Task<IActionResult> Index(int pageNumber = 1)
     {
         int pageSize = 1;
+
         var items = homeRepository.GetProductsByCategory(null, null);
-        var newArrivalsProducts = homeRepository.GetProductsByTag(3); //3 is new Arrival
-        var TrendingProducts = homeRepository.GetProductsByTag(8); //8 is trending 
-        var HotReleaseProducts = homeRepository.GetProductsByTag(5); //5 is HotReleaseProduct
-        var BestSellerProducts = homeRepository.GetProductsByTag(4); //4 is BestSeller
-        var DealsProducts = homeRepository.GetProductsByTag(6); //6 is Deals
- 
-
-
         var paginatedList = await PaginatedList<Product>.CreateAsync(items, pageNumber, pageSize);
-        var newArrivals = await PaginatedList<Product>.CreateAsync(newArrivalsProducts, 1, 4);
-        var trending = await PaginatedList<Product>.CreateAsync(TrendingProducts, 1, 4);
-        var hotRelease = await PaginatedList<Product>.CreateAsync(HotReleaseProducts, 1, 4);
-        var BestSeller = await PaginatedList<Product>.CreateAsync(BestSellerProducts, 1, 4);
-        var Deals = await PaginatedList<Product>.CreateAsync(DealsProducts, 1, 4);
-        
 
+        var newArrivals = await PaginatedList<Product>.CreateAsync(homeRepository.GetProductsByTag(3), 1, 4);
+        var trending = await PaginatedList<Product>.CreateAsync(homeRepository.GetProductsByTag(8), 1, 4);
+        var hotRelease = await PaginatedList<Product>.CreateAsync(homeRepository.GetProductsByTag(5), 1, 4);
+        var bestSeller = await PaginatedList<Product>.CreateAsync(homeRepository.GetProductsByTag(4), 1, 4);
+        var deals = await PaginatedList<Product>.CreateAsync(homeRepository.GetProductsByTag(6), 1, 4);
 
         var homeViewModel = new HomeViewModel
         {
-            Products = _mapper.Map<List<ProductViewModel>>(paginatedList?.ToList()),
-           NewArrivalsProducts = _mapper.Map<List<ProductViewModel>>(newArrivals?.ToList()),
-            Trending = _mapper.Map<List<ProductViewModel>>(trending?.ToList()),
-            HotRelease = _mapper.Map<List<ProductViewModel>>(hotRelease?.ToList()),
-            BestDeal = _mapper.Map<List<ProductViewModel>>(Deals?.ToList() ),
-            TopSelling = _mapper.Map<List<ProductViewModel>>(BestSeller?.ToList()),
-
+            Products = _mapper.Map<List<ProductViewModel>>(paginatedList),
+            NewArrivalsProducts = _mapper.Map<List<ProductViewModel>>(newArrivals),
+            Trending = _mapper.Map<List<ProductViewModel>>(trending),
+            HotRelease = _mapper.Map<List<ProductViewModel>>(hotRelease),
+            BestDeal = _mapper.Map<List<ProductViewModel>>(deals),
+            TopSelling = _mapper.Map<List<ProductViewModel>>(bestSeller),
         };
-
-
-
-
-
 
         return View(homeViewModel);
     }
+
     //In AutoMapper, mapping a valid source object (like a list) will usually return an empty list, not null, even if the source list is empty or null.
     public async  Task<IActionResult> ShopNow(ShopViewModel ShopVm,int pageNumber= 1)
     {
         int pageSize = 1;
         var shopDTO = _mapper.Map<ShopDTO>(ShopVm);
+       
         var items = homeRepository.GetProducts(shopDTO);
+        var paginatedList = await  PaginatedList<Product>.CreateAsync(items, pageNumber, pageSize);
+
         var brands = homeRepository.GetBrands();
-        var tagers = homeRepository.GetTagers();
-        var paginatedList = await PaginatedList<Product>.CreateAsync(items, pageNumber, pageSize);
+        var tagersObj = homeRepository.GetTagers();
+        var tagers = _mapper.Map<List<TagViewModel>>(tagersObj);
 
 
-        var products = paginatedList.ToList();
         var shopViewMode = new ShopViewModel()
         {
             CategoryId = ShopVm.CategoryId,
@@ -93,12 +82,12 @@ public class HomeController : Controller
             PriceFilter = ShopVm.PriceFilter,
             TagFilter = ShopVm.TagFilter,
             PageNumber = pageNumber,
-            productCount = products.Count(),
+            productCount = paginatedList.Count(),
             TotalPages = paginatedList.TotalPages,
             Brands = brands,
             tagers = tagers,
             Name = ShopVm.Name,
-            Products = _mapper.Map<List<ProductViewModel>>(products)
+            Products = _mapper.Map<List<ProductViewModel>>(paginatedList)
         };
       
 
@@ -108,11 +97,11 @@ public class HomeController : Controller
     public async Task<IActionResult> ProductDetials(int id)
     {
         var product = homeRepository.GetProductById(id);
-        var relatedProduct = homeRepository.GetProductsByCategory(null, product?.SubCategoryId);
+        var relatedProduct =homeRepository.GetProductsByCategory(null, product?.SubCategoryId);
         var productDetails = new ProductDetialsViewModel
         {
             ProductDetials = _mapper.Map<ProductViewModel>(product),
-            RelatedProducts= _mapper.Map<List<ProductViewModel>>(relatedProduct)
+            RelatedProducts= _mapper.Map<List<ProductViewModel>>(relatedProduct.ToList())
         };
 
         return View(productDetails);

@@ -1,4 +1,5 @@
-﻿using e_commerce.Infrastructure.Entites;
+﻿using e_commerce.Domain.Entites;
+using e_commerce.Infrastructure.Entites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace e_commerce.Domain.DTOS
         public int? PriceFilter { get; set; }
         public string Name { get; set; }
         public List<string> BrandFilter { get; set; }
-        public List<Tager?> TagFilter { get; set; }
+        public List<int?> TagFilter { get; set; }
 
     }
 }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using e_commerce.Domain.DTOS;
+using e_commerce.Domain.Entites;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Web.ViewModels.Home;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -22,10 +23,10 @@ namespace e_commerce.Web.Mappers
             CreateMap<Review, ReviewViewMode>();
         
             CreateMap<SubCategory, SubCategoryViewModel>();
+            CreateMap<Tag,TagViewModel>();
                 
             CreateMap<Product, ProductViewModel>()
-             .ForMember(dest => dest.Tag,
-                        opt => opt.MapFrom(src => src.Tag.HasValue ? src.Tag.Value.ToString() : ""))
+            
              .ForMember(dest => dest.SubCategoryName,
                         opt => opt.MapFrom(src => src.SubCategory != null ? src.SubCategory.Name : ""))
              .ForMember(dest => dest.CategoryName,

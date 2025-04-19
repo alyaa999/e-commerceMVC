@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using e_commerce.Infrastructure.Entites;
 
@@ -11,9 +12,11 @@ using e_commerce.Infrastructure.Entites;
 namespace e_commerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    partial class ECommerceDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250418055652_create-tag-table")]
+    partial class createtagtable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -260,48 +263,6 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tager");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "feature"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Popular"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "New"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "BestSeller"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "HotRelease"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "BestDeal"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "TopSelling"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Trending"
-                        });
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Address", b =>
