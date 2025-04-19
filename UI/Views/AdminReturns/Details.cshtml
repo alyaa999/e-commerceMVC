@@ -1,0 +1,84 @@
+﻿@model e_commerce.Infrastructure.Entites.Return
+
+@{
+    ViewData["Title"] = "Return Request Details";
+    Layout = "_AdminLayout";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Return Request #@Model.Id</h6>
+        <span class="badge @(Model.Status == e_commerce.Domain.Enums.ReturnStatusEnum.Approved ? "badge-success" :
+                           Model.Status == e_commerce.Domain.Enums.ReturnStatusEnum.Rejected ? "badge-danger" : "badge-warning")">
+            @Model.Status
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h5>Order Information</h5>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-4">Order ID:</dt>
+                    <dd class="col-sm-8">@Model.OrderId</dd>
+
+                    <dt class="col-sm-4">Customer:</dt>
+                    <dd class="col-sm-8">@Model.Order.Customer?.ApplicationUser?.FirstName</dd>
+
+                    <dt class="col-sm-4">Order Date:</dt>
+                    <dd class="col-sm-8">@Model.Order.OrderDate?.ToString("dd MMM yyyy")</dd>
+
+                    <dt class="col-sm-4">Product:</dt>
+                    <dd class="col-sm-8">@Model.Product.Name</dd>
+
+                    <dt class="col-sm-4">Quantity:</dt>
+                    <dd class="col-sm-8">1</dd> <!-- Adjust based on your logic -->
+                </dl>
+            </div>
+            <div class="col-md-6">
+                <h5>Return Details</h5>
+                <hr />
+                <dl class="row">
+                    <dt class="col-sm-4">Return Date:</dt>
+                    <dd class="col-sm-8">@Model.ReturnDate?.ToString("dd MMM yyyy")</dd>
+
+                    <dt class="col-sm-4">Reason:</dt>
+                    <dd class="col-sm-8">@Model.Reason</dd>
+                </dl>
+            </div>
+        </div>
+
+        @if (Model.Status != e_commerce.Domain.Enums.ReturnStatusEnum.Approved && Model.Status != e_commerce.Domain.Enums.ReturnStatusEnum.Rejected)
+
+        {
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="m-0">Process Return</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-inline">
+                                <button class="btn btn-success approve_return" data-orderid="@Model.OrderId" data-rid="@Model.Id">
+                                    <i class="fas fa-check"></i> Approve Return
+                                </button>
+                            </div>
+                            <form asp-action="Reject" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to reject this return?');">
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-times"></i> Reject Return
+                                </button>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+      
+        }
+    </div>
+</div>
+

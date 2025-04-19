@@ -90,6 +90,7 @@ namespace e_commerce.Web.Controllers
             var shippingId = int.Parse(session.Metadata["ShippingId"]);
             var total = decimal.Parse(session.Metadata["Total"]);
             var cart_ = repo.GetCartByCustomerId(customerId);
+            var paymentIntentId = session.PaymentIntentId;
 
             var order = new Order
             {
@@ -99,6 +100,7 @@ namespace e_commerce.Web.Controllers
                 OrderDate = DateTime.Now,
                 PaymentMethod =Domain.Enums.PaymentMethod.card,
                 Status = (Domain.Enums.orderstateEnum)Domain.Enums.PaymentStatusEnum.Paid, 
+                PaymentIntentId = paymentIntentId,
                 OrderProducts = cart_.CartProducts.Select(cp => new OrderProduct
                 {
                     ProductId = cp.ProductCode,
@@ -119,5 +121,38 @@ namespace e_commerce.Web.Controllers
         {
             return View("CancelPayment");
         }
-    } 
+        [HttpPost]
+        public IActionResult Refund(int orderId)
+        {
+            var order = _orderRepository.GetOrderById(orderId);
+            if (order == null || string.IsNullOrEmpty(order.PaymentIntentId))
+            {
+                return Json(new { success = false, message = "Order with this PaymentIntent not found." });
+            }
+
+            try
+            {
+                var refundOptions = new Stripe.RefundCreateOptions
+                {
+                    PaymentIntent = order.PaymentIntentId,
+                    Amount = (long)(order.TotalPrice * 100),
+                    Reason = "requested_by_customer"
+                };
+
+                var refundService = new Stripe.RefundService();
+                var refund = refundService.Create(refundOptions);
+
+                order.PaymentStatus = Domain.Enums.PaymentStatusEnum.Refunded;
+                _orderRepository.UpdateOrder(order);
+
+                return Json(new { success = true, message = $"Your money has been refunded (${order.TotalPrice}) successfully." });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = $"Error during refund: {ex.Message}" });
+            }
+        }
+
+
+    }
 }

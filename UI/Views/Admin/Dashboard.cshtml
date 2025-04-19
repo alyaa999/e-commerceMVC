@@ -1,0 +1,355 @@
+﻿@model e_commerce.Web.ViewModels.AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "_AdminLayout";
+}
+
+<div class="page-header">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="page-title">Welcome Admin!</h3>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row">
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <span class="dash-widget-icon bg-primary">
+                        <i class="la la-cubes"></i>
+                    </span>
+                    <div class="dash-count">
+                        <h3>@Model.TotalProducts</h3>
+                    </div>
+                </div>
+                <div class="dash-widget-info">
+                    <h6 class="text-muted">Total Products</h6>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar bg-primary w-50"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <span class="dash-widget-icon bg-success">
+                        <i class="la la-shopping-cart"></i>
+                    </span>
+                    <div class="dash-count">
+                        <h3>@Model.TotalOrders</h3>
+                    </div>
+                </div>
+                <div class="dash-widget-info">
+                    <h6 class="text-muted">Total Orders</h6>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar bg-success w-50"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <span class="dash-widget-icon bg-warning">
+                        <i class="la la-users"></i>
+                    </span>
+                    <div class="dash-count">
+                        <h3>@Model.TotalCustomers</h3>
+                    </div>
+                </div>
+                <div class="dash-widget-info">
+                    <h6 class="text-muted">Total Customers</h6>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar bg-warning w-50"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-3 col-sm-6 col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="dash-widget-header">
+                    <span class="dash-widget-icon bg-info">
+                        <i class="la la-tags"></i>
+                    </span>
+                    <div class="dash-count">
+                        <h3>@Model.TotalSubCategories</h3>
+                    </div>
+                </div>
+                <div class="dash-widget-info">
+                    <h6 class="text-muted">Total SubCategories</h6>
+                    <div class="progress progress-sm">
+                        <div class="progress-bar bg-info w-50"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts Row -->
+<div class="row">
+    <div class="col-md-8 d-flex">
+        <div class="card card-table flex-fill">
+            <div class="card-header">
+                <h4 class="card-title">Monthly Sales</h4>
+            </div>
+            <div class="card-body">
+                <canvas id="salesChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 d-flex">
+        <div class="card card-table flex-fill">
+            <div class="card-header">
+                <h4 class="card-title">Category Distribution</h4>
+            </div>
+            <div class="card-body">
+                <canvas id="categoryChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pending Products -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-table">
+            <div class="card-header">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <h4 class="card-title">Pending Products Approval</h4>
+                    </div>
+                    <div class="col-auto">
+                        <div class="btn-group">
+                            <a href="@Url.Action("ApproveAllProducts")" class="btn btn-success btn-sm">
+                                <i class="la la-check-circle"></i> Approve All
+                            </a>
+                            <a href="@Url.Action("RejectAllProducts")" class="btn btn-danger btn-sm">
+                                <i class="la la-times-circle"></i> Reject All
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                @if (Model.PendingProducts.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover table-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Category</th>
+                                    <th>Added On</th>
+                                    <th class="text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var product in Model.PendingProducts)
+                                {
+                                    <tr>
+                                        <td>
+                                            <h2 class="table-avatar">
+                                                <a href="#" class="avatar avatar-sm mr-2">
+                                                    <img class="avatar-img" src="@(product.ProductImages.FirstOrDefault()?.ImageUrl ?? "/admin/assets/images/products/product-default.jpg")" alt="Product Image">
+                                                </a>
+                                                <a href="#">@product.Name</a>
+                                            </h2>
+                                        </td>
+                                        <td>@product.Price.ToString("C")</td>
+                                        <td>@product.SubCategory?.Name</td>
+										
+                                        <td class="text-right">
+                                            <div class="actions">
+                                                <a href="@Url.Action("ApproveProduct", new { id = product.Id })" class="btn btn-sm bg-success-light mr-2">
+                                                    <i class="la la-check"></i> Approve
+                                                </a>
+                                                <a href="@Url.Action("RejectProduct", new { id = product.Id })" class="btn btn-sm bg-danger-light">
+                                                    <i class="la la-times"></i> Reject
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="alert alert-info">No pending products for approval</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Orders -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card card-table">
+            <div class="card-header">
+                <h4 class="card-title">Recent Orders</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover table-center mb-0">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Order Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th class="text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var order in Model.RecentOrders)
+                            {
+                                <tr>
+                                    <td><a href="#">#@order.Id.ToString("D5")</a></td>
+                                    <td>
+                                        <h2 class="table-avatar">
+                                            <a href="#" class="avatar avatar-sm mr-2">
+                                                <img class="avatar-img" src="/admin/assets/images/profiles/avatar-08.jpg" alt="User Image">
+                                            </a>
+                                            <a href="#">@order.Customer?.Id</a>
+                                        </h2>
+                                    </td>
+
+                                    <td>@order.OrderDate?.ToString("MMM dd, yyyy") ?? "N/A"</td>
+
+                                    <td>@order.TotalPrice.ToString("C")</td>
+                                    <td>
+                                        <span class="badge badge-pill bg-@((int)order.Status == 1 ? "success" :
+                                         order.Status == 0 ? "warning" : "danger")-light">
+                                            @order.Status
+                                        </span>
+                                    </td>
+
+                                    <td class="text-right">
+                                        <a href="@Url.Action("OrderDetails", new { id = order.Id })" class="btn btn-sm btn-primary">
+                                            <i class="la la-eye"></i> View
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Sales Chart
+            $.get('@Url.Action("GetSalesData")', function(data) {
+                var ctx = document.getElementById('salesChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(item => new Date(2023, item.month - 1).toLocaleString('default', { month: 'short' })),
+                        datasets: [{
+                            label: 'Sales Amount',
+                            data: data.map(item => item.totalSales),
+                            backgroundColor: '#4e73df',
+                            borderColor: '#4e73df',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value.toLocaleString();
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        return '$' + context.raw.toLocaleString();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Category Distribution Chart
+            $.get('@Url.Action("GetCategoryDistribution")', function(data) {
+                var ctx = document.getElementById('categoryChart').getContext('2d');
+                var chart = new Chart(ctx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.map(item => item.category),
+                        datasets: [{
+                            data: data.map(item => item.count),
+                            backgroundColor: [
+                                '#4e73df',
+                                '#1cc88a',
+                                '#36b9cc',
+                                '#f6c23e',
+                                '#e74a3b',
+                                '#858796'
+                            ],
+                            hoverBackgroundColor: [
+                                '#2e59d9',
+                                '#17a673',
+                                '#2c9faf',
+                                '#dda20a',
+                                '#be2617',
+                                '#6c757d'
+                            ],
+                            hoverBorderColor: "rgba(234, 236, 244, 1)",
+                        }]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right'
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        var label = context.label || '';
+                                        var value = context.raw || 0;
+                                        var total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        var percentage = Math.round((value / total) * 100);
+                                        return `${label}: ${value} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        cutout: '70%'
+                    }
+                });
+            });
+        });
+    </script>
+}

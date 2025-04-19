@@ -26,5 +26,7 @@ public partial class Customer
     public virtual ICollection<Return>? Returns { get; set; } = new List<Return>();
 
     public string ApplicationUserId { get; set; }
+
+    [ForeignKey(nameof(ApplicationUserId))]
     public ApplicationUser ApplicationUser { get; set; }
 }

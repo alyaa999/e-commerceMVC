@@ -386,7 +386,8 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Customer__3214EC27B75DE14A");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
 
                     b.ToTable("Customer");
                 });
@@ -409,6 +410,9 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("Order_Date")
                         .HasDefaultValueSql("(getdate())");
+
+                    b.Property<string>("PaymentIntentId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("int")
@@ -491,6 +495,9 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Desc")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)")
@@ -500,6 +507,9 @@ namespace e_commerce.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(5, 2)")
                         .HasDefaultValue(0m);
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
 
                     b.Property<bool>("IsApproved")
                         .HasColumnType("bit");
@@ -676,7 +686,8 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Seller__3214EC272DFE5864");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("ApplicationUserId")
+                        .IsUnique();
 
                     b.ToTable("Seller");
                 });
@@ -843,8 +854,8 @@ namespace e_commerce.Infrastructure.Migrations
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Customer", b =>
                 {
                     b.HasOne("e_commerce.Domain.Entites.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
+                        .WithOne("Customer")
+                        .HasForeignKey("e_commerce.Infrastructure.Entites.Customer", "ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -875,6 +886,7 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasOne("e_commerce.Infrastructure.Entites.Order", "Order")
                         .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK__Order_Pro__Order__5441852A");
 
@@ -969,8 +981,8 @@ namespace e_commerce.Infrastructure.Migrations
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Seller", b =>
                 {
                     b.HasOne("e_commerce.Domain.Entites.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
+                        .WithOne("Seller")
+                        .HasForeignKey("e_commerce.Infrastructure.Entites.Seller", "ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -997,6 +1009,13 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasConstraintName("FK__Wishlist__Custom__60A75C0F");
 
                     b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("e_commerce.Domain.Entites.ApplicationUser", b =>
+                {
+                    b.Navigation("Customer");
+
+                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Address", b =>

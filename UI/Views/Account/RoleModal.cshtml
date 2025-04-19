@@ -1,0 +1,96 @@
+﻿@{
+    Layout = null;
+    var userId = ViewBag.UserId;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Choose Your Role</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f4f4;
+        }
+
+        .role-card {
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            text-align: center;
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+            .role-card:hover {
+                border-color: hsl(176, 88%, 27%);
+                background-color: #f0f8ff;
+            }
+
+            .role-card input[type="radio"] {
+                display: none;
+            }
+
+            .role-card.selected {
+                border-color: hsl(176, 88%, 27%);
+                background-color: #e9f3ff;
+            }
+
+        .role-label {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .role-desc {
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container vh-100 d-flex justify-content-center align-items-center">
+        <form asp-action="ChooseRole" method="post" class="w-100" style="max-width: 500px;">
+            <input type="hidden" name="userId" value="@userId" />
+
+            <h3 class="text-center mb-4">Choose Your Role</h3>
+
+            <div class="d-flex flex-column gap-3">
+                <!-- Customer Option -->
+                <label class="role-card" id="customerCard">
+                    <input type="radio" name="role" value="Customer" required />
+                    <div class="role-label">🛍️ I'm a Customer</div>
+                    <div class="role-desc">Shop products, explore offers, and place orders</div>
+                </label>
+
+                <!-- Seller Option -->
+                <label class="role-card" id="sellerCard">
+                    <input type="radio" name="role" value="Seller" required />
+                    <div class="role-label">🏪 I'm a Seller</div>
+                    <div class="role-desc">Sell your items, manage orders, and grow your store</div>
+                </label>
+            </div>
+
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary w-100">Continue</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Optional JS: Automatically select on click -->
+    <script>
+        const cards = document.querySelectorAll('.role-card');
+
+        cards.forEach(card => {
+            card.addEventListener('click', () => {
+                cards.forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                card.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+    </script>
+</body>
+</html>

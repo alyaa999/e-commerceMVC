@@ -1,0 +1,303 @@
+﻿@model List<e_commerce.Infrastructure.Entites.Product>
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Pending Products";
+}
+
+<div class="main-content app-content mt-0">
+    <div class="side-app">
+        <!-- CONTAINER -->
+        <div class="main-container container-fluid">
+            <!-- Page Header -->
+            <div class="page-header">
+                <div class="row align-items-center">
+                    <div class="col-xl-5 col-lg-12 col-md-12">
+
+                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+                            <h1 class="page-title mb-3"><i class="fe fe-clock me-2"></i><b>Pending Products</b></h1>
+
+                            <div class="btn-group mb-3">
+                                <form method="post" asp-action="ApproveAllProducts" asp-controller="Admin" class="me-2">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-success"
+                                            onclick="return confirm('Are you sure you want to approve ALL pending products?')">
+                                        <i class="fe fe-check me-1"></i> Approve All
+                                    </button>
+                                </form>
+
+                                <form method="post" asp-action="RejectAllProducts" asp-controller="Admin">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn-danger"
+                                            onclick="return confirm('Are you sure you want to reject ALL pending products?')">
+                                        <i class="fe fe-trash-2 me-1"></i> Reject All
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                    <div class="col-xl-7 col-lg-12 col-md-12 d-flex justify-content-end">
+                        
+                </div>
+            </div>
+
+            <!-- Card -->
+            <div class="row row-sm">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header border-bottom-0">
+                            <div class="row align-items-center">
+                                @* <div class="col"> *@
+                                @*     <h3 class="card-title"><i class="fe fe-package me-2"></i>Pending Approval</h3> *@
+                                @* </div> *@
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            @if (!Model.Any())
+                            {
+                                <div class="alert alert-info">
+                                    <i class="fe fe-info me-2"></i>No pending products found. All products are approved!
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="table-responsive">
+                                        <table class="table table-hover table-bordered align-middle text-center" id="pendingProductsTable">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th><i class="fe fe-hash"></i> ID</th>
+                                                    <th><i class="fe fe-box"></i> Product</th>
+                                                    <th><i class="fe fe-align-left"></i> Description</th>
+                                                    <th><i class="fe fe-grid"></i> SubCategory</th>
+                                                    <th><i class="fe fe-image"></i> Image</th>
+                                                    <th><i class="fe fe-user"></i> Seller</th>
+                                                    <th><i class="fe fe-activity"></i> Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var prd in Model)
+                                                {
+                                                    <tr>
+                                                        <td>@prd.Id</td>
+                                                        <td class="text-truncate" style="max-width: 150px;">@prd.Name</td>
+                                                        <td class="text-truncate" style="max-width: 150px;">@prd.Desc</td>
+                                                        <td>
+                                                            <span class="badge bg-@(prd.SubCategory != null ? "primary" : "secondary")">
+                                                                @(prd.SubCategory?.Name ?? "No SubCategory")
+                                                            </span>
+                                                        </td>
+                                                        <td>
+                                                            @{
+                                                                var img = prd.ProductImages?.FirstOrDefault()?.ImageUrl;
+                                                            }
+                                                            @if (!string.IsNullOrEmpty(img))
+                                                            {
+                                                                <a href="@img" data-fancybox>
+                                                                    <img src="@img" alt="Image" style="height: 50px; border-radius: 5px;" />
+                                                                </a>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="text-muted">No Image</span>
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            @if (prd.Seller?.ApplicationUser != null)
+                                                            {
+                                                                <div>
+                                                                    @prd.Seller.ApplicationUser.FirstName @prd.Seller.ApplicationUser.LastName<br />
+                                                                    <small class="text-muted">ID: @prd.Seller.Id</small>
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="text-muted">No Seller</span>
+                                                            }
+                                                        </td>
+                                                        <td>
+                                                            <div class="btn-group" role="group">
+                                                                <form method="post" asp-action="RejectProduct" asp-controller="Admin" class="me-1">
+                                                                    <input type="hidden" name="id" value="@prd.Id" />
+                                                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                                        <i class="fe fe-trash-2"></i>
+                                                                    </button>
+                                                                </form>
+                                                                <form method="post" asp-action="ApproveProduct" asp-controller="Admin">
+                                                                    <input type="hidden" name="id" value="@prd.Id" />
+                                                                    <button type="submit" class="btn btn-outline-success btn-sm">
+                                                                        <i class="fe fe-check"></i>
+                                                                    </button>
+                                                                </form>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" /> *@
+    @* <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script> *@
+
+    <script>
+        $(document).ready(function () {
+            // Initialize fancybox for image previews
+            Fancybox.bind("[data-fancybox]", {
+                // Options
+            });
+
+            // Single Approve/Reject actions
+            $('.approve-btn').click(function () {
+                const productId = $(this).data('id');
+                confirmAction(productId, 'approve');
+            });
+
+            $('.reject-btn').click(function () {
+                const productId = $(this).data('id');
+                confirmAction(productId, 'reject');
+            });
+
+            // Bulk actions
+            $('#approveAllBtn, #approveAllBtn2').click(function () {
+                confirmBulkAction('approve');
+            });
+
+            $('#rejectAllBtn, #rejectAllBtn2').click(function () {
+                confirmBulkAction('reject');
+            });
+
+            function confirmAction(productId, actionType) {
+                const actionText = actionType === 'approve' ? 'approve' : 'reject';
+                const actionIcon = actionType === 'approve' ? 'success' : 'error';
+
+                Swal.fire({
+                    title: `Are you sure?`,
+                    text: `You are about to ${actionText} this product.`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: actionType === 'approve' ? '#28a745' : '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: `Yes, ${actionText} it!`,
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading
+                        Swal.fire({
+                            title: 'Processing',
+                            html: `Please wait while we ${actionText} the product...`,
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        // Perform the action
+                        const url = actionType === 'approve'
+                            ? `/Admin/ApproveProduct/${productId}`
+                            : `/Admin/RejectProduct/${productId}`;
+
+                        window.location.href = url;
+                    }
+                });
+            }
+
+            function confirmBulkAction(actionType) {
+                const actionText = actionType === 'approve' ? 'approve' : 'reject';
+                const actionIcon = actionType === 'approve' ? 'success' : 'error';
+                const productCount = @Model.Count;
+
+                if (productCount === 0) {
+                    Swal.fire({
+                        title: 'No Products',
+                        text: 'There are no products to process.',
+                        icon: 'info'
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    title: `Are you sure?`,
+                    html: `You are about to ${actionText} <strong>all ${productCount}</strong> pending products.`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: actionType === 'approve' ? '#28a745' : '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: `Yes, ${actionText} all!`,
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading
+                        Swal.fire({
+                            title: 'Processing',
+                            html: `Please wait while we ${actionText} all products...`,
+                            timerProgressBar: true,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        // Perform the bulk action
+                        const url = actionType === 'approve'
+                            ? '/Admin/ApproveAllProducts'
+                            : '/Admin/RejectAllProducts';
+
+                        window.location.href = url;
+                    }
+                });
+            }
+        });
+                // SweetAlert2 confirmation for Reject All
+        document.getElementById('rejectAllBtn').addEventListener('click', function(e) {
+            e.preventDefault(); // Stop the link from navigating immediately
+            const url = this.href;
+
+            Swal.fire({
+                title: 'Reject All Products?',
+                text: "This will permanently delete all pending products!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Yes, reject all!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url; // Proceed with navigation
+                }
+            });
+        });
+
+        // SweetAlert2 confirmation for Approve All
+        document.getElementById('approveAllBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+            const url = this.href;
+
+            Swal.fire({
+                title: 'Approve All Products?',
+                text: "This will make all pending products visible to customers",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, approve all!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = url;
+                }
+            });
+        });
+    </script>
+}

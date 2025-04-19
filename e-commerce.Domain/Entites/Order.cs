@@ -37,12 +37,16 @@ public partial class Order
     [Column("Shipping_Address_ID")]
     public int ShippingAddressId { get; set; }
 
+    public string? PaymentIntentId { get; set; }
+
     [ForeignKey("CustomerId")]
     [InverseProperty("Orders")]
     public virtual Customer Customer { get; set; }
 
     [InverseProperty("Order")]
+
     public virtual ICollection<OrderProduct> OrderProducts { get; set; } = new List<OrderProduct>();
+    
 
     [InverseProperty("Order")]
     public virtual ICollection<Return> Returns { get; set; } = new List<Return>();
