@@ -1,7 +1,13 @@
 using System.Diagnostics;
+using AutoMapper;
+using e_commerce.Domain.DTOS;
+using e_commerce.Infrastructure.Entites;
+using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.Models;
-using Microsoft.AspNetCore.Authorization;
+using e_commerce.Web.ViewModels.Home;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore;
 
 namespace e_commerce.Controllers;
 
@@ -9,25 +15,105 @@ namespace e_commerce.Controllers;
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    private readonly IHomeRepository homeRepository;
+    private readonly IMapper _mapper;
+   
+    public HomeController(ILogger<HomeController> logger , IHomeRepository homeRepository , IMapper mapper)
     {
         _logger = logger;
+        _mapper = mapper;   
+        this.homeRepository = homeRepository;
+    }
+    public override void OnActionExecuting(ActionExecutingContext filterContext)
+    {
+
+        var DbCategories = homeRepository.GetCategories();
+
+        var categories = _mapper.Map<List<CategoryViewModel>>(DbCategories?.ToList() ?? new List<Category>());
+        ViewBag.Categories = categories;
+        base.OnActionExecuting(filterContext);
     }
 
-    public IActionResult Index()
+
+    public async Task<IActionResult> Index(int pageNumber = 1)
     {
-        return View();
+        int pageSize = 1;
+
+        var items = homeRepository.GetProductsByCategory(null, null);
+        var paginatedList = await PaginatedList<Product>.CreateAsync(items, pageNumber, pageSize);
+
+        var newArrivals = await PaginatedList<Product>.CreateAsync(homeRepository.GetProductsByTag(3), 1, 4);
+        var trending = await PaginatedList<Product>.CreateAsync(homeRepository.GetProductsByTag(8), 1, 4);
+        var hotRelease = await PaginatedList<Product>.CreateAsync(homeRepository.GetProductsByTag(5), 1, 4);
+        var bestSeller = await PaginatedList<Product>.CreateAsync(homeRepository.GetProductsByTag(4), 1, 4);
+        var deals = await PaginatedList<Product>.CreateAsync(homeRepository.GetProductsByTag(6), 1, 4);
+
+        var homeViewModel = new HomeViewModel
+        {
+            Products = _mapper.Map<List<ProductViewModel>>(paginatedList),
+            NewArrivalsProducts = _mapper.Map<List<ProductViewModel>>(newArrivals),
+            Trending = _mapper.Map<List<ProductViewModel>>(trending),
+            HotRelease = _mapper.Map<List<ProductViewModel>>(hotRelease),
+            BestDeal = _mapper.Map<List<ProductViewModel>>(deals),
+            TopSelling = _mapper.Map<List<ProductViewModel>>(bestSeller),
+        };
+
+        return View(homeViewModel);
     }
 
-    public IActionResult Privacy()
+    //In AutoMapper, mapping a valid source object (like a list) will usually return an empty list, not null, even if the source list is empty or null.
+    public async  Task<IActionResult> ShopNow(ShopViewModel ShopVm,int pageNumber= 1)
     {
-        return View();
+        int pageSize = 1;
+        var shopDTO = _mapper.Map<ShopDTO>(ShopVm);
+       
+        var items = homeRepository.GetProducts(shopDTO);
+        var paginatedList = await  PaginatedList<Product>.CreateAsync(items, pageNumber, pageSize);
+
+        var brands = homeRepository.GetBrands();
+        var tagersObj = homeRepository.GetTagers();
+        var tagers = _mapper.Map<List<TagViewModel>>(tagersObj);
+
+
+        var shopViewMode = new ShopViewModel()
+        {
+            CategoryId = ShopVm.CategoryId,
+            SubCategoryId = ShopVm.SubCategoryId,
+            BrandFilter = ShopVm.BrandFilter,
+            PriceFilter = ShopVm.PriceFilter,
+            TagFilter = ShopVm.TagFilter,
+            PageNumber = pageNumber,
+            productCount = paginatedList.Count(),
+            TotalPages = paginatedList.TotalPages,
+            Brands = brands,
+            tagers = tagers,
+            Name = ShopVm.Name,
+            Products = _mapper.Map<List<ProductViewModel>>(paginatedList)
+        };
+      
+
+        return View(shopViewMode);
+    }
+    
+    public async Task<IActionResult> ProductDetials(int id)
+    {
+        var product = homeRepository.GetProductById(id);
+        var relatedProduct =homeRepository.GetProductsByCategory(null, product?.SubCategoryId);
+        var productDetails = new ProductDetialsViewModel
+        {
+            ProductDetials = _mapper.Map<ProductViewModel>(product),
+            RelatedProducts= _mapper.Map<List<ProductViewModel>>(relatedProduct.ToList())
+        };
+
+        return View(productDetails);
     }
 
-    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-    public IActionResult Error()
-    {
-        return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-    }
+  
+
+   
+ 
+   
+   
+
+   
 }

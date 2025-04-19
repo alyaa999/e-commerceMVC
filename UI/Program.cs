@@ -38,6 +38,8 @@ namespace e_commerce
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddControllersWithViews();
+            builder.Services.AddAutoMapper(typeof(ProductProfile));
             builder.Services.AddControllersWithViews(
                 conf => conf.Filters.Add(new AuthorizeFilter())
                 );
@@ -45,6 +47,10 @@ namespace e_commerce
 
             builder.Services.AddDbContext<ECommerceDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            #region AddServices
+            builder.Services.AddScoped<IHomeRepository, HomeRepository>();
+            #endregion
             builder.Services.AddScoped<IWishlistRepo, WishlistRepo>();
             //builder.Services.AddApplicationServices();
 

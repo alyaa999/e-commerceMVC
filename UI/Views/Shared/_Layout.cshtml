@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿@using e_commerce.Web.ViewModels.Home
+@{
+    var categories = ViewBag.Categories as List<CategoryViewModel>;
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -6,11 +10,8 @@
 
     <!--=============== FLATICON ===============-->
     <link rel="stylesheet"
-          href="https://cdn-uicons.flaticon.com/2.0.0/uicons-regular-straight/css/uicons-regular-straight.css" />
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    href="https://cdn-uicons.flaticon.com/2.0.0/uicons-regular-straight/css/uicons-regular-straight.css" />
 
-    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.0.0/uicons-regular-straight/css/uicons-regular-straight.css" />
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -20,8 +21,14 @@
     <link rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
+
     <!--=============== CSS ===============-->
     <link href="~/css/styles.css" rel="stylesheet" />
+    <!-- Add this in <head> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -60,14 +67,14 @@
         </div>
 
         <nav class="nav container">
-            <a href="index.html" class="nav__logo">
+            <a asp-action="Index"class="nav__logo">
                 <img class="nav__logo-img"
                 src="~/image/logo.svg"
                 alt="website logo" />
             </a>
             <div class="nav__menu" id="nav-menu">
                 <div class="nav__menu-top">
-                    <a href="index.html" class="nav__menu-logo">
+                    <a asp-action="Index"class="nav__menu-logo">
                         <img src="~/image/logo.svg" alt="">
                     </a>
                     <div class="nav__close" id="nav-close">
@@ -76,44 +83,176 @@
                 </div>
                 <ul class="nav__list">
                     <li class="nav__item">
-                        <a href="index.html" class="nav__link active-link">Home</a>
+                        <a  asp-action="Index" class="nav__link active-link">Home</a>
                     </li>
-                    @if (!User.Identity.IsAuthenticated)
-                    {
-                        <li class="nav__item">
-                            <a asp-controller="Account" asp-action="Register" class="nav__link">Register</a>
-                        </li>
-                        <li class="nav__item">
-                            <a asp-controller="Account" asp-action="Login" class="nav__link" asp-route-returnurl="@Context.Request.Path">Login</a>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="nav__item">
-                            <a href="shop.html" class="nav__link">Shop</a>
-                        </li>
-                        <li class="nav__item">
-                            <a asp-controller="MyAccount" asp-action="Index" class="nav__link">My Account</a>
-                        </li>
-                        <li class="nav__item">
-                            <a href="compare.html" class="nav__link">Compare</a>
-                        </li>
-                        <li class="nav__item">
-                            <a> Hello @User.Identity.Name</a>
-                        </li>
-                        <li class="nav__item">
-                            <a asp-controller="Account" asp-action="Logout" class="nav__link">Logout</a>
-                        </li>
-                    }
+                    <li class="nav__item">
+                        <a asp-action="ShopNow" class="nav__link">Shop</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="accounts.html" class="nav__link">My Account</a>
+                    </li>
+                    <li class="nav__item">
+                        <a href="compare.html" class="nav__link">Compare</a>
+                    </li>
+                    <li class="nav__item relative">
+                        <a href="#" class="nav__link" onclick="toggleCategories()">Categories</a>
+                        <ul id="category-menu" class="absolute hidden z-50 left-0 top-full mt-2 w-max bg-white shadow-lg rounded-md">
+                            <li>
+                                <div class="p-4 categoriesMenu">
+                                    <div class="grid grid-cols-1 min-[400px]:grid-cols-2 min-[600px]:grid-cols-3 gap-4">
+                                        <!--Static Categries-->
+                                        <!-- Electronics -->
+                                        <div class="group">
+                                            <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
+                                                <div class="flex items-center space-x-3">
+                                                    <i class="fas fa-tv text-pink-500"></i>
+                                                    <a href="#" class="text-gray-800 font-medium">Electronics</a>
+                                                </div>
+                                                <button onclick="toggleSubcategories(this,'electronics-sub')" class="text-gray-400 group-hover:text-gray-600">
+                                                    +
+                                                </button>
+                                            </div>
+                                            <ul id="electronics-sub" class="ml-8 mt-1 space-y-1 hidden">
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 px-3 py-1 rounded">Phones</a></li>
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 px-3 py-1 rounded">Laptops</a></li>
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 px-3 py-1 rounded">Accessories</a></li>
+                                            </ul>
+                                        </div>
 
+                                        <!-- Clothing -->
+                                        <div class="group">
+                                            <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
+                                                <div class="flex items-center space-x-3">
+                                                    <i class="fas fa-tshirt text-pink-500"></i>
+                                                    <a href="#" class="text-gray-800 font-medium">Clothing</a>
+                                                </div>
+                                                <button onclick="toggleSubcategories(this,'clothing-sub')" class="text-gray-400 group-hover:text-gray-600">
+                                                    +
+                                                </button>
+                                            </div>
+                                            <ul id="clothing-sub" class="ml-8 mt-1 space-y-1 hidden">
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-purple-600 hover:bg-gray-50 px-3 py-1 rounded">Men</a></li>
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-purple-600 hover:bg-gray-50 px-3 py-1 rounded">Women</a></li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- Home -->
+                                        <div class="group">
+                                            <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
+                                                <div class="flex items-center space-x-3">
+                                                    <i class="fas fa-home text-pink-500"></i>
+                                                    <a href="#" class="text-gray-800 font-medium">Home</a>
+                                                </div>
+                                                <button onclick="toggleSubcategories('home-sub')" class="text-gray-400 group-hover:text-gray-600">
+                                                    +
+                                                </button>
+                                            </div>
+                                            <ul id="home-sub" class="ml-8 mt-1 space-y-1 hidden">
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-green-600 hover:bg-gray-50 px-3 py-1 rounded">Furniture</a></li>
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-green-600 hover:bg-gray-50 px-3 py-1 rounded">Kitchen</a></li>
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-green-600 hover:bg-gray-50 px-3 py-1 rounded">Decor</a></li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- Books -->
+                                        <div class="group">
+                                            <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
+                                                <div class="flex items-center space-x-3">
+                                                    <i class="fas fa-book text-pink-500"></i>
+                                                    <a href="#" class="text-gray-800 font-medium">Books</a>
+                                                </div>
+                                                <button onclick="toggleSubcategories(this,'books-sub')" class="text-gray-400 group-hover:text-gray-600">
+                                                    +
+                                                </button>
+                                            </div>
+                                            <ul id="books-sub" class="ml-8 mt-1 space-y-1 hidden">
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-red-600 hover:bg-gray-50 px-3 py-1 rounded">Fiction</a></li>
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-red-600 hover:bg-gray-50 px-3 py-1 rounded">Non-Fiction</a></li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- Sports -->
+                                        <div class="group">
+                                            <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
+                                                <div class="flex items-center space-x-3">
+                                                    <i class="fas fa-football-ball text-pink-500"></i>
+                                                    <a href="#" class="text-gray-800 font-medium">Sports</a>
+                                                </div>
+                                                <button onclick="toggleSubcategories(this,'sports-sub')" class="text-gray-400 group-hover:text-gray-600">
+                                                    +
+                                                </button>
+                                            </div>
+                                            <ul id="sports-sub" class="ml-8 mt-1 space-y-1 hidden">
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-orange-600 hover:bg-gray-50 px-3 py-1 rounded">Equipment</a></li>
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-orange-600 hover:bg-gray-50 px-3 py-1 rounded">Apparel</a></li>
+                                            </ul>
+                                        </div>
+
+                                        <!-- Beauty -->
+                                        <div class="group">
+                                            <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
+                                                <div class="flex items-center space-x-3">
+                                                    <i class="fas fa-spa text-pink-500"></i>
+                                                    <a href="#" class="text-gray-800 font-medium">Beauty</a>
+                                                </div>
+                                                <button onclick="toggleSubcategories(this,'beauty-sub')" class="text-gray-400 group-hover:text-gray-600">
+                                                    +
+                                                </button>
+                                            </div>
+                                            <ul id="beauty-sub" class="ml-8 mt-1 space-y-1 hidden">
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-pink-600 hover:bg-gray-50 px-3 py-1 rounded">Skincare</a></li>
+                                                <li><a href="#" class="block text-sm text-gray-600 hover:text-pink-600 hover:bg-gray-50 px-3 py-1 rounded">Makeup</a></li>
+                                            </ul>
+                                            </div>
+                                            <!--AnotherCategories Dynamic-->
+                                                @foreach(var item in categories)
+                                                {
+                                                    <div class="group">
+                                                        <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
+                                                            <div class="flex items-center space-x-3">
+                                                                <i class="fas fa-star text-pink-400"></i>
+                                                        <a asp-action="ShopNow"  asp-route-CategoryId="@item.Id" class="text-gray-800 font">@item.Name</a>
+                                                            </div>
+                                                    <button onclick="toggleSubcategories(this,'@item.Name')" class="text-gray-400 group-hover:text-gray-600" >
+                                                                +
+                                                            </button>
+                                                        </div>
+
+                                                        @if (item.subCategory != null)
+                                                        {
+                                                            <ul id="@item.Name" class="ml-8 mt-1 space-y-1 hidden">
+                                                                @foreach (var sub in item.subCategory)
+                                                                {
+                                                                  <li><a asp-action="ShopNow" asp-route-CategoryId="@item.Id"   asp-route-SubCategoryId="@sub.Id" class="block text-sm text-gray-600 hover:text-pink-600 hover:bg-gray-50 px-3 py-1 rounded">@sub.Name</a></li>
+                                                                }
+                                                            </ul>
+                                                        }
+
+                                                      
+                                                </div>
+                                            }
+                                     
+                                       
+                                        </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li class="nav__item">
+                        <a href="login-register.html" class="nav__link">Login</a>
+                    </li>
                 </ul>
                 <div class="header__search">
-                    <input type="text"
-                           placeholder="Search For Items..."
-                           class="form__input" />
-                    <button class="search__btn">
-                        <img src="~/image/search.png" alt="search icon" />
-                    </button>
+                    <form asp-action="ShopNow" method="get">
+                        <input type="text"
+                               placeholder="Search For Items..."
+                               class="form__input" name="Name" />
+                        <button class="search__btn" type="submit">
+                            <img src="~/image/search.png" alt="search icon" />
+                        </button>
+                    </form>
+                  
                 </div>
             </div>
             <div class="header__user-actions">
@@ -163,7 +302,7 @@
     <footer class="footer container">
         <div class="footer__container grid">
             <div class="footer__content">
-                <a href="index.html" class="footer__logo">
+                <a asp-action="Index"class="footer__logo">
                     <img src="~/image/logo.svg" alt="" class="footer__logo-img" />
                 </a>
                 <h4 class="footer__subtitle">Contact</h4>
@@ -270,3 +409,4 @@
     @RenderSection("Scripts", required: false) 
 </body>
 </html>
+

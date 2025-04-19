@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using e_commerce.Infrastructure.Entites;
 
@@ -11,9 +12,11 @@ using e_commerce.Infrastructure.Entites;
 namespace e_commerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    partial class ECommerceDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250418055816_SeedingTagData")]
+    partial class SeedingTagData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -327,7 +330,7 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<bool>("IsDefault")
+                    b.Property<bool?>("IsDefault")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(false);
@@ -342,7 +345,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Address", (string)null);
+                    b.ToTable("Address");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Cart", b =>
@@ -377,7 +380,7 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasIndex(new[] { "CustomerId" }, "UQ__Cart__8CB286B8700ED883")
                         .IsUnique();
 
-                    b.ToTable("Cart", (string)null);
+                    b.ToTable("Cart");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.CartProduct", b =>
@@ -406,7 +409,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductCode");
 
-                    b.ToTable("Cart_Product", (string)null);
+                    b.ToTable("Cart_Product");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Category", b =>
@@ -426,7 +429,7 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Category__3214EC2794A91D88");
 
-                    b.ToTable("Category", (string)null);
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Customer", b =>
@@ -438,17 +441,10 @@ namespace e_commerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
                     b.HasKey("Id")
                         .HasName("PK__Customer__3214EC27B75DE14A");
 
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique();
-
-                    b.ToTable("Customer", (string)null);
+                    b.ToTable("Customer");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Order", b =>
@@ -469,9 +465,6 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("Order_Date")
                         .HasDefaultValueSql("(getdate())");
-
-                    b.Property<string>("PaymentIntentId")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("int")
@@ -495,7 +488,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ShippingAddressId");
 
-                    b.ToTable("Order", (string)null);
+                    b.ToTable("Order");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.OrderProduct", b =>
@@ -524,7 +517,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Order_Product", (string)null);
+                    b.ToTable("Order_Product");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Product", b =>
@@ -596,7 +589,7 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasIndex(new[] { "Code" }, "UQ__Product__A25C5AA733C60312")
                         .IsUnique();
 
-                    b.ToTable("Product", (string)null);
+                    b.ToTable("Product");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.ProductImage", b =>
@@ -635,7 +628,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Product_Image", (string)null);
+                    b.ToTable("Product_Image");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Return", b =>
@@ -670,9 +663,6 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int>("custId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id")
                         .HasName("PK__Returns__3214EC274E77FA1B");
 
@@ -680,9 +670,46 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("custId");
+                    b.ToTable("Returns");
+                });
 
-                    b.ToTable("Returns", (string)null);
+            modelBuilder.Entity("e_commerce.Infrastructure.Entites.ReturnImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("ID");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("DisplayOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0)
+                        .HasColumnName("Display_Order");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)")
+                        .HasColumnName("Image_URL");
+
+                    b.Property<bool?>("IsPrimary")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false)
+                        .HasColumnName("Is_Primary");
+
+                    b.Property<int>("ReturnId")
+                        .HasColumnType("int")
+                        .HasColumnName("Return_ID");
+
+                    b.HasKey("Id")
+                        .HasName("PK__Return_I__3214EC27A7EF9997");
+
+                    b.HasIndex("ReturnId");
+
+                    b.ToTable("Return_Image");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Review", b =>
@@ -722,7 +749,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("Review", (string)null);
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Seller", b =>
@@ -734,17 +761,13 @@ namespace e_commerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int?>("SellerCode")
+                        .HasColumnType("int");
 
                     b.HasKey("Id")
                         .HasName("PK__Seller__3214EC272DFE5864");
 
-                    b.HasIndex("ApplicationUserId")
-                        .IsUnique();
-
-                    b.ToTable("Seller", (string)null);
+                    b.ToTable("Seller");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.SubCategory", b =>
@@ -770,7 +793,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Sub_Category", (string)null);
+                    b.ToTable("Sub_Category");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Wishlist", b =>
@@ -796,7 +819,7 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Wishlist", (string)null);
+                    b.ToTable("Wishlist");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -906,17 +929,6 @@ namespace e_commerce.Infrastructure.Migrations
                     b.Navigation("ProductCodeNavigation");
                 });
 
-            modelBuilder.Entity("e_commerce.Infrastructure.Entites.Customer", b =>
-                {
-                    b.HasOne("e_commerce.Domain.Entites.ApplicationUser", "ApplicationUser")
-                        .WithOne("Customer")
-                        .HasForeignKey("e_commerce.Infrastructure.Entites.Customer", "ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-                });
-
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Order", b =>
                 {
                     b.HasOne("e_commerce.Infrastructure.Entites.Customer", "Customer")
@@ -941,7 +953,6 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasOne("e_commerce.Infrastructure.Entites.Order", "Order")
                         .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("FK__Order_Pro__Order__5441852A");
 
@@ -1005,17 +1016,21 @@ namespace e_commerce.Infrastructure.Migrations
                         .IsRequired()
                         .HasConstraintName("FK__Returns__Product__6EF57B66");
 
-                    b.HasOne("e_commerce.Infrastructure.Entites.Customer", "Customer")
-                        .WithMany("Returns")
-                        .HasForeignKey("custId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-
                     b.Navigation("Order");
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("e_commerce.Infrastructure.Entites.ReturnImage", b =>
+                {
+                    b.HasOne("e_commerce.Infrastructure.Entites.Return", "Return")
+                        .WithMany("ReturnImages")
+                        .HasForeignKey("ReturnId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK__Return_Im__Retur__73BA3083");
+
+                    b.Navigation("Return");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Review", b =>
@@ -1035,17 +1050,6 @@ namespace e_commerce.Infrastructure.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("e_commerce.Infrastructure.Entites.Seller", b =>
-                {
-                    b.HasOne("e_commerce.Domain.Entites.ApplicationUser", "ApplicationUser")
-                        .WithOne("Seller")
-                        .HasForeignKey("e_commerce.Infrastructure.Entites.Seller", "ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.SubCategory", b =>
@@ -1068,13 +1072,6 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasConstraintName("FK__Wishlist__Custom__60A75C0F");
 
                     b.Navigation("Customer");
-                });
-
-            modelBuilder.Entity("e_commerce.Domain.Entites.ApplicationUser", b =>
-                {
-                    b.Navigation("Customer");
-
-                    b.Navigation("Seller");
                 });
 
             modelBuilder.Entity("e_commerce.Domain.Entites.Tag", b =>
@@ -1106,8 +1103,6 @@ namespace e_commerce.Infrastructure.Migrations
 
                     b.Navigation("Orders");
 
-                    b.Navigation("Returns");
-
                     b.Navigation("Reviews");
 
                     b.Navigation("Wishlists");
@@ -1131,6 +1126,11 @@ namespace e_commerce.Infrastructure.Migrations
                     b.Navigation("Returns");
 
                     b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("e_commerce.Infrastructure.Entites.Return", b =>
+                {
+                    b.Navigation("ReturnImages");
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Seller", b =>

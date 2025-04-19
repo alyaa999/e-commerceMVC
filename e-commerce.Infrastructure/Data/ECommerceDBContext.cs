@@ -12,6 +12,7 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
     {
     }
 
+    public virtual DbSet<Tag> Tags { get; set; }
     public virtual DbSet<Address> Addresses { get; set; }
 
     public virtual DbSet<Cart> Carts { get; set; }
@@ -47,7 +48,15 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
 
     {
         base.OnModelCreating(modelBuilder);
+        var tags = Enum.GetValues(typeof(Tager))
+            .Cast<Tager>()
+            .Select(e => new Tag
+            {
+                Id = (int)e,
+                Name = e.ToString()
+            });
 
+        modelBuilder.Entity<Tag>().HasData(tags);
 
 
         modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
@@ -246,6 +255,11 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
                         });
             });
         }
+
+        #endregion
+
+   
+
     }
 }
 

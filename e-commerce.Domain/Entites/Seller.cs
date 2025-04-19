@@ -12,6 +12,7 @@ public partial class Seller
 {
     [Key]
     [Column("ID")]
+
     public int Id { get; set; }
 
     public virtual ICollection<Product> Products { get; set; } = new List<Product>();
