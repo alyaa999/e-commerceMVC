@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace e_commerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:e-commerce.Infrastructure/Migrations/20250419115044_newone.cs
     public partial class newone : Migration
-========
-    public partial class FinishAdminParts : Migration
->>>>>>>> Marwafeature:e-commerce.Infrastructure/Migrations/20250412164941_FinishAdminParts.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

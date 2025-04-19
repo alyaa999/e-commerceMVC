@@ -16,20 +16,17 @@ namespace e_commerce.Web.Controllers
         private readonly IRepository<Return> _returnRepository;
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<Product> _productRepository;
-        private readonly IRepository<ReturnImage> _returnImageRepository;
         private readonly ILogger<AdminReturnsController> _logger;
 
         public AdminReturnsController(
             IRepository<Return> returnRepository,
             IRepository<Order> orderRepository,
             IRepository<Product> productRepository,
-            IRepository<ReturnImage> returnImageRepository,
             ILogger<AdminReturnsController> logger)
         {
             _returnRepository = returnRepository;
             _orderRepository = orderRepository;
             _productRepository = productRepository;
-            _returnImageRepository = returnImageRepository;
             _logger = logger;
         }
 
@@ -44,7 +41,6 @@ namespace e_commerce.Web.Controllers
             {
         r => r.Order,
         r => r.Product,
-        r => r.ReturnImages
     };
 
             var returns = await _returnRepository.GetAllIncludingAsync(includes);
@@ -71,7 +67,6 @@ namespace e_commerce.Web.Controllers
             {
         r => r.Order,
         r => r.Product,
-        r => r.ReturnImages
     };
 
             var returnRequest = (await _returnRepository.FindAsync(r => r.Id == id, includes))
