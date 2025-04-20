@@ -27,9 +27,9 @@
             <p>
                 <strong>Status:</strong>
                 <span class="badge @GetOrderStatusClass((int)Model.Status)">
-                    @if (Enum.IsDefined(typeof(e_commerce.Web.Controllers.OrdersController.OrderStatus), Model.Status))
+                    @if (Enum.IsDefined(typeof(e_commerce.Domain.Enums.orderstateEnum), Model.Status))
                     {
-                        @Enum.GetName(typeof(e_commerce.Web.Controllers.OrdersController.OrderStatus), Model.Status)
+                        @Enum.GetName(typeof(e_commerce.Domain.Enums.orderstateEnum), Model.Status)
                     }
                     else
                     {

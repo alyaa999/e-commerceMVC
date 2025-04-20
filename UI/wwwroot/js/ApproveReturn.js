@@ -1,5 +1,6 @@
 ﻿
 $(document).on('click', '.approve_return', function () {
+    console.log("Approve button clicked");
     console.log(this)
     var orderId = $(this).data('orderid');
     var returnId = $(this).data('rid');
@@ -51,3 +52,4 @@ $(document).on('click', '.approve_return', function () {
         });
     });
 
+//
