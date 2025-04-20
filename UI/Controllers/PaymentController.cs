@@ -34,6 +34,10 @@ namespace e_commerce.Web.Controllers
         [HttpPost]
         public IActionResult Checkout([FromBody] OrderData data)
         {
+            var userEmail = User.Identity.IsAuthenticated
+            ? User.Claims.FirstOrDefault(c => c.Type == System.Security.Claims.ClaimTypes.Email)?.Value
+            : null;
+
             decimal shippingFees = 50;
             var cart_ = repo.GetCartByCustomerId(data.customerID);
             decimal total;
@@ -64,13 +68,14 @@ namespace e_commerce.Web.Controllers
                 Mode = "payment",
                 SuccessUrl = _configuration["Stripe:SuccessUrl"] + "?session_id={CHECKOUT_SESSION_ID}",
                 CancelUrl = _configuration["Stripe:CancelUrl"],
-                CustomerEmail = "aliaa@gmail.com",
+                CustomerEmail = userEmail,
                 Metadata = new Dictionary<string, string>
         {
             { "CustomerId", data.customerID.ToString() },
             { "ShippingId", data.shippingID.ToString() },
             { "Total", total.ToString() }
-        }
+        },
+               
             };
 
             var service = new SessionService();
