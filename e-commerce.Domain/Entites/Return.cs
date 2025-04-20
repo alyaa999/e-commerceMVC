@@ -27,6 +27,7 @@ public partial class Return
     public int custId { get; set; }
     public  Customer? Customer { get; set; }
 
+    public decimal AmountRefunded { get; set; }
 
     [Column("Return_Date", TypeName = "datetime")]
     public DateTime? ReturnDate { get; set; }

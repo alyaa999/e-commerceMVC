@@ -6,6 +6,7 @@ using Stripe;
 using Stripe.BillingPortal;
 using Stripe.Checkout;
 using System;
+using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using Session = Stripe.Checkout.Session;
 using SessionCreateOptions = Stripe.Checkout.SessionCreateOptions;
@@ -18,11 +19,13 @@ namespace e_commerce.Web.Controllers
         private readonly IcartRepository repo;
         IConfiguration _configuration;
         private readonly IOrderRepository _orderRepository;
-        public PaymentController(IConfiguration configuration,IcartRepository icartRepository,IOrderRepository orderRepository )
+        private readonly IRepository<Return> _returnRepository;
+        public PaymentController(IConfiguration configuration,IcartRepository icartRepository,IOrderRepository orderRepository, IRepository<Return> returnRepository)
         {
             _configuration = configuration;
             repo = icartRepository;
             _orderRepository = orderRepository;
+            _returnRepository = returnRepository;
         }
         public IActionResult Index()
         {
@@ -156,9 +159,10 @@ namespace e_commerce.Web.Controllers
         //marwa
 
         [HttpGet]
-        public IActionResult ProcessRefund(int orderId, int returnId)
+        public async Task<IActionResult> ProcessRefund(int orderId, int returnId)
         {
             var order = _orderRepository.GetOrderById(orderId);
+            var returnRequest = await _returnRepository.GetByIdAsync(returnId);
             if (order == null)
             {
                 TempData["ErrorMessage"] = "Order not found.";
@@ -170,7 +174,7 @@ namespace e_commerce.Web.Controllers
             {
                 OrderId = orderId,
                 ReturnId = returnId,
-                TotalPrice = order.TotalPrice
+                TotalPrice = returnRequest.AmountRefunded
             });
         }
 
@@ -180,6 +184,7 @@ namespace e_commerce.Web.Controllers
         {
             Stripe.StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"];
             var order = _orderRepository.GetOrderById(model.OrderId);
+
             if (order == null)
             {
                 TempData["ErrorMessage"] = "Order not found.";
@@ -197,7 +202,7 @@ namespace e_commerce.Web.Controllers
                 var refundOptions = new Stripe.RefundCreateOptions
                 {
                     PaymentIntent = order.PaymentIntentId,
-                    Amount = (long)(order.TotalPrice * 100),
+                    Amount = (long)(model.TotalPrice * 100),
                     Reason = "requested_by_customer"
                 };
 

@@ -4,6 +4,7 @@ using e_commerce.Infrastructure.Entites;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 
 namespace e_commerce.Web.Controllers
 {
@@ -48,11 +49,14 @@ namespace e_commerce.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(int OrderId, List<int> ProductId, List<string> Reason)
         {
+            decimal amountOfReturns = 0;
             try
             {
                 var returnList = new List<Return>();
                 for (int i = 0; i < ProductId.Count; i++)
                 {
+                    amountOfReturns += orderRepository.getOrderByOrderID(1, OrderId).OrderProducts
+                        .Where(p => p.ProductId == ProductId[i]).FirstOrDefault().ItemTotal;
                     var returnRequest = new Return
                     {
                         OrderId = OrderId,
@@ -61,6 +65,7 @@ namespace e_commerce.Web.Controllers
                         custId = 1, // Assuming a static customer ID for now
                         Status = ReturnStatusEnum.Pending,
                         ReturnDate = DateTime.Now,
+                        AmountRefunded = amountOfReturns
                     };
                     returnList.Add(returnRequest);
                 }
