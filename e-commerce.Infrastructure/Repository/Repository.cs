@@ -95,27 +95,89 @@ namespace e_commerce.Infrastructure.Repository
 
             return await query.Where(predicate).ToListAsync();
         }
+        public void Add(T entity)
+        {
+            _dbSet.Add(entity);
+        }
 
+        public void Delete(int id)
+        {
+            var entity = _dbSet.Find(id);
+            if (entity != null)
+            {
+                _dbSet.Remove(entity);
+            }
+        }
 
-        //public Task<string?> GetSingleWithIncludesAsync(Func<object, bool> value1, Func<object, object> value2, Func<object, object> value3, Func<object, object> value4, Func<object, object> value5)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public IEnumerable<T> GetAll()
+        {
+            return _dbSet.ToList();
+        }
 
+        public T GetById(int id)
+        {
+            return _dbSet.Find(id);
+        }
 
+        public IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
+        {
+            return _dbSet.Where(predicate).ToList();
+        }
 
+      
+        public void SaveChanges()
+        {
+            _db.SaveChanges();
+        }
 
-        //public Task<string?> GetOrderWithDetailsAsync(int id)
-        //{
-        //    throw new NotImplementedException();
-        //}
+        public IEnumerable<T> GetAllIncluding(params Expression<Func<T, object>>[] includeProperties)
+        {
+            IQueryable<T> query = _dbSet;
 
-        //public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
-        //{
-        //    var query = _dbSet.Where(predicate);
-        //    return await includes.Aggregate(query, (current, include) => current.Include(include)).ToListAsync();
-        //}
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
 
+            return query.ToList();
+        }
 
+      
+
+        public IEnumerable<T> Find(
+            Expression<Func<T, bool>> predicate,
+            params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _dbSet;
+
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+
+            return query.Where(predicate).ToList();
+        }
     }
+
+
+    //public Task<string?> GetSingleWithIncludesAsync(Func<object, bool> value1, Func<object, object> value2, Func<object, object> value3, Func<object, object> value4, Func<object, object> value5)
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+
+
+
+    //public Task<string?> GetOrderWithDetailsAsync(int id)
+    //{
+    //    throw new NotImplementedException();
+    //}
+
+    //public async Task<IEnumerable<T>> FindAsync(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes)
+    //{
+    //    var query = _dbSet.Where(predicate);
+    //    return await includes.Aggregate(query, (current, include) => current.Include(include)).ToListAsync();
+    //}
+
+
 }

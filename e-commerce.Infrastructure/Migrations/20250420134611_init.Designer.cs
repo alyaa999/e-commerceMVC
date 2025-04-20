@@ -12,8 +12,8 @@ using e_commerce.Infrastructure.Entites;
 namespace e_commerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    [Migration("20250419230344_seeddata")]
-    partial class seeddata
+    [Migration("20250420134611_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -263,48 +263,6 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Tager");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "feature"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Popular"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "New"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "BestSeller"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "HotRelease"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "BestDeal"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "TopSelling"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Trending"
-                        });
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Address", b =>
@@ -430,23 +388,6 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasName("PK__Category__3214EC2794A91D88");
 
                     b.ToTable("Category");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Electronics"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Clothing"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Home & Kitchen"
-                        });
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Customer", b =>
@@ -623,92 +564,6 @@ namespace e_commerce.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Product");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Brand = "SoundMaster",
-                            Code = "PROD-ELEC-001",
-                            Desc = "Premium over-ear headphones with active noise cancellation and 30-hour battery life",
-                            Discount = 0.00m,
-                            IsActive = false,
-                            IsApproved = true,
-                            Name = "Wireless Noise-Cancelling Headphones",
-                            Price = 299.99m,
-                            Stock = 50,
-                            SubCategoryId = 3
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Brand = "TechGiant",
-                            Code = "PROD-ELEC-002",
-                            Desc = "Latest model with 6.7\" AMOLED display and triple camera system",
-                            Discount = 0.00m,
-                            IsActive = false,
-                            IsApproved = true,
-                            Name = "Flagship Smartphone 2023",
-                            Price = 999.99m,
-                            Stock = 30,
-                            SubCategoryId = 4
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Brand = "UrbanWear",
-                            Code = "PROD-CLOTH-001",
-                            Desc = "100% organic cotton crew neck t-shirt for men",
-                            Discount = 10.00m,
-                            IsActive = false,
-                            IsApproved = true,
-                            Name = "Premium Cotton T-Shirt",
-                            Price = 29.99m,
-                            Stock = 200,
-                            SubCategoryId = 5
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Brand = "FashionStyle",
-                            Code = "PROD-CLOTH-002",
-                            Desc = "Lightweight floral dress with adjustable straps",
-                            Discount = 0.00m,
-                            IsActive = false,
-                            IsApproved = true,
-                            Name = "Summer Floral Dress",
-                            Price = 59.99m,
-                            Stock = 75,
-                            SubCategoryId = 6
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Brand = "KitchenPro",
-                            Code = "PROD-HOME-001",
-                            Desc = "10-piece non-stick cookware set with glass lids",
-                            Discount = 0.00m,
-                            IsActive = false,
-                            IsApproved = true,
-                            Name = "Non-Stick Cookware Set",
-                            Price = 149.99m,
-                            Stock = 40,
-                            SubCategoryId = 7
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Brand = "BlendTech",
-                            Code = "PROD-HOME-002",
-                            Desc = "High-powered blender with 1200W motor and 8-speed control",
-                            Discount = 15.00m,
-                            IsActive = false,
-                            IsApproved = true,
-                            Name = "Professional Blender",
-                            Price = 89.99m,
-                            Stock = 25,
-                            SubCategoryId = 8
-                        });
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.ProductImage", b =>
@@ -748,104 +603,6 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Product_Image");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            DisplayOrder = 0,
-                            ImageUrl = "product-1-1.jpg",
-                            IsPrimary = true,
-                            ProductId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            DisplayOrder = 0,
-                            ImageUrl = "product-1-2.jpg",
-                            IsPrimary = false,
-                            ProductId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            DisplayOrder = 0,
-                            ImageUrl = "product-2-1.jpg",
-                            IsPrimary = true,
-                            ProductId = 2
-                        },
-                        new
-                        {
-                            Id = 4,
-                            DisplayOrder = 0,
-                            ImageUrl = "product-2-2.jpg",
-                            IsPrimary = false,
-                            ProductId = 2
-                        },
-                        new
-                        {
-                            Id = 5,
-                            DisplayOrder = 0,
-                            ImageUrl = "product-3-1.jpg",
-                            IsPrimary = true,
-                            ProductId = 3
-                        },
-                        new
-                        {
-                            Id = 6,
-                            DisplayOrder = 0,
-                            ImageUrl = "product-3-2.jpg",
-                            IsPrimary = false,
-                            ProductId = 3
-                        },
-                        new
-                        {
-                            Id = 7,
-                            DisplayOrder = 0,
-                            ImageUrl = "product-4-1.jpg",
-                            IsPrimary = true,
-                            ProductId = 4
-                        },
-                        new
-                        {
-                            Id = 8,
-                            DisplayOrder = 0,
-                            ImageUrl = "product-4-2.jpg",
-                            IsPrimary = false,
-                            ProductId = 4
-                        },
-                        new
-                        {
-                            Id = 9,
-                            DisplayOrder = 0,
-                            ImageUrl = "product-5-1.jpg",
-                            IsPrimary = true,
-                            ProductId = 5
-                        },
-                        new
-                        {
-                            Id = 10,
-                            DisplayOrder = 0,
-                            ImageUrl = "product-5-2.jpg",
-                            IsPrimary = false,
-                            ProductId = 5
-                        },
-                        new
-                        {
-                            Id = 11,
-                            DisplayOrder = 0,
-                            ImageUrl = "product-6-1.jpg",
-                            IsPrimary = true,
-                            ProductId = 6
-                        },
-                        new
-                        {
-                            Id = 12,
-                            DisplayOrder = 0,
-                            ImageUrl = "product-6-2.jpg",
-                            IsPrimary = false,
-                            ProductId = 6
-                        });
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Return", b =>
@@ -981,44 +738,6 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Sub_Category");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 3,
-                            CategoryId = 1,
-                            Name = "Headphones"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CategoryId = 1,
-                            Name = "Smartphones"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CategoryId = 2,
-                            Name = "Men's T-Shirts"
-                        },
-                        new
-                        {
-                            Id = 6,
-                            CategoryId = 2,
-                            Name = "Dresses"
-                        },
-                        new
-                        {
-                            Id = 7,
-                            CategoryId = 3,
-                            Name = "Cookware"
-                        },
-                        new
-                        {
-                            Id = 8,
-                            CategoryId = 3,
-                            Name = "Blenders"
-                        });
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Wishlist", b =>

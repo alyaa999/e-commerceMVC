@@ -1,11 +1,15 @@
-﻿using e_commerce.Application.Common.Interfaces;
+﻿using AutoMapper;
+using e_commerce.Application.Common.Interfaces;
 using e_commerce.Domain.Entites;
 using e_commerce.Infrastructure.Entites;
+using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.Models;
+using e_commerce.Web.ViewModels.Home;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using System.Security.Claims;
@@ -18,23 +22,36 @@ namespace e_commerce.Web.Controllers
     public class AccountController : Controller
     {
         private readonly ECommerceDBContext _context;
+        private readonly IHomeRepository homeRepository;
+        private readonly IMapper mapper;
+
         public UserManager<ApplicationUser> UserManager { get; } //RepoService layer for user 
         public SignInManager<ApplicationUser> SignInManager { get; }
 
         private readonly IConfiguration _configuration;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ECommerceDBContext context)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ECommerceDBContext context, IHomeRepository homeRepository, IMapper mapper)
         {
             UserManager = userManager;
             SignInManager = signInManager;
             _context = context;
-
+            this.homeRepository = homeRepository;
+            this.mapper = mapper;
             var builder = new ConfigurationBuilder()
     .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
     .AddJsonFile("appsettings.json");
 
             _configuration = builder.Build();
+        }
 
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+
+            var DbCategories = homeRepository.GetCategories();
+
+            var categories = mapper.Map<List<CategoryViewModel>>(DbCategories?.ToList() ?? new List<Category>());
+            ViewBag.Categories = categories;
+            base.OnActionExecuting(filterContext);
         }
 
 
@@ -116,7 +133,7 @@ namespace e_commerce.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginUserViewModel UserVM)
+        public async Task<IActionResult> Login(LoginUserViewModel UserVM , string returnUrl = null)
         {
             if (ModelState.IsValid)
             {
@@ -129,7 +146,14 @@ namespace e_commerce.Web.Controllers
                     {
                         //create cookie
                         await SignInManager.SignInAsync(UserFromDB, isPersistent: UserVM.RememberMe);
-                        return RedirectToAction("Index", "Home");
+                        if (Url.IsLocalUrl(returnUrl))
+                        {
+                            return Redirect(returnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                 }
                

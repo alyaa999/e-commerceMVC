@@ -23,7 +23,15 @@ namespace e_commerce.Application.Common.Interfaces
        
         Task<IEnumerable<T>> GetAllIncludingAsync(params Expression<Func<T, object>>[] includeProperties);
 
-     
+        void Add(T entity);
+        void Delete(int id);
+        IEnumerable<T> GetAll();
+        T GetById(int id);
+        IEnumerable<T> Find(Expression<Func<T, bool>> predicate);
+        void SaveChanges();
+
+        IEnumerable<T> GetAllIncluding(params Expression<Func<T, object>>[] includeProperties);
+        IEnumerable<T> Find(Expression<Func<T, bool>> predicate, params Expression<Func<T, object>>[] includes);
 
 
     }
