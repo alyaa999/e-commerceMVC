@@ -1,11 +1,15 @@
-﻿using e_commerce.Application.Common.Interfaces;
+﻿using AutoMapper;
+using e_commerce.Application.Common.Interfaces;
 using e_commerce.Domain.Entites;
 using e_commerce.Infrastructure.Entites;
+using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.Models;
+using e_commerce.Web.ViewModels.Home;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using System.Security.Claims;
@@ -20,19 +24,31 @@ namespace e_commerce.Web.Controllers
         private readonly ECommerceDBContext _context;
         public UserManager<ApplicationUser> UserManager { get; } //RepoService layer for user 
         public SignInManager<ApplicationUser> SignInManager { get; }
+        public IMapper _mapper { get; }
 
         private readonly IEmailSenderService _emailSender;
+        private readonly IHomeRepository homeRepository;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ECommerceDBContext context, IEmailSenderService emailSender)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ECommerceDBContext context, IEmailSenderService emailSender , IHomeRepository homeRepository,IMapper mapper)
         {
             UserManager = userManager;
             SignInManager = signInManager;
             _context = context;
 
             _emailSender = emailSender;
-
+            this.homeRepository = homeRepository;
+            _mapper = mapper;
         }
 
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+
+            var DbCategories = homeRepository.GetCategories();
+
+            var categories = _mapper.Map<List<CategoryViewModel>>(DbCategories?.ToList() ?? new List<Category>());
+            ViewBag.Categories = categories;
+            base.OnActionExecuting(filterContext);
+        }
 
 
 

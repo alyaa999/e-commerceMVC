@@ -40,7 +40,6 @@ namespace e_commerce.Web.Controllers
                 UserName = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-               
             };
             return View(model);
         }
@@ -54,7 +53,6 @@ namespace e_commerce.Web.Controllers
             user.UserName = model.UserName;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
-       
 
             var result = await UserManager.UpdateAsync(user);
             if (result.Succeeded)
