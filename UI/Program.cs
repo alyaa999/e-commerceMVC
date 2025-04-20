@@ -1,4 +1,4 @@
-using e_commerce.Application.Common.Interfaces;
+﻿using e_commerce.Application.Common.Interfaces;
 using e_commerce.Domain.Entites;
 using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
@@ -20,7 +20,8 @@ namespace e_commerce
         public static async Task SeedRolesAndUsersAsync(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
             var dbContext = serviceProvider.GetRequiredService<ECommerceDBContext>(); // Replace with your real DbContext name
 
             string[] roles = { "Customer", "Seller", "Admin" };
@@ -47,11 +48,14 @@ namespace e_commerce
                 var user = await userManager.FindByEmailAsync(email);
                 if (user == null)
                 {
-                    user = new IdentityUser
+                    user = new ApplicationUser
                     {
+
                         UserName = email.Split('@')[0],
                         Email = email,
-                        EmailConfirmed = true
+                        EmailConfirmed = true,
+                        FirstName = email.Split('@')[0],  // 👈 Add these lines
+                        LastName = ""
                     };
 
                     var result = await userManager.CreateAsync(user, "Default@123");
@@ -98,6 +102,7 @@ namespace e_commerce
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
             builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(typeof(ProductProfile));
             builder.Services.AddControllersWithViews(
