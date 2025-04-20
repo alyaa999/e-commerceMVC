@@ -82,4 +82,4 @@ public partial class Product
     [ForeignKey("ProductId")]
     [InverseProperty("Products")]
     public virtual ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
-}
+} 
