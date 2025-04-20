@@ -30,20 +30,20 @@ namespace e_commerce.Web.Controllers
         public IMapper _mapper { get; }
 
         private readonly IEmailSenderService _emailSender;
-        private readonly IHomeRepository homeRepository;
+        private readonly IHomeRepository _homeRepository;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ECommerceDBContext context, IHomeRepository homeRepository, IMapper mapper)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ECommerceDBContext context, 
+            IHomeRepository homeRepository,
+            IMapper mapper, IEmailSenderService emailSender)
         {
             UserManager = userManager;
             SignInManager = signInManager;
             _context = context;
-            this.homeRepository = homeRepository;
+           _homeRepository = homeRepository;
             this.mapper = mapper;
-            var builder = new ConfigurationBuilder()
-    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-    .AddJsonFile("appsettings.json");
+            _emailSender = emailSender;
+   
 
-            _configuration = builder.Build();
         }
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
