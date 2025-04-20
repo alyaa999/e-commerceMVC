@@ -1,4 +1,5 @@
-﻿using Microsoft.Identity.Client;
+﻿using e_commerce.Infrastructure.Entites;
+using Microsoft.Identity.Client;
 
 namespace e_commerce.Web.ViewModels.Home
 {
@@ -10,15 +11,20 @@ namespace e_commerce.Web.ViewModels.Home
         public string Brand { get; set; }
         public decimal Price { get; set; }
         public string Desc { get; set; }
+        public int? TagId { get; set; } 
         public decimal? Discount { get; set; }
         public int? Stock { get; set; }
         public bool IsApproved { get; set; }
-        public string Tag { get; set; } // mapped from enum
-        public string SubCategoryName { get; set; }
-        public string CategoryName { get; set; }
-        public List<ProductImageViewModel> Images { get; set; }
-        public List<ReviewViewMode> Reviews { get; set; }
-        
+        public int? SellerId { get; set; }
+        public string? Tag { get; set; } // mapped from enum
+        public string? SubCategoryName { get; set; }
+        public int? SubCategoryId { get; set; }  
+        public string? CategoryName { get; set; }
+        public List<ProductImageViewModel>? Images { get; set; }
+        public List<ReviewViewMode>? Reviews { get; set; }
+        public List<IFormFile>? ImagesUpload { get; set; }  // 👈 Allow multiple files
+
+
 
     }
     public class ProductImageViewModel

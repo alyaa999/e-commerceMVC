@@ -29,4 +29,8 @@
     <ProjectReference Include="..\e-commerce.Domain\e-commerce.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

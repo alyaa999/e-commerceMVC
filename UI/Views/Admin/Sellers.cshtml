@@ -48,31 +48,34 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var seller in Model)
-                        {
-                            <tr>
-                                <td class="fw-bold">@seller.Id</td>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="avatar-sm bg-light rounded me-3">
-                                            <span class="avatar-text fw-bold">
-                                                @seller.ApplicationUser?.FirstName?[0]@seller.ApplicationUser?.LastName?[0]
-                                            </span>
+                        @if (Model != null && Model.Any())
+                        { @foreach (var seller in Model)
+                            {
+                                <tr>
+                                    <td class="fw-bold">@seller.Id</td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <div class="avatar-sm bg-light rounded me-3">
+                                                <span class="avatar-text fw-bold">
+                                                    @seller.ApplicationUser?.FirstName?[0]@seller.ApplicationUser?.LastName?[0]
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <h6 class="mb-0">@seller.ApplicationUser?.FirstName @seller.ApplicationUser?.LastName</h6>
+                                                <small class="text-muted">Seller ID: @seller.Id</small>
+                                            </div>
                                         </div>
-                                        <div>
-                                            <h6 class="mb-0">@seller.ApplicationUser?.FirstName @seller.ApplicationUser?.LastName</h6>
-                                            <small class="text-muted">Seller ID: @seller.Id</small>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div><i class="fas fa-envelope me-2 text-muted"></i>@seller.ApplicationUser?.Email</div>
-                                    <div><i class="fas fa-phone me-2 text-muted"></i>@seller.ApplicationUser?.PhoneNumber</div>
-                                </td>
+                                    </td>
+                                    <td>
+                                        <div><i class="fas fa-envelope me-2 text-muted"></i>@seller.ApplicationUser?.Email</div>
+                                        <div><i class="fas fa-phone me-2 text-muted"></i>@seller.ApplicationUser?.PhoneNumber</div>
+                                    </td>
 
 
-                            </tr>
+                                </tr>
+                            }
                         }
+
                     </tbody>
                 </table>
             </div>

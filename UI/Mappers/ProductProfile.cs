@@ -35,11 +35,10 @@ namespace e_commerce.Web.Mappers
              .ForMember(dest => dest.Images,
                         opt => opt.MapFrom(src => src.ProductImages ?? new List<ProductImage>())) // fix here
              .ForMember(dest => dest.Reviews,
-                        opt => opt.MapFrom(src => src.Reviews ?? new List<Review>()));
+                        opt => opt.MapFrom(src => src.Reviews ?? new List<Review>())).ReverseMap(); 
             CreateMap<Category, CategoryViewModel>()
                 .ForMember(des => des.subCategory,
                     opt => opt.MapFrom(src => src.SubCategories));
-
 
 
 

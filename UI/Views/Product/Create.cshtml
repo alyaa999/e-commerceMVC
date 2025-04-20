@@ -1,26 +1,139 @@
-﻿@model e_commerce.Infrastructure.Entites.Product
-
+﻿@using e_commerce.Web.ViewModels.Home
+@model ProductViewModel
 @{
-    ViewData["Title"] = "Add New Product";
+    ViewData["Title"] = "Create product";
+    Layout = "_SellerLayout";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="container mt-4">
+    <h2>Create Category</h2>
+    <hr />
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label for="Name">Product Name</label>
-        <input type="text" class="form-control" id="Name" name="Name" value="@Model.Name" required />
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Code" class="control-label"></label>
+                    <input asp-for="Code" class="form-control" required />
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Price" class="control-label"></label>
+                    <input asp-for="Price" class="form-control" type="number"required />
+                    <span asp-validation-for="Price" class="text-danger"  ></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TagId" class="control-label" required></label>
+                    <select asp-for="TagId" asp-items="@(new SelectList(ViewBag.Tags, "Id", "Name"))" class="form-control" ></select>
+                    <span asp-validation-for="TagId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="CategoryId" class="control-label">Category</label>
+                    <select id="CategoryId" class="form-control" required>
+                        <option value="">Select a Category</option>
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="SubCategoryId" class="control-label">Subcategory</label>
+                    <select id="SubcategoryId" class="form-control" >
+                        <option value="">Select a Subcategory</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="Brand" class="control-label"></label>
+                    <input asp-for="Brand" class="form-control" />
+                    <span asp-validation-for="Brand" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Desc" class="control-label"></label>
+                       <textarea asp-for="Desc" class="form-control"></textarea>
+
+                    <span asp-validation-for="Desc" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ImagesUpload" class="control-label"></label>
+                    <input type="file" id="images" name="ImagesUpload" class="form-control" multiple accept="image/*" onchange="previewImages()" />
+                    <div id="preview" style="margin-top: 10px;"></div>
+
+
+                    <span asp-validation-for="ImagesUpload" class="text-danger"></span>
+                </div>
+
+
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Create
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label for="Price">Price</label>
-        <input type="number" class="form-control" id="Price" name="Price" value="@Model.Price" required />
-    </div>
+@section Scripts {
+    @{
 
-    <div class="form-group">
-        <label for="Description">Description</label>
-        <textarea class="form-control" id="Desc" name="Desc">@Model.Desc</textarea>
-    </div>
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
 
-    <button type="submit" class="btn btn-success mt-3">Add Product</button>
-</form>
+    }
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#CategoryId').change(function () {
+                var categoryId = $(this).val();
+                var subcategorySelect = $('#SubcategoryId');
+                subcategorySelect.empty(); // Clear any existing subcategories
+                subcategorySelect.append('<option value="">Select a Subcategory</option>'); // Default option
+
+                if (categoryId) {
+                    // Find the selected category's subcategories from ViewBag
+                    var selectedCategory = @Html.Raw(Json.Serialize(ViewBag.Categories))
+                        .find(c => c.Id == categoryId);
+
+                    if (selectedCategory) {
+                        // Loop through the subcategories and append them to the subcategory dropdown
+                        $.each(selectedCategory.Subcategories, function (i, subcategory) {
+                            subcategorySelect.append('<option value="' + subcategory.Id + '">' + subcategory.Name + '</option>');
+                        });
+                    }
+                }
+            });
+        });
+        function previewImages() {
+        const preview = document.getElementById('preview');
+        preview.innerHTML = '';
+        const files = document.getElementById('images').files;
+
+        for (let i = 0; i < files.length; i++) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxHeight = '150px';
+                img.style.margin = '5px';
+                preview.appendChild(img);
+            };
+            reader.readAsDataURL(files[i]);
+        }
+    }
+    </script>
+}

@@ -22,6 +22,9 @@ namespace e_commerce.Web.Controllers
     public class AccountController : Controller
     {
         private readonly ECommerceDBContext _context;
+        private readonly IHomeRepository homeRepository;
+        private readonly IMapper mapper;
+
         public UserManager<ApplicationUser> UserManager { get; } //RepoService layer for user 
         public SignInManager<ApplicationUser> SignInManager { get; }
         public IMapper _mapper { get; }
@@ -29,15 +32,18 @@ namespace e_commerce.Web.Controllers
         private readonly IEmailSenderService _emailSender;
         private readonly IHomeRepository homeRepository;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ECommerceDBContext context, IEmailSenderService emailSender , IHomeRepository homeRepository,IMapper mapper)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ECommerceDBContext context, IHomeRepository homeRepository, IMapper mapper)
         {
             UserManager = userManager;
             SignInManager = signInManager;
             _context = context;
-
-            _emailSender = emailSender;
             this.homeRepository = homeRepository;
-            _mapper = mapper;
+            this.mapper = mapper;
+            var builder = new ConfigurationBuilder()
+    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+    .AddJsonFile("appsettings.json");
+
+            _configuration = builder.Build();
         }
 
         public override void OnActionExecuting(ActionExecutingContext filterContext)
@@ -45,7 +51,7 @@ namespace e_commerce.Web.Controllers
 
             var DbCategories = homeRepository.GetCategories();
 
-            var categories = _mapper.Map<List<CategoryViewModel>>(DbCategories?.ToList() ?? new List<Category>());
+            var categories = mapper.Map<List<CategoryViewModel>>(DbCategories?.ToList() ?? new List<Category>());
             ViewBag.Categories = categories;
             base.OnActionExecuting(filterContext);
         }
@@ -127,7 +133,7 @@ namespace e_commerce.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginUserViewModel UserVM)
+        public async Task<IActionResult> Login(LoginUserViewModel UserVM , string returnUrl = null)
         {
             if (ModelState.IsValid)
             {
@@ -148,12 +154,19 @@ namespace e_commerce.Web.Controllers
                         }
 
                         await SignInManager.SignInAsync(UserFromDB, isPersistent: UserVM.RememberMe);
-                        return RedirectToAction("Index", "Home");
+                        if (Url.IsLocalUrl(returnUrl))
+                        {
+                            return Redirect(returnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                 }
+               
             }
-
-            ModelState.AddModelError("", "Wrong Email or Password!");
+            ModelState.AddModelError("", "Wrong Email or Password!!!!!");
             return View(UserVM);
         }
 
