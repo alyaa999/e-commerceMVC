@@ -2,6 +2,7 @@
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Web.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using Stripe.BillingPortal;
 using Stripe.Checkout;
 using System;
@@ -17,7 +18,7 @@ namespace e_commerce.Web.Controllers
         private readonly IcartRepository repo;
         IConfiguration _configuration;
         private readonly IOrderRepository _orderRepository;
-        public PaymentController(IConfiguration configuration,IcartRepository icartRepository,IOrderRepository orderRepository)
+        public PaymentController(IConfiguration configuration,IcartRepository icartRepository,IOrderRepository orderRepository )
         {
             _configuration = configuration;
             repo = icartRepository;
@@ -152,7 +153,77 @@ namespace e_commerce.Web.Controllers
                 return Json(new { success = false, message = $"Error during refund: {ex.Message}" });
             }
         }
+        //marwa
 
+        [HttpGet]
+        public IActionResult ProcessRefund(int orderId, int returnId)
+        {
+            var order = _orderRepository.GetOrderById(orderId);
+            if (order == null)
+            {
+                TempData["ErrorMessage"] = "Order not found.";
+                return RedirectToAction("Index", "AdminReturns");
+            }
+
+            
+            return View(new RefundViewModel
+            {
+                OrderId = orderId,
+                ReturnId = returnId,
+                TotalPrice = order.TotalPrice
+            });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ProcessRefund(RefundViewModel model)
+        {
+            Stripe.StripeConfiguration.ApiKey = _configuration["Stripe:SecretKey"];
+            var order = _orderRepository.GetOrderById(model.OrderId);
+            if (order == null)
+            {
+                TempData["ErrorMessage"] = "Order not found.";
+                return RedirectToAction("Index", "AdminReturns");
+            }
+
+            try
+            {
+                if (string.IsNullOrEmpty(order.PaymentIntentId))
+                {
+                    TempData["ErrorMessage"] = "Cannot process refund - payment information missing";
+                    return RedirectToAction("Details", "AdminReturns", new { id = model.ReturnId });
+                }
+
+                var refundOptions = new Stripe.RefundCreateOptions
+                {
+                    PaymentIntent = order.PaymentIntentId,
+                    Amount = (long)(order.TotalPrice * 100),
+                    Reason = "requested_by_customer"
+                };
+
+                var refundService = new Stripe.RefundService();
+                var refund = refundService.Create(refundOptions);
+
+                order.PaymentStatus = Domain.Enums.PaymentStatusEnum.Refunded;
+                _orderRepository.UpdateOrder(order);
+
+                TempData["SuccessMessage"] = $"Successfully refunded ${order.TotalPrice}";
+                return RedirectToAction("Details", "AdminReturns", new { id = model.ReturnId });
+            }
+            catch (StripeException ex)
+            {
+                TempData["ErrorMessage"] = $"Stripe error: {ex.Message}";
+                return RedirectToAction("Details", "AdminReturns", new { id = model.ReturnId });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error: {ex.Message}";
+                return RedirectToAction("Index", "AdminReturns");
+            }
+        }
 
     }
 }
+/*
+ * Stripe.StripeConfiguration.ApiKey = "sk_test_1234567890abcdef";
+ * */

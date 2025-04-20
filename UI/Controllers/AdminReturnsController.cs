@@ -62,9 +62,12 @@ namespace e_commerce.Web.Controllers
                 return NotFound();
             }
 
+      
             Expression<Func<Return, object>>[] includes =
             {
         r => r.Order,
+        r => r.Order.Customer,
+        r => r.Order.Customer.ApplicationUser, 
         r => r.Product,
     };
 
@@ -76,41 +79,27 @@ namespace e_commerce.Web.Controllers
                 return NotFound();
             }
 
-            // تحميل Customer داخل Order إن وُجد
-            if (returnRequest.Order != null)
-            {
-                var orderWithCustomer = (await _orderRepository.GetAllIncludingAsync(
-                    o => o.Customer))
-                    .FirstOrDefault(o => o.Id == returnRequest.Order.Id);
-
-                returnRequest.Order.Customer = orderWithCustomer?.Customer;
-            }
-
             return View(returnRequest);
         }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Approve(int id)
+        //{
+        //    var returnRequest = await _returnRepository.GetByIdAsync(id);
+        //    if (returnRequest == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Approve(int id)
-        {
-            var returnRequest = await _returnRepository.GetByIdAsync(id);
-            if (returnRequest == null)
-            {
-                return NotFound();
-            }
+        //    returnRequest.Status = Domain.Enums.ReturnStatusEnum.Approved;
+        //    returnRequest.ReturnDate = DateTime.Now;
+        //    _returnRepository.Update(returnRequest);
+        //    await _returnRepository.SaveChangesAsync();
 
-            returnRequest.Status = Domain.Enums.ReturnStatusEnum.Approved;
-            returnRequest.ReturnDate = DateTime.Now;
-            _returnRepository.Update(returnRequest);
-            await _returnRepository.SaveChangesAsync();
-            // Here you would typically add logic for:
-            // - Processing refund
-            // - Updating inventory
-            // - Notifying customer
 
-            TempData["SuccessMessage"] = "Return request has been approved successfully.";
-            return RedirectToAction(nameof(Index));
-        }
+        //    TempData["SuccessMessage"] = "Return request has been approved successfully.";
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -131,6 +120,30 @@ namespace e_commerce.Web.Controllers
 
             TempData["SuccessMessage"] = "Return request has been rejected.";
             return RedirectToAction(nameof(Index));
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Approve(int id)
+        {
+            var returnRequest = await _returnRepository.GetByIdAsync(id);
+            if (returnRequest == null)
+            {
+                TempData["ErrorMessage"] = "Return request not found.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            returnRequest.Status = Domain.Enums.ReturnStatusEnum.Approved;
+            returnRequest.ReturnDate = DateTime.Now;
+            _returnRepository.Update(returnRequest);
+            await _returnRepository.SaveChangesAsync();
+
+            
+            return RedirectToAction("ProcessRefund", "Payment", new
+            {
+                orderId = returnRequest.OrderId,
+                returnId = returnRequest.Id
+            });
+
         }
     }
 }
