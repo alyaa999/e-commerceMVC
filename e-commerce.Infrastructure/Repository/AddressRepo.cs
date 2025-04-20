@@ -66,9 +66,9 @@ namespace e_commerce.Infrastructure.Repository
             context.SaveChanges();
         }
 
-        public List<Address> GetAllAddressAsync()
+        public List<Address> GetAllAddressAsync(int userID)
         {
-            return context.Addresses.Include(x => x.Customer).ToList();
+            return context.Addresses.Include(x => x.Customer).Where(ad=>ad.CustomerId==userID).ToList();
         }
 
         public void UpdateAddress(Address entity,int cid,int addID)

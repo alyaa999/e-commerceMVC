@@ -70,15 +70,19 @@ namespace e_commerce.Web.Controllers
 
             IOrderRepo.AddOrder(order);
             repo.RemoveAllFromCart(cart_.Id, data.customerID);
-            return View();
+            return Json(new
+            {
+                success = true,
+                redirectUrl = Url.Action("OrderSuccess", "_Orders")
+            });
         }
 
 
 
         // GET: orderController/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult OrderSuccess()
         {
-            return View();
+            return View("OrderCreated");
         }
 
         // POST: orderController/Edit/5

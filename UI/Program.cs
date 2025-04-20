@@ -48,6 +48,7 @@ namespace e_commerce
             builder.Services.AddDbContext<ECommerceDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddScoped<IWishlistRepo, WishlistRepo>();
+            builder.Services.AddScoped<ICustRepo, custRepo>();
             //builder.Services.AddApplicationServices();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
