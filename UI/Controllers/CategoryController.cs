@@ -14,7 +14,7 @@ public class CategoryController : Controller
     // Index Action - to display the list of categories
     public async Task<IActionResult> Index()
     {
-        var categories = await _categoryRepo.GetAllAsync();
+        var categories = await _categoryRepo.GetAllIncludingAsync(c => c.SubCategories);
         return View(categories);
     }
 
