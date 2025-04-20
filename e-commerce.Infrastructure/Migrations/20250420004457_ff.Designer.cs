@@ -12,8 +12,8 @@ using e_commerce.Infrastructure.Entites;
 namespace e_commerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    [Migration("20250419143228_init")]
-    partial class init
+    [Migration("20250420004457_ff")]
+    partial class ff
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
