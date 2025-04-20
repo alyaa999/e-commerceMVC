@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using e_commerce.Infrastructure.Entites;
+using e_commerce.Domain.Enums;
 
 namespace e_commerce.Web.Controllers
 {
@@ -134,12 +135,12 @@ namespace e_commerce.Web.Controllers
 
         private bool CanBeConfirmed(int status)
         {
-            return status == (int)OrderStatus.Pending;
+            return status == (int)orderstateEnum.Pending;
         }
 
         private bool CanBeCancelled(int status)
         {
-            return status == (int)OrderStatus.Pending || status == (int)OrderStatus.Confirmed;
+            return status == (int)orderstateEnum.Pending || status == (int)orderstateEnum.Confirmed;
         }
 
         private string GenerateOrdersCsv(IEnumerable<Order> orders)
@@ -158,7 +159,7 @@ namespace e_commerce.Web.Controllers
 
         private string GetStatusName(int status)
         {
-            return Enum.GetName(typeof(OrderStatus), status) ?? status.ToString();
+            return Enum.GetName(typeof(orderstateEnum), status) ?? status.ToString();
         }
 
         [HttpPost]
@@ -180,7 +181,7 @@ namespace e_commerce.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                order.Status = (Domain.Enums.orderstateEnum)OrderStatus.Confirmed;
+                order.Status = (Domain.Enums.orderstateEnum)orderstateEnum.Confirmed;
                 _orderRepo.Update(order);
                 await _orderRepo.SaveChangesAsync(); // Add this line
 
@@ -214,7 +215,7 @@ namespace e_commerce.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                order.Status = (Domain.Enums.orderstateEnum)OrderStatus.Cancelled;
+                order.Status = (Domain.Enums.orderstateEnum)orderstateEnum.Cancelled;
                 _orderRepo.Update(order);
                 await _orderRepo.SaveChangesAsync(); // Add this line
 
