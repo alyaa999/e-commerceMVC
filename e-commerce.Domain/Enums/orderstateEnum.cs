@@ -10,6 +10,8 @@ namespace e_commerce.Domain.Enums
     {
 
         // Processing states
+        Pending,
+        Confirmed,
         Processing,       // Order is being prepared (inventory check, packaging)
         Shipped,          // Order dispatched with tracking infoالاورد خلص وجاهز انه يتشحن 
 

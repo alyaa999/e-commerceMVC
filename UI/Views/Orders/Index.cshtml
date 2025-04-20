@@ -173,8 +173,8 @@
                     <label for="status" class="form-label">Order Status</label>
                     <select id="status" name="status" class="form-select">
                         <option value="">All Statuses</option>
-                        @foreach (var status in Enum.GetValues(typeof(e_commerce.Web.Controllers.OrdersController.OrderStatus))
-                        .Cast<e_commerce.Web.Controllers.OrdersController.OrderStatus>())
+                        @foreach (var status in Enum.GetValues(typeof(e_commerce.Domain.Enums.orderstateEnum))
+                        .Cast<e_commerce.Domain.Enums.orderstateEnum>())
                         {
                             <option value="@((int)status)" selected="@(Model.StatusFilter == (int)status)">
                                 @status
@@ -229,7 +229,7 @@
                         @foreach (var order in Model.Ordersbb ?? Enumerable.Empty<Order>())
                         {
                             var statusValue = order?.Status != null ? (int)order.Status : -1;
-                            var statusName = Enum.GetName(typeof(e_commerce.Web.Controllers.OrdersController.OrderStatus), statusValue) ?? "Unknown";
+                            var statusName = Enum.GetName(typeof(e_commerce.Domain.Enums.orderstateEnum), statusValue) ?? "Unknown";
 
                             var statusClass = statusValue switch
                             {
@@ -254,7 +254,7 @@
                                 <td>@(order?.OrderProducts?.Count ?? 0)</td>
                                 <td class="text-nowrap" style="width:100px">
                                     <div class="d-flex flex-wrap gap-1">
-                                        @if (order != null && statusValue == (int)e_commerce.Web.Controllers.OrdersController.OrderStatus.Pending)
+                                        @if (order != null && statusValue == (int)e_commerce.Domain.Enums.orderstateEnum.Pending)
                                         {
                                             <form method="post" asp-action="Confirm" asp-route-id="@order.Id" class="d-inline">
                                                 @Html.AntiForgeryToken()
@@ -270,7 +270,7 @@
                                                 </button>
                                             </form>
                                         }
-                                        else if (order != null && statusValue == (int)e_commerce.Web.Controllers.OrdersController.OrderStatus.Confirmed)
+                                        else if (order != null && statusValue == (int)e_commerce.Domain.Enums.orderstateEnum.Confirmed)
                                         {
                                             <form method="post" asp-action="Cancel" asp-route-id="@order.Id" class="d-inline">
                                                 @Html.AntiForgeryToken()
