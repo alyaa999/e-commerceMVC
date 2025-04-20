@@ -1,0 +1,20 @@
+﻿@model e_commerce.Web.Models.ChangeEmailViewModel
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h3>Change Email</h3>
+
+@if (ViewBag.EmailMessage != null)
+{
+    <div class="alert alert-info">@ViewBag.EmailMessage</div>
+}
+
+<form asp-action="ChangeEmail" method="post" class="form grid">
+    <input asp-for="NewEmail" class="form__input" placeholder="Enter new email" />
+    <span asp-validation-for="NewEmail" class="text-danger"></span>
+
+    <div class="form__btn">
+        <button type="submit" class="btn">Send Confirmation Link</button>
+    </div>
+</form>

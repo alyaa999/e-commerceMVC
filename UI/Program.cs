@@ -1,6 +1,5 @@
 using e_commerce.Application.Common.Interfaces;
 using e_commerce.Domain.Entites;
-using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Web.Models;
 using Microsoft.AspNetCore.Identity;
@@ -38,22 +37,23 @@ namespace e_commerce
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(typeof(ProductProfile));
+
             builder.Services.AddControllersWithViews(
                 conf => conf.Filters.Add(new AuthorizeFilter())
                 );
             // builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-            builder.Services.AddControllersWithViews();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddDbContext<ECommerceDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
             #region AddServices
             builder.Services.AddScoped<IHomeRepository, HomeRepository>();
             #endregion
             builder.Services.AddScoped<IWishlistRepo, WishlistRepo>();
+
             //builder.Services.AddApplicationServices();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -102,7 +102,6 @@ namespace e_commerce
 
 
 
-
             builder.Services.AddScoped<IcartRepository, CarRepoService>();
             builder.Services.AddScoped<IAdressRepo, AddressRepo>();
             builder.Services.AddAutoMapper(typeof(AddressProfile));
@@ -110,6 +109,11 @@ namespace e_commerce
           
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            builder.Services.AddScoped<IEmailSenderService, EmailSender>();
+
+
+
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())
@@ -126,8 +130,19 @@ namespace e_commerce
             app.UseRouting();
 
             app.UseAuthentication();
+
             StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
             app.UseAuthorization();
+
+
+            app.UseAuthorization();
+
+            app.MapControllerRoute(
+                name: "externalLogin",
+                pattern: "signin-{provider}",
+                defaults: new { controller = "Account", action = "ExternalLoginCallback" });
+
+
 
             app.MapStaticAssets();
             app.MapControllerRoute(

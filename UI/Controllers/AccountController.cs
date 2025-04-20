@@ -21,19 +21,15 @@ namespace e_commerce.Web.Controllers
         public UserManager<ApplicationUser> UserManager { get; } //RepoService layer for user 
         public SignInManager<ApplicationUser> SignInManager { get; }
 
-        private readonly IConfiguration _configuration;
+        private readonly IEmailSenderService _emailSender;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ECommerceDBContext context)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ECommerceDBContext context, IEmailSenderService emailSender)
         {
             UserManager = userManager;
             SignInManager = signInManager;
             _context = context;
 
-            var builder = new ConfigurationBuilder()
-    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-    .AddJsonFile("appsettings.json");
-
-            _configuration = builder.Build();
+            _emailSender = emailSender;
 
         }
 
@@ -84,11 +80,10 @@ namespace e_commerce.Web.Controllers
                     var confirmationLink = Url.Action("ConfirmEmail", "Account", new
                     {
                         userId = usermodel.Id,
-                        token = token
+                        token
                     }, protocol: HttpContext.Request.Scheme);
 
-                    var emailSender = new EmailSender(_configuration);
-                    await emailSender.SendEmailAsync(usermodel.Email, "Confirm your email",
+                    await _emailSender.SendEmailAsync(usermodel.Email, "Confirm your email",
                         $"Please confirm your email by clicking <a href='{confirmationLink}'>here</a>.");
 
                     // ✅ Show instruction to check email
@@ -122,21 +117,30 @@ namespace e_commerce.Web.Controllers
             {
                 //check db
                 ApplicationUser UserFromDB = await UserManager.FindByEmailAsync(UserVM.Email);
+
                 if (UserFromDB != null)
                 {
                     bool found = await UserManager.CheckPasswordAsync(UserFromDB, UserVM.Password);
-                    if (found == true)
+
+                    if (found)
                     {
-                        //create cookie
+                        // ✅ check if the email is confirmed
+                        if (!await UserManager.IsEmailConfirmedAsync(UserFromDB))
+                        {
+                            ModelState.AddModelError("", "You must confirm your email before logging in.");
+                            return View(UserVM);
+                        }
+
                         await SignInManager.SignInAsync(UserFromDB, isPersistent: UserVM.RememberMe);
                         return RedirectToAction("Index", "Home");
                     }
                 }
-               
             }
-            ModelState.AddModelError("", "Wrong Email or Password!!!!!");
+
+            ModelState.AddModelError("", "Wrong Email or Password!");
             return View(UserVM);
         }
+
 
 
         //<!-- ✅ ExternalLogin -->
@@ -179,7 +183,8 @@ namespace e_commerce.Web.Controllers
                     UserName = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.GivenName) ?? "First",
                     Email = email,
                     FirstName = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.GivenName) ?? "First",
-                    LastName = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.Surname) ?? "Last"
+                    LastName = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.Surname) ?? "Last",
+                    EmailConfirmed = true
                 };
 
                 var result = await UserManager.CreateAsync(user);
@@ -282,14 +287,9 @@ namespace e_commerce.Web.Controllers
             }
 
             var token = await UserManager.GeneratePasswordResetTokenAsync(user);
-            var resetLink = Url.Action("ResetPassword", "Account", new
-            {
-                userId = user.Id,
-                token = token
-            }, protocol: HttpContext.Request.Scheme);
+            var resetLink = Url.Action("ResetPassword", "Account", new { userId = user.Id, token }, protocol: HttpContext.Request.Scheme);
 
-            var emailSender = new EmailSender(_configuration);
-            await emailSender.SendEmailAsync(email, "Reset Password",
+            await _emailSender.SendEmailAsync(email, "Reset Password",
                 $"Click <a href='{resetLink}'>here</a> to reset your password.");
 
             return View("ForgotPasswordConfirmation");

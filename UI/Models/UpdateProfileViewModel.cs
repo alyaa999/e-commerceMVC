@@ -16,8 +16,5 @@ namespace e_commerce.Web.Models
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
 
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Enter a valid email address")]
-        public string Email { get; set; }
     }
 }

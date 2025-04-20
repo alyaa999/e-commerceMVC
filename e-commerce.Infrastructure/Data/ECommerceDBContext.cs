@@ -43,6 +43,8 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Wishlist> Wishlists { get; set; }
 
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

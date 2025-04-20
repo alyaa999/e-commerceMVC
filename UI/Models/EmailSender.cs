@@ -1,11 +1,11 @@
 ﻿using e_commerce.Web.Models;
 using System.Net.Mail;
 using System.Net;
+using e_commerce.Application.Common.Interfaces;
 
 namespace e_commerce.Web.Models
 {
-
-    public class EmailSender
+    public class EmailSender : IEmailSenderService
     {
         private readonly EmailSettings _emailSettings;
 
@@ -32,3 +32,5 @@ namespace e_commerce.Web.Models
         }
     }
 }
+
+
