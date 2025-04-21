@@ -20,6 +20,7 @@ namespace e_commerce.Web.ViewModels.Home
         public string? SubCategoryName { get; set; }
         public int? SubCategoryId { get; set; }  
         public string? CategoryName { get; set; }
+        public int? CategoryId { get; set; }    
 
         public List<ProductImageViewModel>? Images { get; set; }
         public List<ReviewViewMode>? Reviews { get; set; }

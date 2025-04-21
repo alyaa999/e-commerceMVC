@@ -126,7 +126,11 @@ namespace e_commerce.Web.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
-            var product = await _productRepo.GetByIdAsync(id);
+            var user = await _userManager.GetUserAsync(User); // Get the currently logged-in user
+            var seller = _sellerRepo.Find(i => i.ApplicationUserId == user.Id).First();
+            var products = await  _productRepo.FindAsync(i=>i.SellerId ==seller.Id && i.Id==id  , x=>x.ProductImages);
+            var product = products.FirstOrDefault();
+
             if (product == null)
             {
                 return View("NotFound");
@@ -139,41 +143,113 @@ namespace e_commerce.Web.Controllers
         // GET: product/edit/{id}
         public async Task<IActionResult> Edit(int id)
         {
-            var product = await _productRepo.GetByIdAsync(id);
+            var user = await _userManager.GetUserAsync(User); // Get the currently logged-in user
+            var seller = _sellerRepo.Find(i => i.ApplicationUserId == user.Id).First();
+            var products = await _productRepo.FindAsync(i => i.SellerId == seller.Id && i.Id == id, x => x.ProductImages);
+            var product = products.FirstOrDefault();
             if (product == null)
             {
                 return View("NotFound");
             }
+            var productViewModel = Mapper.Map<ProductViewModel>(product);
 
-            return View(product);
+            return View(productViewModel);
         }
 
         // POST: product/edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Product product)
+        public async Task<IActionResult> Edit(ProductViewModel productView)
         {
-            if (id != product.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
+                var user = await _userManager.GetUserAsync(User); // Get the currently logged-in user
+                var seller = _sellerRepo.Find(i => i.ApplicationUserId == user.Id).First();
+                // Fetch the product from the database
+                var productObj = _productRepo.Find(i=>i.Id == productView.Id,x=>x.ProductImages).FirstOrDefault();
+                
+                if (productObj == null)
                 {
-                    _productRepo.Update(product); // Update the product using the repository
-                    TempData["Success"] = "Product updated successfully!";
+                    return NotFound();
                 }
-                catch
+               
+                // Use AutoMapper to map the basic fields of the productView to productObj
+                Mapper.Map(productView, productObj);
+                productObj.SellerId = seller.Id;
+
+
+
+                // If new images are uploaded
+                if (productView.ImagesUpload != null && productView.ImagesUpload.Count > 0)
                 {
-                    TempData["Error"] = "Error updating the product!";
+                    // Optional: Delete old images if you want to replace them (this could be adjusted based on your needs)
+                    foreach (var img in productObj.ProductImages)
+                    {
+                        var oldFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/image", img.ImageUrl);
+                        if (System.IO.File.Exists(oldFilePath))
+                        {
+                            System.IO.File.Delete(oldFilePath);
+                        }
+                    }
+
+                    // Clear existing images from the product (if you're replacing all images)
+                    productObj.ProductImages.Clear();
+
+                    // Process the new uploaded images
+                    for (int i = 0; i < productView.ImagesUpload.Count; i++)
+                    {
+                        var image = productView.ImagesUpload[i];
+                        if (image.Length > 0)
+                        {
+                            // Generate a unique file name
+                            var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
+                            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/image", fileName);
+
+                            // Save the image to the file system
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await image.CopyToAsync(stream);
+                            }
+
+                            // Create ProductImage object and assign IsPrimary based on the provided index
+                            var productImage = new ProductImage
+                            {
+                                ImageUrl = fileName,
+                                IsPrimary = (productView.PrimaryImageIndex == i)
+                            };
+
+                            productObj.ProductImages.Add(productImage);
+                        }
+                    }
                 }
-                return RedirectToAction(nameof(Index)); // Redirect to the product listing
+                else
+                {
+                    // No new images uploaded, so update the primary image
+                    // Unset the primary image for all images
+                    foreach (var img in productObj.ProductImages)
+                    {
+                        img.IsPrimary = false;
+                    }
+
+                    // Set the primary image based on the selected index (if valid)
+                    if (productView.PrimaryImageIndex >= 0 && productView.PrimaryImageIndex < productObj.ProductImages.Count)
+                    {
+                        //productObj.ProductImages[productView.PrimaryImageIndex].IsPrimary = true;
+                    }
+                }
+
+                // Save the updated product to the database
+                _productRepo.Update(productObj);
+                await _productRepo.SaveChangesAsync();
+
+                // Redirect to the Index page after saving
+                return RedirectToAction(nameof(Index));
             }
 
-            return View(product);
+            // In case of validation errors, re-populate dropdowns or other fields
+            return View(productView);
         }
+
 
         // POST: product/delete/{id}
         [HttpPost]
