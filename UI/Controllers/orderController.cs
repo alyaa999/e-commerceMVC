@@ -28,15 +28,6 @@ namespace e_commerce.Web.Controllers
             _customerRepo = customerRepo;
         }
 
-        //public enum OrderStatus
-        //{
-        //    Pending = 0,
-        //    Confirmed = 1,
-        //    Shipped = 2,
-        //    Delivered = 3,
-        //    Cancelled = 4,
-        //    Returned = 5
-        //}
         public async Task<IActionResult> Index(int? status = null, string customerSearch = null)
         {
             try
@@ -51,7 +42,7 @@ namespace e_commerce.Web.Controllers
                 // Apply status filter if provided
                 if (status.HasValue)
                 {
-                    orders = orders.Where(o =>  o.Status == (orderstateEnum) (status.Value)).ToList();
+                    orders = orders.Where(o => (int)o.Status == status.Value).ToList();
                 }
 
                 // Apply customer search filter if provided
@@ -97,7 +88,7 @@ namespace e_commerce.Web.Controllers
 
                 );
 
-              
+
                 var selectedOrder = order.FirstOrDefault(o => o.Id == id);
 
                 if (selectedOrder == null)
@@ -126,7 +117,7 @@ namespace e_commerce.Web.Controllers
 
                 if (status.HasValue)
                 {
-                    orders = orders.Where(o => o.Status == (orderstateEnum) status.Value).ToList();
+                    orders = orders.Where(o => (int)o.Status == status.Value).ToList();
                 }
 
                 var csv = GenerateOrdersCsv(orders);
@@ -190,7 +181,7 @@ namespace e_commerce.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                order.Status =  orderstateEnum.Confirmed;
+                order.Status = (Domain.Enums.orderstateEnum)orderstateEnum.Confirmed;
                 _orderRepo.Update(order);
                 await _orderRepo.SaveChangesAsync(); // Add this line
 
@@ -224,7 +215,7 @@ namespace e_commerce.Web.Controllers
                     return RedirectToAction(nameof(Index));
                 }
 
-                order.Status = orderstateEnum.Cancelled;
+                order.Status = (Domain.Enums.orderstateEnum)orderstateEnum.Cancelled;
                 _orderRepo.Update(order);
                 await _orderRepo.SaveChangesAsync(); // Add this line
 

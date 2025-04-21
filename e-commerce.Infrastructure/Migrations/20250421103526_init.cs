@@ -3,8 +3,6 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
-
 namespace e_commerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
@@ -356,6 +354,8 @@ namespace e_commerce.Infrastructure.Migrations
                     Order_Date = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())"),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Payment_Method = table.Column<int>(type: "int", nullable: false),
+                    Payment_Status = table.Column<int>(type: "int", nullable: false),
+                    Return_Status = table.Column<int>(type: "int", nullable: true),
                     Total_Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     Shipping_Address_ID = table.Column<int>(type: "int", nullable: false),
                     PaymentIntentId = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -504,10 +504,11 @@ namespace e_commerce.Infrastructure.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Reason = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     Order_ID = table.Column<int>(type: "int", nullable: false),
                     Product_ID = table.Column<int>(type: "int", nullable: false),
                     custId = table.Column<int>(type: "int", nullable: false),
+                    AmountRefunded = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Return_Date = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
                 },
                 constraints: table =>
@@ -529,21 +530,6 @@ namespace e_commerce.Infrastructure.Migrations
                         column: x => x.Product_ID,
                         principalTable: "Product",
                         principalColumn: "ID");
-                });
-
-            migrationBuilder.InsertData(
-                table: "Tager",
-                columns: new[] { "Id", "Name" },
-                values: new object[,]
-                {
-                    { 1, "feature" },
-                    { 2, "Popular" },
-                    { 3, "New" },
-                    { 4, "BestSeller" },
-                    { 5, "HotRelease" },
-                    { 6, "BestDeal" },
-                    { 7, "TopSelling" },
-                    { 8, "Trending" }
                 });
 
             migrationBuilder.CreateIndex(

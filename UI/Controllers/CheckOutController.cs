@@ -3,28 +3,33 @@ using e_commerce.Infrastructure.Entites;
 using e_commerce.Infrastructure.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
+    [ServiceFilter(typeof(LayoutDataFilterAttribute))]
+
     public class CheckOutController : Controller
     {
         // GET: CheckOutController
         private IcartRepository cartreposervice;
         private readonly IAdressRepo repo;
         private readonly IOrderRepository OrderRepo;
+        private ICustRepo custrepo;
 
-
-        public CheckOutController(IcartRepository _cartreposervice, IAdressRepo adressRepo,IOrderRepository _orderRepo)
+        public CheckOutController(IcartRepository _cartreposervice, IAdressRepo adressRepo,IOrderRepository _orderRepo, ICustRepo _custrepo)
         {
             cartreposervice = _cartreposervice;
             repo = adressRepo;
             OrderRepo = _orderRepo;
+            custrepo = _custrepo;
         }
         public ActionResult Index()
         {
-            Cart cart = cartreposervice.GetCartByCustomerId(1);
-            ViewBag.isFirstTime = (OrderRepo.viewAllOrders(1).Count==0?true:false);
-            ViewBag.Addresses = repo.GetAllAddressAsync();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            Cart cart = cartreposervice.GetCartByCustomerId(custrepo.getcustomerid(userId).Id);
+            ViewBag.isFirstTime = (OrderRepo.viewAllOrders(custrepo.getcustomerid(userId).Id).Count==0?true:false);
+            ViewBag.Addresses = repo.GetAllAddressAsync(custrepo.getcustomerid(userId).Id);
             return View(cart);
         }
 

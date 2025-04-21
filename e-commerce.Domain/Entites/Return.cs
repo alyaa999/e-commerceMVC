@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using e_commerce.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace e_commerce.Infrastructure.Entites;
@@ -15,8 +16,7 @@ public partial class Return
     public string Reason { get; set; }
 
     [Required]
-    [StringLength(50)]
-    public string Status { get; set; }
+    public ReturnStatusEnum Status { get; set; }
 
     [Column("Order_ID")]
     public int OrderId { get; set; }
@@ -27,6 +27,7 @@ public partial class Return
     public int custId { get; set; }
     public  Customer? Customer { get; set; }
 
+    public decimal AmountRefunded { get; set; }
 
     [Column("Return_Date", TypeName = "datetime")]
     public DateTime? ReturnDate { get; set; }

@@ -1,23 +1,40 @@
-﻿using e_commerce.Application.Common.Interfaces;
+﻿using AutoMapper;
+using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
+using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.ViewModels;
+using e_commerce.Web.ViewModels.Home;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
+    [ServiceFilter(typeof(LayoutDataFilterAttribute))]
+
     public class CartController : Controller
     {
         private IcartRepository cartreposervice;
-
-
-        public CartController(IcartRepository _cartreposervice) {
+        private ICustRepo custrepo;
+        private readonly IHomeRepository homeRepository;
+        private readonly IMapper _mapper;
+        private readonly IWishlistRepo wishlistRepo;
+        public CartController(IcartRepository _cartreposervice, ICustRepo _custrepo,IHomeRepository homeRepository,IMapper mapper,IWishlistRepo wishlist)
+        {
             cartreposervice = _cartreposervice;
+            custrepo = _custrepo;
+            this.homeRepository = homeRepository;
+            _mapper = mapper;
+            wishlistRepo = wishlist;
         }
+      
         // GET: CartController
         public ActionResult viewcartproducts()
         {
-            Cart cart = cartreposervice.GetCartByCustomerId(1);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Cart cart = cartreposervice.GetCartByCustomerId(custrepo.getcustomerid(userId).Id);
             return View(cart);
         }
 
@@ -36,7 +53,9 @@ namespace e_commerce.Web.Controllers
         //[ValidateAntiForgeryToken]
         public ActionResult AddItemToCart(int productId)
         {
-            Cart cart = cartreposervice.GetCartByCustomerId(1);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            Cart cart = cartreposervice.GetCartByCustomerId(custrepo.getcustomerid(userId).Id);
             cartreposervice.AddItemToCart(cart.Id,productId,1);
             return Json(new
             {
@@ -57,11 +76,11 @@ namespace e_commerce.Web.Controllers
         {
             try
             {
-
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
                 foreach (var item in updates)
                 {
                     cartreposervice.UpdateItemQuantity(
-                        1,
+                        custrepo.getcustomerid(userId).Id,
                         item.ProductId,
                         item.Quantity
                     );
@@ -81,9 +100,11 @@ namespace e_commerce.Web.Controllers
         {
             try
             {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
                 if (PrdId != null)
                 {
-                    cartreposervice.RemoveItemFromCart(1, PrdId);
+                    cartreposervice.RemoveItemFromCart(custrepo.getcustomerid(userId).Id, PrdId);
                 }
             }
             catch (Exception ex)

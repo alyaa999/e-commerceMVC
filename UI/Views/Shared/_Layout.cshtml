@@ -1,6 +1,7 @@
 ﻿@using e_commerce.Web.ViewModels.Home
 @{
     var categories = ViewBag.Categories as List<CategoryViewModel>;
+    var cartCount = ViewBag.CartItemCount;
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -47,7 +48,7 @@
                 </div>
                 <p class="header__alert-news">
                     Super Values Deals - Save more coupons
-                </p>
+                </p> 
                 @if (!User.Identity.IsAuthenticated)
                 {
                     <a asp-controller="Account" asp-action="Register" class="header__top-action">
@@ -276,14 +277,14 @@
                 </div>
             </div>
             <div class="header__user-actions">
-                <a asp-controller="Wishlists" asp-action="Index" asp-route-id="1" class="header__action-btn" title="Wishlist">
+                <a asp-controller="Wishlists" asp-action="Index" class="header__action-btn" title="Wishlist">
                     <img src="~/image/icon-heart.svg" alt="" />
-                    <span class="count">3</span>
-                </a> 
+                    <span class="count">@ViewBag.WishlistItemCount</span>
+                </a>
                 <a asp-action="viewcartproducts" asp-controller="Cart"
                    class="header__action-btn" title="Cart">
-                    <img src="~/image/icon-cart.svg" alt="" /> 
-                    <span class="count">3</span> 
+                    <img src="~/image/icon-cart.svg" alt="" />
+                    <span class="count">@cartCount</span>
                 </a>
                 <div class="header__action-btn nav__toggle" id="nav-toggle"> 
                     <img src="~/image/menu-burger.svg" alt="">
@@ -414,13 +415,6 @@
     <!-- my js file -->
     <script src="~/js/cart.js"></script>
     <script src="~/js/cartupdate.js"></script> 
-    
-
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
-    <!-- SweetAlert2 for notifications -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/cartdelete.js"></script>
     <script src="~/js/wishlist.js"></script>
     <script src="~/js/address.js"></script>

@@ -10,43 +10,28 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using e_commerce.Application.Common.Interfaces;
-using AutoMapper;
-using e_commerce.Infrastructure.Repository;
-using Microsoft.AspNetCore.Mvc.Filters;
-using e_commerce.Web.ViewModels.Home;
 
 
 namespace e_commerce.Web.Controllers
 {
+    [ServiceFilter(typeof(LayoutDataFilterAttribute))]
+
     public class MyAccountController : Controller
     {
         private readonly UserManager<ApplicationUser> UserManager;
         private readonly SignInManager<ApplicationUser> SignInManager;
         private readonly IEmailSenderService _emailSender;
-        private readonly IHomeRepository homeRepository;
-        public IMapper _mapper { get; }
 
-        public MyAccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSenderService emailSender, IHomeRepository homeRepository, IMapper mapper)
+        public MyAccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSenderService emailSender)
         {
             UserManager = userManager;
             SignInManager = signInManager;
             _emailSender = emailSender;
-            this.homeRepository = homeRepository;
-            _mapper = mapper;
-        }
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-
-            var DbCategories = homeRepository.GetCategories();
-
-            var categories = _mapper.Map<List<CategoryViewModel>>(DbCategories?.ToList() ?? new List<Category>());
-            ViewBag.Categories = categories;
-            base.OnActionExecuting(filterContext);
         }
 
         public IActionResult Index()
         {
-            return View(); 
+            return View();
         }
 
         public async Task<IActionResult> UpdateProfile()
@@ -57,7 +42,6 @@ namespace e_commerce.Web.Controllers
                 UserName = user.UserName,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Email = user.Email
             };
             return View(model);
         }
@@ -71,7 +55,6 @@ namespace e_commerce.Web.Controllers
             user.UserName = model.UserName;
             user.FirstName = model.FirstName;
             user.LastName = model.LastName;
-            user.Email = model.Email;
 
             var result = await UserManager.UpdateAsync(user);
             if (result.Succeeded)
@@ -113,6 +96,61 @@ namespace e_commerce.Web.Controllers
 
             return View(model);
         }
+
+
+
+
+
+        [HttpGet]
+        public IActionResult ChangeEmail()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangeEmail(ChangeEmailViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var user = await UserManager.GetUserAsync(User);
+            if (user == null) return RedirectToAction("Login", "Account");
+
+            var token = await UserManager.GenerateChangeEmailTokenAsync(user, model.NewEmail);
+
+            var confirmLink = Url.Action("ConfirmNewEmail", "MyAccount", new
+            {
+                userId = user.Id,
+                newEmail = model.NewEmail,
+                token = token
+            }, protocol: Request.Scheme);
+
+            await _emailSender.SendEmailAsync(model.NewEmail, "Confirm your new email",
+                          $"Click <a href='{confirmLink}'>here</a> to confirm your new email address.");
+
+            ViewBag.EmailMessage = "A confirmation link has been sent to your new email.";
+
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmNewEmail(string userId, string newEmail, string token)
+        {
+            if (userId == null || newEmail == null || token == null)
+                return View("Error");
+
+            var user = await UserManager.FindByIdAsync(userId);
+            if (user == null) return View("Error");
+
+            var result = await UserManager.ChangeEmailAsync(user, newEmail, token);
+
+            if (result.Succeeded)
+            {
+                return View("EmailConfirmed");
+            }
+
+            return View("Error");
+        }
+
     }
 
 }

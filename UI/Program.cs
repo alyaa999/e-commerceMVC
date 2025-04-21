@@ -1,6 +1,5 @@
-using e_commerce.Application.Common.Interfaces;
+﻿using e_commerce.Application.Common.Interfaces;
 using e_commerce.Domain.Entites;
-using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Web.Models;
 using Microsoft.AspNetCore.Identity;
@@ -12,14 +11,18 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Stripe;
+using e_commerce.Web.Controllers;
 
 namespace e_commerce
 {
     public class Program
     {
-        public static async Task SeedRolesAsync(IServiceProvider serviceProvider)
+        public static async Task SeedRolesAndUsersAsync(IServiceProvider serviceProvider)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            var dbContext = serviceProvider.GetRequiredService<ECommerceDBContext>(); // Replace with your real DbContext name
 
             string[] roles = { "Customer", "Seller", "Admin" };
 
@@ -30,7 +33,68 @@ namespace e_commerce
                     await roleManager.CreateAsync(new IdentityRole(role));
                 }
             }
+
+            var emails = new[]
+            {
+                "alqtta04@gmail.com",
+                "yasmeensaffan@gmail.com",
+                  "ebtihalali736@gmail.com",
+            "aliaamohamed3.2003@gmail.com",
+            "alyaamamoon999@gmail.com"
+            };
+
+            foreach (var email in emails)
+            {
+                var user = await userManager.FindByEmailAsync(email);
+                if (user == null)
+                {
+                    user = new ApplicationUser
+                    {
+
+                        UserName = email.Split('@')[0],
+                        Email = email,
+                        EmailConfirmed = true,
+                        FirstName = email.Split('@')[0],  // 👈 Add these lines
+                        LastName = ""
+                    };
+
+                    var result = await userManager.CreateAsync(user, "Default@123");
+
+                    if (!result.Succeeded)
+                        continue;
+                }
+
+                // Assign all roles
+                foreach (var role in roles)
+                {
+                    if (!await userManager.IsInRoleAsync(user, role))
+                    {
+                        await userManager.AddToRoleAsync(user, role);
+                    }
+                }
+
+                // Add to Customer table if not exists
+                if (!dbContext.Customers.Any(c => c.ApplicationUserId == user.Id))
+                {
+                    dbContext.Customers.Add(new Infrastructure.Entites.Customer
+                    {
+                        ApplicationUserId = user.Id
+                    });
+                }
+
+                // Add to Seller table if not exists
+                if (!dbContext.Sellers.Any(s => s.ApplicationUserId == user.Id))
+                {
+                    dbContext.Sellers.Add(new Seller
+                    {
+                        ApplicationUserId = user.Id
+                    });
+                }
+
+                await dbContext.SaveChangesAsync();
+            }
         }
+
 
 
         public static async Task Main(string[] args)
@@ -40,20 +104,24 @@ namespace e_commerce
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(typeof(ProductProfile));
+
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddControllersWithViews(
                 conf => conf.Filters.Add(new AuthorizeFilter())
                 );
             // builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-            builder.Services.AddControllersWithViews();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddDbContext<ECommerceDBContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
             #region AddServices
             builder.Services.AddScoped<IHomeRepository, HomeRepository>();
             #endregion
             builder.Services.AddScoped<IWishlistRepo, WishlistRepo>();
+
+            builder.Services.AddScoped<ICustRepo, custRepo>();
             //builder.Services.AddApplicationServices();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -102,20 +170,28 @@ namespace e_commerce
 
 
 
-
             builder.Services.AddScoped<IcartRepository, CarRepoService>();
             builder.Services.AddScoped<IAdressRepo, AddressRepo>();
             builder.Services.AddAutoMapper(typeof(AddressProfile));
             builder.Services.AddScoped<IOrderRepository, OrderRepoService>();
-          
+            builder.Services.AddScoped<LayoutDataFilterAttribute>();
+
+
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            builder.Services.AddScoped<IEmailSenderService, EmailSender>();
+
+
+
+            builder.Services.AddScoped<IReturnRepository, returnRepoService>();
+            builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
-                await SeedRolesAsync(services);
+                await SeedRolesAndUsersAsync(services);
             }
 
             // Configure the HTTP request pipeline.
@@ -126,8 +202,19 @@ namespace e_commerce
             app.UseRouting();
 
             app.UseAuthentication();
+
             StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
             app.UseAuthorization();
+
+
+            app.UseAuthorization();
+
+            app.MapControllerRoute(
+                name: "externalLogin",
+                pattern: "signin-{provider}",
+                defaults: new { controller = "Account", action = "ExternalLoginCallback" });
+
+
 
             app.MapStaticAssets();
             app.MapControllerRoute(

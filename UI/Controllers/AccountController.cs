@@ -1,13 +1,18 @@
-﻿using e_commerce.Application.Common.Interfaces;
+﻿using AutoMapper;
+using e_commerce.Application.Common.Interfaces;
 using e_commerce.Domain.Entites;
 using e_commerce.Infrastructure.Entites;
+using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.Models;
+using e_commerce.Web.ViewModels.Home;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Stripe;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -15,28 +20,35 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace e_commerce.Web.Controllers
 {
     [AllowAnonymous]
+    [ServiceFilter(typeof(LayoutDataFilterAttribute))]
+
     public class AccountController : Controller
     {
         private readonly ECommerceDBContext _context;
+        private readonly IMapper mapper;
+
         public UserManager<ApplicationUser> UserManager { get; } //RepoService layer for user 
         public SignInManager<ApplicationUser> SignInManager { get; }
+        public IMapper _mapper { get; }
 
-        private readonly IConfiguration _configuration;
+        private readonly IEmailSenderService _emailSender;
+        private readonly IHomeRepository _homeRepository;
 
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ECommerceDBContext context)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ECommerceDBContext context, 
+            IHomeRepository homeRepository,
+            IMapper mapper, IEmailSenderService emailSender)
         {
             UserManager = userManager;
             SignInManager = signInManager;
             _context = context;
-
-            var builder = new ConfigurationBuilder()
-    .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-    .AddJsonFile("appsettings.json");
-
-            _configuration = builder.Build();
+           _homeRepository = homeRepository;
+            this.mapper = mapper;
+            _emailSender = emailSender;
+   
 
         }
 
+  
 
 
 
@@ -68,8 +80,14 @@ namespace e_commerce.Web.Controllers
                     // ✅ Add to Customer or Seller table
                     if (newUserVM.Role == "Customer")
                     {
-                        var customer = new Customer { ApplicationUserId = usermodel.Id };
+                        var customer = new Infrastructure.Entites.Customer { ApplicationUserId = usermodel.Id };
                         _context.Customers.Add(customer);
+                        await _context.SaveChangesAsync();
+                        var mycustomerfromDB = _context.Customers.FirstOrDefault(c=>c.ApplicationUserId== usermodel.Id);
+                        var cart= new Cart { TotalItemsNumber=0,TotalPrice=0,CustomerId= mycustomerfromDB.Id,CreatedDate=DateTime.Now};
+                        _context.Carts.Add(cart);
+                        var wishlist = new Wishlist { CustomerId= mycustomerfromDB.Id,Name= mycustomerfromDB.ApplicationUser.FirstName+ "wishilist" };
+                        _context.Wishlists.Add(wishlist);
                     }
                     else if (newUserVM.Role == "Seller")
                     {
@@ -84,11 +102,10 @@ namespace e_commerce.Web.Controllers
                     var confirmationLink = Url.Action("ConfirmEmail", "Account", new
                     {
                         userId = usermodel.Id,
-                        token = token
+                        token
                     }, protocol: HttpContext.Request.Scheme);
 
-                    var emailSender = new EmailSender(_configuration);
-                    await emailSender.SendEmailAsync(usermodel.Email, "Confirm your email",
+                    await _emailSender.SendEmailAsync(usermodel.Email, "Confirm your email",
                         $"Please confirm your email by clicking <a href='{confirmationLink}'>here</a>.");
 
                     // ✅ Show instruction to check email
@@ -116,20 +133,35 @@ namespace e_commerce.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginUserViewModel UserVM)
+        public async Task<IActionResult> Login(LoginUserViewModel UserVM , string returnUrl = null)
         {
             if (ModelState.IsValid)
             {
                 //check db
                 ApplicationUser UserFromDB = await UserManager.FindByEmailAsync(UserVM.Email);
+
                 if (UserFromDB != null)
                 {
                     bool found = await UserManager.CheckPasswordAsync(UserFromDB, UserVM.Password);
-                    if (found == true)
+
+                    if (found)
                     {
-                        //create cookie
+                        // ✅ check if the email is confirmed
+                        if (!await UserManager.IsEmailConfirmedAsync(UserFromDB))
+                        {
+                            ModelState.AddModelError("", "You must confirm your email before logging in.");
+                            return View(UserVM);
+                        }
+
                         await SignInManager.SignInAsync(UserFromDB, isPersistent: UserVM.RememberMe);
-                        return RedirectToAction("Index", "Home");
+                        if (Url.IsLocalUrl(returnUrl))
+                        {
+                            return Redirect(returnUrl);
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
                     }
                 }
                
@@ -137,6 +169,7 @@ namespace e_commerce.Web.Controllers
             ModelState.AddModelError("", "Wrong Email or Password!!!!!");
             return View(UserVM);
         }
+
 
 
         //<!-- ✅ ExternalLogin -->
@@ -179,7 +212,8 @@ namespace e_commerce.Web.Controllers
                     UserName = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.GivenName) ?? "First",
                     Email = email,
                     FirstName = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.GivenName) ?? "First",
-                    LastName = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.Surname) ?? "Last"
+                    LastName = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.Surname) ?? "Last",
+                    EmailConfirmed = true
                 };
 
                 var result = await UserManager.CreateAsync(user);
@@ -226,7 +260,15 @@ namespace e_commerce.Web.Controllers
             await UserManager.AddToRoleAsync(user, role);
 
             if (role == "Customer")
-                _context.Customers.Add(new Customer { ApplicationUserId = user.Id });
+            {
+                var customer = new Infrastructure.Entites.Customer { ApplicationUserId = user.Id };
+                _context.Customers.Add(customer);
+                await _context.SaveChangesAsync();
+                var cart = new Cart { TotalItemsNumber = 0, TotalPrice = 0, CustomerId = customer.Id, CreatedDate = DateTime.Now };
+                _context.Carts.Add(cart);
+                var wishlist = new Wishlist { CustomerId = customer.Id, Name = customer.ApplicationUser.FirstName + "wishilist" };
+                _context.Wishlists.Add(wishlist);
+            }
             else if (role == "Seller")
                 _context.Sellers.Add(new Seller { ApplicationUserId = user.Id });
 
@@ -282,14 +324,9 @@ namespace e_commerce.Web.Controllers
             }
 
             var token = await UserManager.GeneratePasswordResetTokenAsync(user);
-            var resetLink = Url.Action("ResetPassword", "Account", new
-            {
-                userId = user.Id,
-                token = token
-            }, protocol: HttpContext.Request.Scheme);
+            var resetLink = Url.Action("ResetPassword", "Account", new { userId = user.Id, token }, protocol: HttpContext.Request.Scheme);
 
-            var emailSender = new EmailSender(_configuration);
-            await emailSender.SendEmailAsync(email, "Reset Password",
+            await _emailSender.SendEmailAsync(email, "Reset Password",
                 $"Click <a href='{resetLink}'>here</a> to reset your password.");
 
             return View("ForgotPasswordConfirmation");

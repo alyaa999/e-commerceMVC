@@ -9,8 +9,10 @@ namespace e_commerce.Application.Common.Interfaces
 {
     public interface IcartRepository
     {
-       
-            Cart GetCartByCustomerId(int customerId);
+
+     int GetCartItemsByCustomerID(int customerId);
+
+            Cart? GetCartByCustomerId(int customerId);
         void AddItemToCart(int cartId, int productId, int quantity);
         public void UpdateItemQuantity(int userId, int productId, int newQuantity);
         void RemoveAllFromCart(int cartId,int custid);
