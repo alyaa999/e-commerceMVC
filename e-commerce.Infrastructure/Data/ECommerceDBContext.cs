@@ -49,7 +49,7 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        ModelBuilderExtensions.Seed(modelBuilder);
+        //ModelBuilderExtensions.Seed(modelBuilder);
         base.OnModelCreating(modelBuilder);
        
 

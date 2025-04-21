@@ -101,7 +101,6 @@ namespace e_commerce
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-<<<<<<<<< Temporary merge branch 1
             builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(typeof(ProductProfile));
 

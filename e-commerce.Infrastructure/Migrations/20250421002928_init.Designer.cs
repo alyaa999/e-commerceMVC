@@ -12,13 +12,8 @@ using e_commerce.Infrastructure.Entites;
 namespace e_commerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-<<<<<<<< HEAD:e-commerce.Infrastructure/Migrations/20250420134611_init.Designer.cs
-    [Migration("20250420134611_init")]
+    [Migration("20250421002928_init")]
     partial class init
-========
-    [Migration("20250419205625_akherHaga")]
-    partial class akherHaga
->>>>>>>> Development-#1:e-commerce.Infrastructure/Migrations/20250419205625_akherHaga.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -626,6 +621,9 @@ namespace e_commerce.Infrastructure.Migrations
                         .HasColumnName("ID");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("AmountRefunded")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("OrderId")
                         .HasColumnType("int")

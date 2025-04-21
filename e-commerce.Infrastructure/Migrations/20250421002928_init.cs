@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace e_commerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:e-commerce.Infrastructure/Migrations/20250420134611_init.cs
     public partial class init : Migration
-========
-    public partial class akherHaga : Migration
->>>>>>>> Development-#1:e-commerce.Infrastructure/Migrations/20250419205625_akherHaga.cs
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -314,31 +310,19 @@ namespace e_commerce.Infrastructure.Migrations
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Code = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-<<<<<<<< HEAD:e-commerce.Infrastructure/Migrations/20250420134611_init.cs
                     Tag = table.Column<int>(type: "int", nullable: true),
                     TagId = table.Column<int>(type: "int", nullable: true),
-========
->>>>>>>> Development-#1:e-commerce.Infrastructure/Migrations/20250419205625_akherHaga.cs
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Brand = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Price = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
                     DESC = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Discount = table.Column<decimal>(type: "decimal(5,2)", nullable: true, defaultValue: 0m),
-<<<<<<<< HEAD:e-commerce.Infrastructure/Migrations/20250420134611_init.cs
                     Stock = table.Column<int>(type: "int", nullable: true),
                     IsApproved = table.Column<bool>(type: "bit", nullable: false),
                     IsActive = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Sub_Category_ID = table.Column<int>(type: "int", nullable: true),
                     Seller_ID = table.Column<int>(type: "int", nullable: true)
-========
-                    Stock = table.Column<int>(type: "int", nullable: false),
-                    IsApproved = table.Column<bool>(type: "bit", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Sub_Category_ID = table.Column<int>(type: "int", nullable: false),
-                    Seller_ID = table.Column<int>(type: "int", nullable: false)
->>>>>>>> Development-#1:e-commerce.Infrastructure/Migrations/20250419205625_akherHaga.cs
                 },
                 constraints: table =>
                 {
@@ -524,6 +508,7 @@ namespace e_commerce.Infrastructure.Migrations
                     Order_ID = table.Column<int>(type: "int", nullable: false),
                     Product_ID = table.Column<int>(type: "int", nullable: false),
                     custId = table.Column<int>(type: "int", nullable: false),
+                    AmountRefunded = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Return_Date = table.Column<DateTime>(type: "datetime", nullable: true, defaultValueSql: "(getdate())")
                 },
                 constraints: table =>
