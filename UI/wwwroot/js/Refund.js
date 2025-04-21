@@ -20,7 +20,9 @@
                             text: response.message,
                             icon: response.success ? 'success' : 'error'
                         }).then(() => {
+                            console.log(response.message)
                             if (response.success) {
+                                console.log("hello")
                                 if(response.message.includes("Refund")) {
                                     $.ajax({
                                         url: '/Payment/Refund',
