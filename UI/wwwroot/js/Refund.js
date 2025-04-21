@@ -11,7 +11,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: '/order/Delete',
+                    url: '/_Orders/Delete',
                     type: 'POST',
                     data: { id: orderId },
                     success: function (response) {
