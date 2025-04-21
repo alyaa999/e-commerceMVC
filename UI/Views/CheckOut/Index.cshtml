@@ -140,9 +140,9 @@
             <button class="error-button">I Understand</button>
         </div>
     </div>
-</div>
-@section Scripts {
-    <script>
+</div> 
+@section Scripts { 
+    <script> 
         let selectedAddressId = @((ViewBag.Addresses as IEnumerable<Address>).FirstOrDefault(a => a.IsDefault)?.Id ?? 0);
         // Show modal function
         function showErrorModal() {
