@@ -11,6 +11,8 @@ using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
+    [ServiceFilter(typeof(LayoutDataFilterAttribute))]
+
     public class CartController : Controller
     {
         private IcartRepository cartreposervice;
@@ -26,18 +28,7 @@ namespace e_commerce.Web.Controllers
             _mapper = mapper;
             wishlistRepo = wishlist;
         }
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            base.OnActionExecuting(filterContext);
-            var DbCategories = homeRepository.GetCategories();
-            var cartItemCount = cartreposervice.GetCartByCustomerId(custrepo.getcustomerid(userId).Id).CartProducts?.Count ?? 0;
-            ViewBag.CartItemCount = cartItemCount;
-            var WishlistItemCount = wishlistRepo.GetByCustomerId(custrepo.getcustomerid(userId).Id).Products?.Count ?? 0;
-            ViewBag.WishlistItemCount = WishlistItemCount;
-            var categories = _mapper.Map<List<CategoryViewModel>>(DbCategories?.ToList() ?? new List<Category>());
-            ViewBag.Categories = categories;
-        }
+      
         // GET: CartController
         public ActionResult viewcartproducts()
         {

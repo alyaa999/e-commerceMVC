@@ -5,6 +5,7 @@ using e_commerce.Application.Common.Interfaces;
 using e_commerce.Domain.DTOS;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Infrastructure.Repository;
+using e_commerce.Web.Controllers;
 using e_commerce.Web.Models;
 using e_commerce.Web.ViewModels.Home;
 using Microsoft.AspNetCore.Authorization;
@@ -15,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 namespace e_commerce.Controllers;
 
 [AllowAnonymous]
+[ServiceFilter(typeof(LayoutDataFilterAttribute))]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -23,6 +25,7 @@ public class HomeController : Controller
     private readonly IcartRepository CartRepository;
     private readonly ICustRepo custRepo;
     private readonly IWishlistRepo wishlistRepo;
+
     public HomeController(ILogger<HomeController> logger , IHomeRepository homeRepository , IMapper mapper,IcartRepository repository,ICustRepo cust,IWishlistRepo wishlist)
     {
         _logger = logger;
@@ -32,19 +35,7 @@ public class HomeController : Controller
         custRepo = cust;
         wishlistRepo = wishlist;
     }
-    public override void OnActionExecuting(ActionExecutingContext filterContext)
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        base.OnActionExecuting(filterContext);
-        var DbCategories = homeRepository.GetCategories();
-        var cartItemCount = CartRepository.GetCartByCustomerId(custRepo.getcustomerid(userId).Id).CartProducts?.Count ?? 0;
-        ViewBag.CartItemCount = cartItemCount;
-        var WishlistItemCount = wishlistRepo.GetByCustomerId(custRepo.getcustomerid(userId).Id).Products?.Count ?? 0;
-        ViewBag.WishlistItemCount = WishlistItemCount;
-        var categories = _mapper.Map<List<CategoryViewModel>>(DbCategories?.ToList() ?? new List<Category>());
-        ViewBag.Categories = categories;
-    }
-
+   
 
     public async Task<IActionResult> Index(int pageNumber = 1)
     {

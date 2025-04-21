@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Stripe;
+using e_commerce.Web.Controllers;
 
 namespace e_commerce
 {
@@ -173,7 +174,9 @@ namespace e_commerce
             builder.Services.AddScoped<IAdressRepo, AddressRepo>();
             builder.Services.AddAutoMapper(typeof(AddressProfile));
             builder.Services.AddScoped<IOrderRepository, OrderRepoService>();
-          
+            builder.Services.AddScoped<LayoutDataFilterAttribute>();
+
+
 
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 

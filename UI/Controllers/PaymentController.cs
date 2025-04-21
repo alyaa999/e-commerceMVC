@@ -14,6 +14,8 @@ using SessionService = Stripe.Checkout.SessionService;
 
 namespace e_commerce.Web.Controllers
 {
+    [ServiceFilter(typeof(LayoutDataFilterAttribute))]
+
     public class PaymentController : Controller
     {
         private readonly IcartRepository repo;

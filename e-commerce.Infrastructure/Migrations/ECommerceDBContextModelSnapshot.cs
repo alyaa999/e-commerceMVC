@@ -378,6 +378,48 @@ namespace e_commerce.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Cart");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CreatedDate = new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CustomerId = 1,
+                            TotalItemsNumber = 0,
+                            TotalPrice = 0m
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CreatedDate = new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CustomerId = 2,
+                            TotalItemsNumber = 0,
+                            TotalPrice = 0m
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CreatedDate = new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CustomerId = 3,
+                            TotalItemsNumber = 0,
+                            TotalPrice = 0m
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CreatedDate = new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CustomerId = 4,
+                            TotalItemsNumber = 0,
+                            TotalPrice = 0m
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CreatedDate = new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            CustomerId = 5,
+                            TotalItemsNumber = 0,
+                            TotalPrice = 0m
+                        });
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.CartProduct", b =>
@@ -1329,6 +1371,38 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Wishlist");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CustomerId = 1,
+                            Name = "my wishlist"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CustomerId = 1,
+                            Name = "my wishlist"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            CustomerId = 1,
+                            Name = "my wishlist"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            CustomerId = 1,
+                            Name = "my wishlist"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            CustomerId = 1,
+                            Name = "my wishlist"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

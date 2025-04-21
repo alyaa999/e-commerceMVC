@@ -13,6 +13,7 @@ using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
+    [ServiceFilter(typeof(LayoutDataFilterAttribute))]
     public class AddressesController : Controller
     {
         List<string> cities;

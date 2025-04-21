@@ -20,6 +20,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace e_commerce.Web.Controllers
 {
     [AllowAnonymous]
+    [ServiceFilter(typeof(LayoutDataFilterAttribute))]
+
     public class AccountController : Controller
     {
         private readonly ECommerceDBContext _context;
@@ -46,15 +48,7 @@ namespace e_commerce.Web.Controllers
 
         }
 
-        public override void OnActionExecuting(ActionExecutingContext filterContext)
-        {
-
-            var DbCategories = _homeRepository.GetCategories();
-
-            var categories = mapper.Map<List<CategoryViewModel>>(DbCategories?.ToList() ?? new List<Category>());
-            ViewBag.Categories = categories;
-            base.OnActionExecuting(filterContext);
-        }
+  
 
 
 

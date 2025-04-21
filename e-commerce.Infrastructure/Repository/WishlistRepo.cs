@@ -70,6 +70,19 @@ namespace e_commerce.Infrastructure.Repository
                 throw new Exception("Wishlist not found");
             }
         }
+        public int GetWishListCount(int customerId)
+        {
+            var wishlist = _context.Wishlists.Include(p => p.Products).FirstOrDefault(w => w.CustomerId == customerId);
+            if (wishlist != null)
+            {
+                return wishlist.Products.Count;
+            }
+            else
+            {
+                return 0;
+            }
+
+        }
         public Wishlist GetByCustomerId(int customerId)
         {
             var wishlist = _context.Wishlists.Include(p => p.Products).ThenInclude(i => i.ProductImages).FirstOrDefault(w => w.CustomerId == customerId);

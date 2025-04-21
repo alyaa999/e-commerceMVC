@@ -10,6 +10,8 @@ using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
+    [ServiceFilter(typeof(LayoutDataFilterAttribute))]
+
     public class returnsController : Controller
     {
         // GET: returnsController

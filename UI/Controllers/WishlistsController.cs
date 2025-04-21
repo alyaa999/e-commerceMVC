@@ -15,6 +15,8 @@ using AutoMapper;
 
 namespace e_commerce.Web.Controllers
 {
+    [ServiceFilter(typeof(LayoutDataFilterAttribute))]
+
     public class WishlistsController : Controller
     {
         private readonly ECommerceDBContext _context;

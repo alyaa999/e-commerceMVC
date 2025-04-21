@@ -8,6 +8,8 @@ namespace e_commerce.Application.Common.Interfaces
 {
     public interface IWishlistRepo
     {
+         int GetWishListCount(int customerId);
+
         Task AddAsync(Wishlist entity);
         Task<Wishlist> DeleteAsync(int id);
         Task<List<Wishlist>> GetAllAsync();

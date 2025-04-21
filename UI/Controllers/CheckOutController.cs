@@ -7,6 +7,8 @@ using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
+    [ServiceFilter(typeof(LayoutDataFilterAttribute))]
+
     public class CheckOutController : Controller
     {
         // GET: CheckOutController

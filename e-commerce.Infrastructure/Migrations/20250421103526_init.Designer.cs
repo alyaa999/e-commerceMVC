@@ -12,7 +12,7 @@ using e_commerce.Infrastructure.Entites;
 namespace e_commerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    [Migration("20250421002928_init")]
+    [Migration("20250421103526_init")]
     partial class init
     {
         /// <inheritdoc />

@@ -9,6 +9,6 @@ namespace e_commerce.Application.Common.Interfaces
 {
     public interface ICustRepo
     {
-        Customer getcustomerid(string claimID);
+        Customer? getcustomerid(string claimID);
     }
 }

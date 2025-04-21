@@ -61,11 +61,23 @@ namespace e_commerce.Infrastructure.Repository
 
             SaveChanges();
         }
-        
-
-        public Cart GetCartByCustomerId(int customerId)
+        public int GetCartItemsByCustomerID(int customerId)
         {
-            Cart cart= context.Carts 
+
+            var cart = context.Carts.Include(p => p.CartProducts).FirstOrDefault(w => w.CustomerId == customerId);
+            if (cart != null)
+            {
+                return cart.CartProducts.Count;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+       
+        public Cart? GetCartByCustomerId(int customerId)
+        {
+            Cart? cart= context.Carts 
             .Include(c => c.CartProducts)
             .ThenInclude(cp => cp.ProductCodeNavigation).ThenInclude(p=>p.ProductImages)
             .FirstOrDefault(c => c.CustomerId == customerId);

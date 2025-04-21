@@ -14,6 +14,8 @@ using e_commerce.Application.Common.Interfaces;
 
 namespace e_commerce.Web.Controllers
 {
+    [ServiceFilter(typeof(LayoutDataFilterAttribute))]
+
     public class MyAccountController : Controller
     {
         private readonly UserManager<ApplicationUser> UserManager;

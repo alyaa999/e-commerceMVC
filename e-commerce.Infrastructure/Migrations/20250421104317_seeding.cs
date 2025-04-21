@@ -8,11 +8,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace e_commerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class seedingData : Migration
+    public partial class seeding : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.InsertData(
+                table: "Cart",
+                columns: new[] { "ID", "CreatedDate", "Customer_ID", "Total_Items_Number", "Total_Price" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 1, 0, 0m },
+                    { 2, new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 2, 0, 0m },
+                    { 3, new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 3, 0, 0m },
+                    { 4, new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 4, 0, 0m },
+                    { 5, new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 5, 0, 0m }
+                });
+
             migrationBuilder.InsertData(
                 table: "Category",
                 columns: new[] { "ID", "Name" },
@@ -36,6 +48,18 @@ namespace e_commerce.Infrastructure.Migrations
                     { 6, "BestDeal" },
                     { 7, "TopSelling" },
                     { 8, "Trending" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Wishlist",
+                columns: new[] { "ID", "Customer_ID", "Name" },
+                values: new object[,]
+                {
+                    { 1, 1, "my wishlist" },
+                    { 2, 1, "my wishlist" },
+                    { 3, 1, "my wishlist" },
+                    { 4, 1, "my wishlist" },
+                    { 5, 1, "my wishlist" }
                 });
 
             migrationBuilder.InsertData(
@@ -124,6 +148,31 @@ namespace e_commerce.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DeleteData(
+                table: "Cart",
+                keyColumn: "ID",
+                keyValue: 1);
+
+            migrationBuilder.DeleteData(
+                table: "Cart",
+                keyColumn: "ID",
+                keyValue: 2);
+
+            migrationBuilder.DeleteData(
+                table: "Cart",
+                keyColumn: "ID",
+                keyValue: 3);
+
+            migrationBuilder.DeleteData(
+                table: "Cart",
+                keyColumn: "ID",
+                keyValue: 4);
+
+            migrationBuilder.DeleteData(
+                table: "Cart",
+                keyColumn: "ID",
+                keyValue: 5);
+
             migrationBuilder.DeleteData(
                 table: "Product_Image",
                 keyColumn: "ID",
@@ -373,6 +422,31 @@ namespace e_commerce.Infrastructure.Migrations
                 table: "Tager",
                 keyColumn: "Id",
                 keyValue: 8);
+
+            migrationBuilder.DeleteData(
+                table: "Wishlist",
+                keyColumn: "ID",
+                keyValue: 1);
+
+            migrationBuilder.DeleteData(
+                table: "Wishlist",
+                keyColumn: "ID",
+                keyValue: 2);
+
+            migrationBuilder.DeleteData(
+                table: "Wishlist",
+                keyColumn: "ID",
+                keyValue: 3);
+
+            migrationBuilder.DeleteData(
+                table: "Wishlist",
+                keyColumn: "ID",
+                keyValue: 4);
+
+            migrationBuilder.DeleteData(
+                table: "Wishlist",
+                keyColumn: "ID",
+                keyValue: 5);
 
             migrationBuilder.DeleteData(
                 table: "Product",

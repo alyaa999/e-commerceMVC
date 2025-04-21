@@ -16,7 +16,7 @@ namespace e_commerce.Infrastructure.Repository
         {
             context = _context;
         }
-        public Customer getcustomerid(string claimID)
+        public Customer? getcustomerid(string claimID)
         {
             return context.Customers.FirstOrDefault(c=>c.ApplicationUserId==claimID);
         }

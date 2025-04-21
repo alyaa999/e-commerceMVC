@@ -11,6 +11,8 @@ using Stripe.Climate;
 
 namespace e_commerce.Web.Controllers
 {
+    [ServiceFilter(typeof(LayoutDataFilterAttribute))]
+
     public class _OrdersController : Controller
     {
         public IOrderRepository IOrderRepo { get; }
