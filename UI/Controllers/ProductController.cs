@@ -265,6 +265,7 @@ namespace e_commerce.Web.Controllers
             try
             {
                 await _productRepo.DeleteAsync(id); // Delete the product using the repository
+                _productRepo.SaveChanges(); // Save changes to the database
                 TempData["Success"] = "Product deleted successfully!";
             }
             catch
