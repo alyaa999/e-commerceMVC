@@ -200,6 +200,20 @@ public static class ModelBuilderExtensions
             new Review { Id = 30, ProductId = 6, CustomerId = 5, Rating = 5, Comment = "Blends in seconds, love it!", ReviewDate = new DateTime(2024, 7, 23) }
         );
 
+        modelBuilder.Entity<Cart>().HasData(
+        new Cart { Id= 1, TotalPrice = 0, TotalItemsNumber = 0, CustomerId= 1, CreatedDate = new DateTime(2024, 7, 21) },
+        new Cart { Id= 2, TotalPrice = 0, TotalItemsNumber = 0, CustomerId= 2, CreatedDate = new DateTime(2024, 7, 21) },
+        new Cart { Id= 3, TotalPrice = 0, TotalItemsNumber = 0, CustomerId= 3, CreatedDate = new DateTime(2024, 7, 21) },
+        new Cart { Id= 4, TotalPrice = 0, TotalItemsNumber = 0, CustomerId= 4, CreatedDate = new DateTime(2024, 7, 21) },
+        new Cart { Id= 5, TotalPrice = 0, TotalItemsNumber = 0, CustomerId= 5, CreatedDate = new DateTime(2024, 7, 21) }
+    );
 
+        modelBuilder.Entity<Wishlist>().HasData(
+            new Wishlist { Id = 1, Name = "my wishlist"  , CustomerId=1},
+            new Wishlist { Id = 2, Name = "my wishlist" , CustomerId=1 },
+            new Wishlist  { Id = 3, Name = "my wishlist" , CustomerId=1 },
+            new Wishlist  { Id = 4, Name = "my wishlist", CustomerId=1 },
+            new Wishlist  { Id = 5, Name = "my wishlist" ,CustomerId=1 }
+        );
     }
 }
