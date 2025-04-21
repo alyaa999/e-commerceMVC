@@ -5,11 +5,16 @@ using e_commerce.Infrastructure.Entites;
 using e_commerce.Web.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using e_commerce.Application.Common.Interfaces;
+using AutoMapper;
+using e_commerce.Infrastructure.Repository;
+using Microsoft.AspNetCore.Mvc.Filters;
+using e_commerce.Web.ViewModels.Home;
+
 
 namespace e_commerce.Web.Controllers
 {
@@ -17,11 +22,26 @@ namespace e_commerce.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> UserManager;
         private readonly SignInManager<ApplicationUser> SignInManager;
+        private readonly IEmailSenderService _emailSender;
+        private readonly IHomeRepository homeRepository;
+        public IMapper _mapper { get; }
 
-        public MyAccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public MyAccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IEmailSenderService emailSender, IHomeRepository homeRepository, IMapper mapper)
         {
             UserManager = userManager;
             SignInManager = signInManager;
+            _emailSender = emailSender;
+            this.homeRepository = homeRepository;
+            _mapper = mapper;
+        }
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+
+            var DbCategories = homeRepository.GetCategories();
+
+            var categories = _mapper.Map<List<CategoryViewModel>>(DbCategories?.ToList() ?? new List<Category>());
+            ViewBag.Categories = categories;
+            base.OnActionExecuting(filterContext);
         }
 
         public IActionResult Index()
