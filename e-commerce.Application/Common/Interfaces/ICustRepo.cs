@@ -7,11 +7,8 @@ using System.Threading.Tasks;
 
 namespace e_commerce.Application.Common.Interfaces
 {
-    public interface IReturnRepository
+    public interface ICustRepo
     {
-        List<Return> getAllCustomerReturns(int custID);
-        void AddReturnRequest(List<Return> returns);
-        List<Order> getOrdersCanReturn(int userID);
-
+        Customer getcustomerid(string claimID);
     }
 }

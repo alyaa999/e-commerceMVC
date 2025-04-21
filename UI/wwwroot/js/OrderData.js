@@ -34,12 +34,14 @@
         else if (paymentMethod == 'l3')
         {
             $.ajax({
-                url: '/order/Create',
+                url: '/_Orders/Create',
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify(orderData),
-                success: function (url) {
-                    window.location.href = url;
+                success: function (response) {
+                    if (response.success) {
+                        window.location.href = response.redirectUrl;
+                    } 
                 },
                 error: function () {
                     alert('Error placing order from cash method');

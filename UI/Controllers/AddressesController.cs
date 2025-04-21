@@ -9,6 +9,7 @@ using e_commerce.Infrastructure.Entites;
 using AutoMapper;
 using e_commerce.Application.Common.Interfaces;
 using e_commerce.Web.ViewModels;
+using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
@@ -17,7 +18,8 @@ namespace e_commerce.Web.Controllers
         List<string> cities;
         private readonly IMapper mapper;
         private readonly IAdressRepo repo;
-        public AddressesController(IMapper mapper, IAdressRepo adressRepo)
+        private ICustRepo custrepo;
+        public AddressesController(IMapper mapper, IAdressRepo adressRepo, ICustRepo _custrepo)
         {
             this.mapper = mapper;
             repo = adressRepo;
@@ -26,12 +28,14 @@ namespace e_commerce.Web.Controllers
                 "Cairo", "Alexandria", "Giza", "Shubra El Kheima", "Port Said",
                 "Suez", "Mansoura", "Tanta", "Aswan", "Fayoum", "Luxor", "Ismailia"
             };
+            custrepo = _custrepo;
         }
 
         // GET: Addresses
         public async Task<IActionResult> Index()
         {
-            return View(repo.GetAllAddressAsync());
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(repo.GetAllAddressAsync(custrepo.getcustomerid(userId).Id));
         }
 
         // GET: Addresses/Create
@@ -50,11 +54,13 @@ namespace e_commerce.Web.Controllers
         {
             try
             {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
                 if (ModelState.IsValid)
                 {
                     try
                     {
-                        repo.AddAddressAsync(mapper.Map<Address>(address), 1);
+                        repo.AddAddressAsync(mapper.Map<Address>(address), custrepo.getcustomerid(userId).Id);
                     }
                     catch (Exception ex)
                     {
@@ -75,11 +81,13 @@ namespace e_commerce.Web.Controllers
         // GET: Addresses/Edit/5
         public async Task<IActionResult> Edit(int id)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             if (id == null)
             {
                 return NotFound();
             }
-            var address = repo.GetAddressById(id, 1);
+            var address = repo.GetAddressById(id, custrepo.getcustomerid(userId).Id);
             ViewBag.Cities = new SelectList(cities);
             return View(address);
         }
@@ -91,6 +99,8 @@ namespace e_commerce.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, AddressVM address)
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
             var address_ = mapper.Map<Address>(address);
             try{
                if (ModelState.IsValid)
@@ -98,8 +108,8 @@ namespace e_commerce.Web.Controllers
                     try
                     {
                        address_.Id = id;
-                       address_.CustomerId = 1;
-                       repo.UpdateAddress(address_,1,id);
+                       address_.CustomerId = custrepo.getcustomerid(userId).Id;
+                       repo.UpdateAddress(address_, custrepo.getcustomerid(userId).Id, id);
                    }
                    catch (Exception ex)
                    {
@@ -124,9 +134,11 @@ namespace e_commerce.Web.Controllers
         {
             try
             {
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
                 if (id != null)
                 {
-                    repo.DeleteAddressAsync(id,1);
+                    repo.DeleteAddressAsync(id, custrepo.getcustomerid(userId).Id);
                 }
             }
             catch (Exception ex)

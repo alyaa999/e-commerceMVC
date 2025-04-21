@@ -236,7 +236,7 @@
 
                                     <td>@order.TotalPrice.ToString("C")</td>
                                     <td>
-                                        <span class="badge badge-pill bg-@((int) order.Status == 1 ? "success" :
+                                        <span class="badge badge-pill bg-@((int)order.Status == 1 ? "success" :
                                          order.Status == 0 ? "warning" : "danger")-light">
                                             @order.Status
                                         </span>

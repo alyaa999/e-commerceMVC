@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Stripe;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -86,8 +87,14 @@ namespace e_commerce.Web.Controllers
                     // ✅ Add to Customer or Seller table
                     if (newUserVM.Role == "Customer")
                     {
-                        var customer = new Customer { ApplicationUserId = usermodel.Id };
+                        var customer = new Infrastructure.Entites.Customer { ApplicationUserId = usermodel.Id };
                         _context.Customers.Add(customer);
+                        await _context.SaveChangesAsync();
+                        var mycustomerfromDB = _context.Customers.FirstOrDefault(c=>c.ApplicationUserId== usermodel.Id);
+                        var cart= new Cart { TotalItemsNumber=0,TotalPrice=0,CustomerId= mycustomerfromDB.Id,CreatedDate=DateTime.Now};
+                        _context.Carts.Add(cart);
+                        var wishlist = new Wishlist { CustomerId= mycustomerfromDB.Id,Name= mycustomerfromDB.ApplicationUser.FirstName+ "wishilist" };
+                        _context.Wishlists.Add(wishlist);
                     }
                     else if (newUserVM.Role == "Seller")
                     {
@@ -260,7 +267,15 @@ namespace e_commerce.Web.Controllers
             await UserManager.AddToRoleAsync(user, role);
 
             if (role == "Customer")
-                _context.Customers.Add(new Customer { ApplicationUserId = user.Id });
+            {
+                var customer = new Infrastructure.Entites.Customer { ApplicationUserId = user.Id };
+                _context.Customers.Add(customer);
+                await _context.SaveChangesAsync();
+                var cart = new Cart { TotalItemsNumber = 0, TotalPrice = 0, CustomerId = customer.Id, CreatedDate = DateTime.Now };
+                _context.Carts.Add(cart);
+                var wishlist = new Wishlist { CustomerId = customer.Id, Name = customer.ApplicationUser.FirstName + "wishilist" };
+                _context.Wishlists.Add(wishlist);
+            }
             else if (role == "Seller")
                 _context.Sellers.Add(new Seller { ApplicationUserId = user.Id });
 

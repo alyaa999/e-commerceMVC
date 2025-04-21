@@ -42,8 +42,8 @@
                             <td>@item.Product.Name</td>
                             <td>@(item.Reason.Length > 50 ? item.Reason.Substring(0, 50) + "..." : item.Reason)</td>
                             <td>
-                                <span class="badge @(item.Status == "Approved" ? "badge-success" :
-                         item.Status == "Rejected" ? "badge-danger" : "badge-warning") badge">
+                                <span class="badge @(item.Status == e_commerce.Domain.Enums.ReturnStatusEnum.Approved ? "badge-success" :
+                         item.Status == e_commerce.Domain.Enums.ReturnStatusEnum.Rejected ? "badge-danger" : "badge-warning") badge">
                                     @item.Status
                                 </span>
                             </td>

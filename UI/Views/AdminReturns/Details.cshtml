@@ -8,13 +8,14 @@
 <div class="card shadow mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <h6 class="m-0 font-weight-bold text-primary">Return Request #@Model.Id</h6>
-        <span class="badge @(Model.Status == "Approved" ? "badge-success" :
-                           Model.Status == "Rejected" ? "badge-danger" : "badge-warning")">
+        <span class="badge @(Model.Status == e_commerce.Domain.Enums.ReturnStatusEnum.Approved ? "badge-success" :
+                             Model.Status == e_commerce.Domain.Enums.ReturnStatusEnum.Rejected ? "badge-danger" : "badge-warning")">
             @Model.Status
         </span>
     </div>
     <div class="card-body">
         <div class="row">
+            <!-- Order Information -->
             <div class="col-md-6">
                 <h5>Order Information</h5>
                 <hr />
@@ -23,18 +24,29 @@
                     <dd class="col-sm-8">@Model.OrderId</dd>
 
                     <dt class="col-sm-4">Customer:</dt>
-                    <dd class="col-sm-8">@Model.Order.Customer?.ApplicationUser?.FirstName</dd>
+                    <dd class="col-sm-8">
+                        @if (Model.Order?.Customer?.ApplicationUser != null)
+                        {
+                            @($"{Model.Order.Customer.ApplicationUser.FirstName} {Model.Order.Customer.ApplicationUser.LastName}")
+                        }
+                        else
+                        {
+                            <span class="text-muted">Customer information not available</span>
+                        }
+                    </dd>
 
                     <dt class="col-sm-4">Order Date:</dt>
-                    <dd class="col-sm-8">@Model.Order.OrderDate?.ToString("dd MMM yyyy")</dd>
+                    <dd class="col-sm-8">@Model.Order?.OrderDate?.ToString("dd MMM yyyy")</dd>
 
                     <dt class="col-sm-4">Product:</dt>
-                    <dd class="col-sm-8">@Model.Product.Name</dd>
+                    <dd class="col-sm-8">@Model.Product?.Name</dd>
 
                     <dt class="col-sm-4">Quantity:</dt>
-                    <dd class="col-sm-8">1</dd> <!-- Adjust based on your logic -->
+                    <dd class="col-sm-8">1</dd> <!-- Adjust if needed -->
                 </dl>
             </div>
+
+            <!-- Return Details -->
             <div class="col-md-6">
                 <h5>Return Details</h5>
                 <hr />
@@ -47,34 +59,11 @@
                 </dl>
             </div>
         </div>
-@* 
-        <div class="row mt-4">
-            <div class="col-12">
-                <h5>Return Images</h5>
-                <hr />
-                <div class="row">
-                    @foreach (var image in Model.ReturnImages)
-                    {
-                        <div class="col-md-3 mb-3">
-                            <div class="card">
-                                <img src="@image.ImageUrl" class="card-img-top" alt="Return image" style="height: 200px; object-fit: cover;">
-                                <div class="card-body text-center">
-                                    @if (image.IsPrimary == true)
-                                    {
-                                        <span class="badge badge-primary">Primary</span>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div> *@
 
-        @if (Model.Status != "Approved" && Model.Status != "Rejected")
-
+        <!-- Return Processing Section -->
+        @if (Model.Status != e_commerce.Domain.Enums.ReturnStatusEnum.Approved &&
+        Model.Status != e_commerce.Domain.Enums.ReturnStatusEnum.Rejected)
         {
-
             <div class="row mt-4">
                 <div class="col-12">
                     <div class="card">
@@ -82,26 +71,54 @@
                             <h5 class="m-0">Process Return</h5>
                         </div>
                         <div class="card-body">
-                            <form asp-action="Approve" method="post" class="d-inline">
-                                <input type="hidden" name="id" value="@Model.Id" />
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-check"></i> Approve Return
-                                </button>
-                            </form>
-                            <form asp-action="Reject" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to reject this return?');">
-                                <input type="hidden" name="id" value="@Model.Id" />
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="fas fa-times"></i> Reject Return
-                                </button>
-                            </form>
+                            <div class="d-flex align-items-center gap-2 flex-wrap mt-3">
+
+                                @if (Model.Status != e_commerce.Domain.Enums.ReturnStatusEnum.Approved &&
+                               Model.Status != e_commerce.Domain.Enums.ReturnStatusEnum.Rejected)
+                                {
+                                    <form asp-action="Approve" asp-controller="AdminReturns" method="post">
+                                        <input type="hidden" name="id" value="@Model.Id" />
+                                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#confirmApproveModal">
+                                            <i class="fas fa-check"></i> Approve Return
+                                        </button>
+
+                                    </form>
+                                    <div class="modal fade" id="confirmApproveModal" tabindex="-1" aria-labelledby="approveModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="approveModalLabel">Confirm Approval</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to approve this return and process refund?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <form asp-action="Approve" asp-controller="AdminReturns" method="post">
+                                                        <input type="hidden" name="id" value="@Model.Id" />
+                                                        <button type="submit" class="btn btn-success">Yes, Approve</button>
+                                                    </form>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <form asp-action="Reject" asp-controller="AdminReturns" method="post">
+                                        <input type="hidden" name="id" value="@Model.Id" />
+                                        <button type="submit" class="btn btn-danger"
+                                                onclick="return confirm('Are you sure you want to reject this return?');">
+                                            <i class="fas fa-times"></i> Reject Return
+                                        </button>
+                                    </form>
+                                }
+                            </div>
 
                         </div>
                     </div>
                 </div>
             </div>
-
-
-      
         }
     </div>
 </div>

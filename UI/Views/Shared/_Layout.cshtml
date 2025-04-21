@@ -47,7 +47,7 @@
                 </div>
                 <p class="header__alert-news">
                     Super Values Deals - Save more coupons
-                </p>
+                </p> 
                 @if (!User.Identity.IsAuthenticated)
                 {
                     <a asp-controller="Account" asp-action="Register" class="header__top-action">
@@ -276,7 +276,7 @@
                 </div>
             </div>
             <div class="header__user-actions">
-                <a asp-controller="Wishlists" asp-action="Index" asp-route-id="1" class="header__action-btn" title="Wishlist">
+                <a asp-controller="Wishlists" asp-action="Index"  class="header__action-btn" title="Wishlist">
                     <img src="~/image/icon-heart.svg" alt="" />
                     <span class="count">3</span>
                 </a> 
@@ -414,13 +414,6 @@
     <!-- my js file -->
     <script src="~/js/cart.js"></script>
     <script src="~/js/cartupdate.js"></script> 
-    
-
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
-    <!-- SweetAlert2 for notifications -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/cartdelete.js"></script>
     <script src="~/js/wishlist.js"></script>
     <script src="~/js/address.js"></script>

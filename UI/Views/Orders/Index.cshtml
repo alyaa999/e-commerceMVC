@@ -1,4 +1,4 @@
-﻿@using e_commerce.Domain.Enums
+﻿@using e_commerce.Infrastructure.Entites
 @* @model e_commerce.Web.ViewModels.AdminOrdersViewModel *@
 
 @* @{ *@
@@ -66,7 +66,7 @@
 @*                 <th>Date</th> *@
 @*                 <th>Amount</th> *@
 @*                 <th>Status</th> *@
-             
+
 @*                 <th>Actions</th> *@
 @*             </tr> *@
 @*         </thead> *@
@@ -129,7 +129,6 @@
 @*     </table> *@
 @* </div> *@
 @model e_commerce.Web.ViewModels.AdminOrdersViewModel
-
 @{
     ViewData["Title"] = "Orders Management";
     Layout = "_AdminLayout";
@@ -168,14 +167,14 @@
                 <div class="col-md-4">
                     <label for="customerSearch" class="form-label">Customer Search</label>
                     <input type="text" name="customerSearch" id="customerSearch" class="form-control" 
-                           value="@Model.CustomerSearch" placeholder="Email or ID" />
+                    value="@Model.CustomerSearch" placeholder="Email or ID" />
                 </div>
                 <div class="col-md-4">
                     <label for="status" class="form-label">Order Status</label>
                     <select id="status" name="status" class="form-select">
                         <option value="">All Statuses</option>
-                        @foreach (var status in Enum.GetValues(typeof(orderstateEnum))
-                        .Cast<orderstateEnum>())
+                        @foreach (var status in Enum.GetValues(typeof(e_commerce.Domain.Enums.orderstateEnum))
+                        .Cast<e_commerce.Domain.Enums.orderstateEnum>())
                         {
                             <option value="@((int)status)" selected="@(Model.StatusFilter == (int)status)">
                                 @status
@@ -229,9 +228,8 @@
                     <tbody>
                         @foreach (var order in Model.Ordersbb ?? Enumerable.Empty<Order>())
                         {
-                            var statusValue =(int) order.Status; // var statusValue = order?.Status ?? -1;
-
-                            var statusName = Enum.GetName(typeof(orderstateEnum), statusValue) ?? "Unknown";
+                            var statusValue = order?.Status != null ? (int)order.Status : -1;
+                            var statusName = Enum.GetName(typeof(e_commerce.Domain.Enums.orderstateEnum), statusValue) ?? "Unknown";
 
                             var statusClass = statusValue switch
                             {
@@ -256,7 +254,7 @@
                                 <td>@(order?.OrderProducts?.Count ?? 0)</td>
                                 <td class="text-nowrap" style="width:100px">
                                     <div class="d-flex flex-wrap gap-1">
-                                        @if (order != null && statusValue == (int)orderstateEnum.Pending)
+                                        @if (order != null && statusValue == (int)e_commerce.Domain.Enums.orderstateEnum.Pending)
                                         {
                                             <form method="post" asp-action="Confirm" asp-route-id="@order.Id" class="d-inline">
                                                 @Html.AntiForgeryToken()
@@ -272,7 +270,7 @@
                                                 </button>
                                             </form>
                                         }
-                                        else if (order != null && statusValue == (int)orderstateEnum.Confirmed)
+                                        else if (order != null && statusValue == (int)e_commerce.Domain.Enums.orderstateEnum.Confirmed)
                                         {
                                             <form method="post" asp-action="Cancel" asp-route-id="@order.Id" class="d-inline">
                                                 @Html.AntiForgeryToken()

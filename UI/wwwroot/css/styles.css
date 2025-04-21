@@ -2237,191 +2237,80 @@ table {
   }
    
 }
-
-
-.checked {
-    color:orange;
-}
-.categories__sidebar {
-    width: 260px;
-    background: #fff;
-    border-radius: 1rem;
-    padding: 1.5rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+<<<<<<<<< Temporary merge branch 1
+/* Admin Dashboard Styles */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
 }
 
-    .categories__sidebar .section__title {
-        font-size: 1.3rem;
-        font-weight: 700;
-        color: #333;
-        margin-bottom: 1.2rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 20px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+    table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        padding: 12px 15px;
     }
 
-.category__list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.category__item {
-    margin-bottom: 1.5rem;
-}
-
-.category__title {
-    font-weight: 600;
-    font-size: 1rem;
-    color: #222;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    cursor: pointer;
-    transition: color 0.3s;
-}
-
-    .category__title:hover {
-        color: #e91e63;
+    table td {
+        padding: 12px 15px;
+        vertical-align: middle;
     }
 
-.subcategory__list {
-    list-style: none;
-    padding-left: 1.5rem;
-    border-left: 2px solid #eee;
-    margin-top: 0.3rem;
+.badge {
+    padding: 6px 10px;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.5px;
 }
 
-    .subcategory__list li {
-        margin-bottom: 0.4rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        color: #666;
-        font-size: 0.95rem;
-    }
-
-        .subcategory__list li a {
-            text-decoration: none;
-            color: #555;
-            transition: color 0.3s;
-        }
-
-            .subcategory__list li a:hover {
-                color: #000;
-            }
-
-    .subcategory__list i {
-        font-size: 0.6rem;
-        color: #bbb;
-    }
-
-
-.Slider {
-    display: flex;
-}
-.Slider li{
-    margin:5px;
-    padding:10px;
+.btn {
+    padding: 8px 15px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.3s ease;
 }
 
-.filters-container {
-    display: flex;
-    gap: 30px;
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
 }
 
-.filters {
-    width: 200px;
+/* Filter section styles */
+.filter-section {
+    background-color: #f8f9fa;
     padding: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.filter-group {
     margin-bottom: 20px;
 }
 
-.filter-title {
-    font-size: 16px;
-    margin-bottom: 10px;
-    color: #333;
-    font-weight: 600;
-}
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-header .row {
+        flex-direction: column;
+    }
 
-.price-range {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-    .price-range input[type="range"] {
+    .card-header .col-md-6 {
         width: 100%;
-    }
-
-.price-values {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-}
-
-.checkbox-option {
-    display: flex;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-    .checkbox-option input {
-        margin-right: 8px;
-    }
-
-    .checkbox-option label {
-        font-size: 14px;
-        cursor: pointer;
-    }
-
-/* Smaller filter buttons */
-.btn-try {
-    padding: 4px 8px; /* Reduced from 8px 15px */
-    border: none;
-    border-radius: 3px; /* Slightly smaller radius */
-    cursor: pointer;
-    font-size: 12px; /* Slightly larger than your 10px for better readability */
-    margin-right: 8px; /* Reduced spacing between buttons */
-    line-height: 1.2;
-    height: auto;
-}
-
-.btn-primary {
-    background-color: var(--first-color);
-    color: white;
-    transition: background-color 0.2s; /* Smooth hover effect */
-}
-
-    .btn-primary:hover {
-        background-color: #0069d9; /* Slightly darker on hover */
-    }
-
-.btn-secondary {
-    background-color: #6c757d;
-    color: white;
-    transition: background-color 0.2s; /* Smooth hover effect */
-}
-
-    .btn-secondary:hover {
-        background-color: #5a6268; /* Slightly darker on hover */
-    }
-
-/* Adjust the filter container to account for smaller buttons */
-.filter-group {
-    margin-bottom: 15px; /* Reduced from 20px */
-}
-
-.filter-title {
-    font-size: 14px; /* Slightly smaller title */
-    margin-bottom: 8px; /* Reduced spacing */
-}
+        margin-bottom: 15px;
+=========
 .fa-spinner {
     animation: fa-spin 2s infinite linear;
 }
@@ -2809,4 +2698,25 @@ table {
         width: 100%;
         margin-bottom: 15px;
     }
+    }
+}
+.return-item {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 10px;
+    background-color: #fdfafd;
+    transition: background-color 0.3s ease;
+    margin-bottom: 10px;
+}
+
+    .return-item:hover {
+        background-color: #f2edf5;
+    }
+
+.remove-item i {
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.remove-item:hover i {
+    transform: scale(1.2);
 }

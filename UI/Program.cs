@@ -101,10 +101,11 @@ namespace e_commerce
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-
+<<<<<<<<< Temporary merge branch 1
             builder.Services.AddControllersWithViews();
             builder.Services.AddAutoMapper(typeof(ProductProfile));
 
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddControllersWithViews(
                 conf => conf.Filters.Add(new AuthorizeFilter())
                 );
@@ -120,6 +121,7 @@ namespace e_commerce
             #endregion
             builder.Services.AddScoped<IWishlistRepo, WishlistRepo>();
 
+            builder.Services.AddScoped<ICustRepo, custRepo>();
             //builder.Services.AddApplicationServices();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
@@ -180,6 +182,8 @@ namespace e_commerce
 
 
 
+            builder.Services.AddScoped<IReturnRepository, returnRepoService>();
+            builder.Services.AddScoped(typeof(IRepository<>),typeof(Repository<>));
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())
