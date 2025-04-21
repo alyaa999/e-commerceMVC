@@ -1,8 +1,12 @@
-﻿using e_commerce.Application.Common.Interfaces;
+﻿using AutoMapper;
+using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
+using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.ViewModels;
+using e_commerce.Web.ViewModels.Home;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
@@ -11,12 +15,28 @@ namespace e_commerce.Web.Controllers
     {
         private IcartRepository cartreposervice;
         private ICustRepo custrepo;
-
-
-        public CartController(IcartRepository _cartreposervice, ICustRepo _custrepo )
+        private readonly IHomeRepository homeRepository;
+        private readonly IMapper _mapper;
+        private readonly IWishlistRepo wishlistRepo;
+        public CartController(IcartRepository _cartreposervice, ICustRepo _custrepo,IHomeRepository homeRepository,IMapper mapper,IWishlistRepo wishlist)
         {
             cartreposervice = _cartreposervice;
             custrepo = _custrepo;
+            this.homeRepository = homeRepository;
+            _mapper = mapper;
+            wishlistRepo = wishlist;
+        }
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            base.OnActionExecuting(filterContext);
+            var DbCategories = homeRepository.GetCategories();
+            var cartItemCount = cartreposervice.GetCartByCustomerId(custrepo.getcustomerid(userId).Id).CartProducts?.Count ?? 0;
+            ViewBag.CartItemCount = cartItemCount;
+            var WishlistItemCount = wishlistRepo.GetByCustomerId(custrepo.getcustomerid(userId).Id).Products?.Count ?? 0;
+            ViewBag.WishlistItemCount = WishlistItemCount;
+            var categories = _mapper.Map<List<CategoryViewModel>>(DbCategories?.ToList() ?? new List<Category>());
+            ViewBag.Categories = categories;
         }
         // GET: CartController
         public ActionResult viewcartproducts()

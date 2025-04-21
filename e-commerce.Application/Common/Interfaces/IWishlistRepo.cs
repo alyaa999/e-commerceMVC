@@ -13,7 +13,7 @@ namespace e_commerce.Application.Common.Interfaces
         Task<List<Wishlist>> GetAllAsync();
         Task<Wishlist> GetByIdAsync(int id);
         void Update(Wishlist entity);
-        Task<Wishlist> GetByCustomerId(int customerId);
+        Wishlist GetByCustomerId(int customerId);
         public Task<Boolean> addToWishlist(int pid);
         public Task<bool> removeFromWishlist(int pid);
     }

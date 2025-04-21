@@ -70,20 +70,20 @@ namespace e_commerce.Infrastructure.Repository
                 throw new Exception("Wishlist not found");
             }
         }
-        public Task<Wishlist> GetByCustomerId(int customerId)
+        public Wishlist GetByCustomerId(int customerId)
         {
             var wishlist = _context.Wishlists.Include(p => p.Products).ThenInclude(i => i.ProductImages).FirstOrDefault(w => w.CustomerId == customerId);
             if (wishlist != null)
             {
-                return Task.FromResult(wishlist);
+                return wishlist;
             }
             else
             {
-                return Task.FromResult(new Wishlist
+                return new Wishlist
                 {
                     CustomerId = customerId,
                     Products = new List<Product>()
-                });
+                };
             }
         }
         public async Task<bool> addToWishlist(int pid)

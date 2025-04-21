@@ -23,7 +23,6 @@ namespace e_commerce.Web.Controllers
     public class AccountController : Controller
     {
         private readonly ECommerceDBContext _context;
-        private readonly IHomeRepository homeRepository;
         private readonly IMapper mapper;
 
         public UserManager<ApplicationUser> UserManager { get; } //RepoService layer for user 
@@ -50,7 +49,7 @@ namespace e_commerce.Web.Controllers
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
 
-            var DbCategories = homeRepository.GetCategories();
+            var DbCategories = _homeRepository.GetCategories();
 
             var categories = mapper.Map<List<CategoryViewModel>>(DbCategories?.ToList() ?? new List<Category>());
             ViewBag.Categories = categories;

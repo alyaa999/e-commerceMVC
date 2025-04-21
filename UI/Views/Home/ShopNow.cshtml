@@ -108,9 +108,7 @@
                             <a asp-action="ProductDetials" asp-route-id="@item.Id" class="action__btn" aria-label="Quick View">
                                 <i class="fi fi-rs-eye"></i>
                             </a>
-                            <a href="#"
-                               class="action__btn"
-                               aria-label="Add to Wishlist">
+                            <a data-product-id="@item.Id" class="action__btn add-to-wishlist" aria-label="Add to Wishlist">
                                 <i class="fi fi-rs-heart"></i>
                             </a>
                             <a href="#" class="action__btn" aria-label="Compare">
@@ -160,16 +158,13 @@
                             <span class="new__price">$@(item?.Price - ((item?.Discount / 100) * item?.Price))</span>
                             <span class="old__price">$@item?.Price</span>
                         </div>
-                        <a href="#"
-                           class="action__btn cart__btn"
-                           aria-label="Add To Cart">
+                        <a data-product-id="@item.Id" class="action_btn cart_btn add-to-cart" aria-label="Add To Cart">
                             <i class="fi fi-rs-shopping-bag-add"></i>
                         </a>
                     </div>
                 </div>
 
             }
-
         </div>
     </div>
    
