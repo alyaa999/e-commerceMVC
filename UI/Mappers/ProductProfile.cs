@@ -24,9 +24,9 @@ namespace e_commerce.Web.Mappers
         
             CreateMap<SubCategory, SubCategoryViewModel>();
             CreateMap<Tag,TagViewModel>();
-                
+
             CreateMap<Product, ProductViewModel>()
-            
+
              .ForMember(dest => dest.SubCategoryName,
                         opt => opt.MapFrom(src => src.SubCategory != null ? src.SubCategory.Name : ""))
              .ForMember(dest => dest.CategoryName,
@@ -35,10 +35,13 @@ namespace e_commerce.Web.Mappers
              .ForMember(dest => dest.Images,
                         opt => opt.MapFrom(src => src.ProductImages ?? new List<ProductImage>())) // fix here
              .ForMember(dest => dest.Reviews,
-                        opt => opt.MapFrom(src => src.Reviews ?? new List<Review>())).ReverseMap(); 
+                        opt => opt.MapFrom(src => src.Reviews ?? new List<Review>()));
             CreateMap<Category, CategoryViewModel>()
                 .ForMember(des => des.subCategory,
                     opt => opt.MapFrom(src => src.SubCategories));
+
+            CreateMap<ProductViewModel, Product>();
+
 
 
 

@@ -26,6 +26,7 @@ public class HomeController : Controller
     private readonly ICustRepo custRepo;
     private readonly IWishlistRepo wishlistRepo;
 
+    
     public HomeController(ILogger<HomeController> logger , IHomeRepository homeRepository , IMapper mapper,IcartRepository repository,ICustRepo cust,IWishlistRepo wishlist)
     {
         _logger = logger;

@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace e_commerce.Web.Controllers
 {
-    [Authorize]
     public class ProductController : Controller
     {
         private readonly IRepository<Product> _productRepo;
@@ -65,14 +64,16 @@ namespace e_commerce.Web.Controllers
                 var user = await _userManager.GetUserAsync(User); // Get the currently logged-in user
                 var seller = _sellerRepo.Find(i => i.ApplicationUserId == user.Id).First();
                 productView.SellerId = seller.Id;
+          
                 var productObj = Mapper.Map<Product>(productView);
                 productObj.ProductImages = new List<ProductImage>();
 
-                if (productView.ImagesUpload != null && productView?.ImagesUpload.Count > 0)
+                if (productView.ImagesUpload != null && productView.ImagesUpload.Count > 0)
                 {
-                    foreach (var image in productView.ImagesUpload)
+                    for (int i = 0; i < productView.ImagesUpload.Count; i++)
                     {
-                        if (image.Length  > 0)
+                        var image = productView.ImagesUpload[i];
+                        if (image.Length > 0)
                         {
                             var fileName = Guid.NewGuid().ToString() + Path.GetExtension(image.FileName);
                             var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/image", fileName);
@@ -82,18 +83,19 @@ namespace e_commerce.Web.Controllers
                                 await image.CopyToAsync(stream);
                             }
 
-                            var productImage = new ProductImage();
-                            productImage.ImageUrl = fileName;
-                            productImage.IsPrimary = true;  
+                            var productImage = new ProductImage
+                            {
+                                ImageUrl = fileName,
+                                IsPrimary = productView.PrimaryImageIndex == i
+                            };
 
-                            // Save `fileName` to DB or a list
                             productObj.ProductImages.Add(productImage);
                         }
                     }
                 }
-
-                // Add the product using the repository
-                await _productRepo.AddAsync(productObj);
+      
+            // Add the product using the repository
+            await _productRepo.AddAsync(productObj);
                 _productRepo.SaveChanges();
                 
 
@@ -109,8 +111,29 @@ namespace e_commerce.Web.Controllers
         // GET: product/index
         public async Task<IActionResult> Index()
         {
-            var products = await _productRepo.GetAllAsync();
-            return View(products);
+            var user = await _userManager.GetUserAsync(User); // Get the currently logged-in user
+            var seller = _sellerRepo.Find(i => i.ApplicationUserId == user.Id).First();
+
+
+            var products = _productRepo.Find(i=>i.SellerId == seller.Id, x => x.ProductImages);
+            var productViewModels = Mapper.Map<List<ProductViewModel>>(products);   
+            return View(productViewModels);
+        }
+        public IActionResult NotFoundPage()
+        {
+            return View("NotFound");
+        }
+
+        public async Task<IActionResult> Details(int id)
+        {
+            var product = await _productRepo.GetByIdAsync(id);
+            if (product == null)
+            {
+                return View("NotFound");
+            }
+
+            var productViewModel = Mapper.Map<ProductViewModel>(product);
+            return View(productViewModel);
         }
 
         // GET: product/edit/{id}
@@ -119,7 +142,7 @@ namespace e_commerce.Web.Controllers
             var product = await _productRepo.GetByIdAsync(id);
             if (product == null)
             {
-                return NotFound();
+                return View("NotFound");
             }
 
             return View(product);
