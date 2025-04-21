@@ -14,7 +14,7 @@
                     url: '/order/Delete',
                     type: 'POST',
                     data: { id: orderId },
-                    success: function (response) {
+                    success: function (response) { 
                         Swal.fire({
                             title: response.success ? 'Success!' : 'Error!',
                             text: response.message,
