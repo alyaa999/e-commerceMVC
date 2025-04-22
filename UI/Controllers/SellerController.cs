@@ -2,7 +2,7 @@
 using e_commerce.Domain.Entites;
 using e_commerce.Domain.Enums;
 using e_commerce.Infrastructure.Entites;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +10,7 @@ using System.Globalization;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Seller")]
     public class SellerController : Controller
     {
         private readonly IRepository<Seller> _sellerRepo;

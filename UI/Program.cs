@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Stripe;
 using e_commerce.Web.Controllers;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace e_commerce
 {
@@ -21,8 +22,7 @@ namespace e_commerce
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-
-            var dbContext = serviceProvider.GetRequiredService<ECommerceDBContext>(); // Replace with your real DbContext name
+            var dbContext = serviceProvider.GetRequiredService<ECommerceDBContext>();
 
             string[] roles = { "Customer", "Seller", "Admin" };
 
@@ -34,66 +34,32 @@ namespace e_commerce
                 }
             }
 
-            var emails = new[]
+            // ✅ إنشاء Admin User للتجربة
+            var adminEmail = "admin@evava.com";
+            var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+            if (adminUser == null)
             {
-                "alqtta04@gmail.com",
-                "yasmeensaffan@gmail.com",
-                  "ebtihalali736@gmail.com",
-            "aliaamohamed3.2003@gmail.com",
-            "alyaamamoon999@gmail.com"
-            };
-
-            foreach (var email in emails)
-            {
-                var user = await userManager.FindByEmailAsync(email);
-                if (user == null)
+                adminUser = new ApplicationUser
                 {
-                    user = new ApplicationUser
-                    {
+                    UserName = "adminuser",
+                    Email = adminEmail,
+                    EmailConfirmed = true,
+                    FirstName = "Admin",
+                    LastName = "User"
+                };
 
-                        UserName = email.Split('@')[0],
-                        Email = email,
-                        EmailConfirmed = true,
-                        FirstName = email.Split('@')[0],  // 👈 Add these lines
-                        LastName = ""
-                    };
+                var result = await userManager.CreateAsync(adminUser, "Admin@123"); // ✅ باسورد واضح وسهل للتجربة
 
-                    var result = await userManager.CreateAsync(user, "Default@123");
-
-                    if (!result.Succeeded)
-                        continue;
-                }
-
-                // Assign all roles
-                foreach (var role in roles)
+                if (result.Succeeded)
                 {
-                    if (!await userManager.IsInRoleAsync(user, role))
-                    {
-                        await userManager.AddToRoleAsync(user, role);
-                    }
+                    await userManager.AddToRoleAsync(adminUser, "Admin");
                 }
-
-                // Add to Customer table if not exists
-                if (!dbContext.Customers.Any(c => c.ApplicationUserId == user.Id))
-                {
-                    dbContext.Customers.Add(new Infrastructure.Entites.Customer
-                    {
-                        ApplicationUserId = user.Id
-                    });
-                }
-
-                // Add to Seller table if not exists
-                if (!dbContext.Sellers.Any(s => s.ApplicationUserId == user.Id))
-                {
-                    dbContext.Sellers.Add(new Seller
-                    {
-                        ApplicationUserId = user.Id
-                    });
-                }
-
-                await dbContext.SaveChangesAsync();
             }
+
+            await dbContext.SaveChangesAsync();
         }
+
 
 
 
@@ -164,9 +130,13 @@ namespace e_commerce
             builder.Services.AddAuthentication()
                 .AddFacebook(options =>
                 {
-                    options.ClientId = "612541185137585";
-                    options.ClientSecret = "21d28beaac7ae0f5473dc0c923606798";
+                    options.ClientId = "697162356148355";
+                    options.ClientSecret = "719008d493e69543fac4bd48c2065aae";
+                 
                 });
+
+
+
 
 
 
@@ -206,8 +176,6 @@ namespace e_commerce
             StripeConfiguration.ApiKey = builder.Configuration["Stripe:SecretKey"];
             app.UseAuthorization();
 
-
-            app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "externalLogin",

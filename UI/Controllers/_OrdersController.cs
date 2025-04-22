@@ -8,10 +8,11 @@ using e_commerce.Infrastructure.Entites;
 
 using Stripe;
 using Stripe.Climate;
-using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [ServiceFilter(typeof(LayoutDataFilterAttribute))]
 
     public class _OrdersController : Controller

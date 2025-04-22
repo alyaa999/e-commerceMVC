@@ -3,7 +3,7 @@ using e_commerce.Infrastructure.Entites;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-//[Authorize(Roles = "Admin")]
+[Authorize(Roles = "Admin")]
 public class AdminController : Controller
 {
     private readonly IRepository<Product> _productRepo;

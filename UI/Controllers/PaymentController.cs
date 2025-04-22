@@ -1,6 +1,7 @@
 ﻿using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Web.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using Stripe.BillingPortal;
@@ -14,6 +15,7 @@ using SessionService = Stripe.Checkout.SessionService;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [ServiceFilter(typeof(LayoutDataFilterAttribute))]
 
     public class PaymentController : Controller

@@ -54,11 +54,21 @@
                     <a asp-controller="Account" asp-action="Register" class="header__top-action">
                         Log In 
                     </a>
-                    @* <a asp-controller="Account" asp-action="Login" class="header__top-action">
-                        Sign Up
-                    </a> *@
                 }else
                 {
+                    var isAdmin = User.IsInRole("Admin");
+                    var isSeller = User.IsInRole("Seller");
+
+                    if (isAdmin)
+                    {
+                        <a asp-controller="Admin" asp-action="Index" class="header__top-action">Admin Dashboard</a>
+                    }
+                    else if (isSeller)
+                    {
+                        <a asp-controller="Seller" asp-action="Index" class="header__top-action">Seller Dashboard</a>
+                    }
+
+
                     <a asp-controller="Account" asp-action="Logout" class="header__top-action">
                         Sign Out
                     </a>
@@ -84,10 +94,10 @@
                 </div>
                 <ul class="nav__list">
                     <li class="nav__item">
-                        <a  asp-action="Index" class="nav__link active-link">Home</a>
+                        <a asp-controller="Home" asp-action="Index" class="nav__link active-link">Home</a>
                     </li>
                     <li class="nav__item">
-                        <a asp-action="ShopNow" class="nav__link">Shop</a>
+                        <a asp-controller="Home" asp-action="ShopNow" class="nav__link">Shop</a>
                     </li>
 
                   
@@ -145,10 +155,18 @@
                     }
                     else
                     {
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav__item"><a asp-controller="Admin" asp-action="Index" class="nav__link">Admin Panel</a></li>
+                        }
+                        else if (User.IsInRole("Seller"))
+                        {
+                            <li class="nav__item"><a asp-controller="Seller" asp-action="Index" class="nav__link">Seller Panel</a></li>
+                        }
 
-                        <li class="nav__item">
-                            <a asp-controller="MyAccount" asp-action="Index" class="nav__link">My Account</a>
-                        </li>
+                            <li class="nav__item"><a asp-controller="MyAccount" asp-action="Index" class="nav__link">My Account</a></li>
+                        
+
 
                         <li class="nav__item">
                             <a> Hello @User.Identity.Name</a>
@@ -157,9 +175,6 @@
                             <a asp-controller="Account" asp-action="Logout" class="nav__link">Logout</a>
                         </li>
                     }
-                    <li class="nav__item">
-                        <a href="login-register.html" class="nav__link">Login</a>
-                    </li>
                 </ul>
                 <div class="header__search">
                     <form asp-action="ShopNow" method="get">

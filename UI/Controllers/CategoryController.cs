@@ -1,7 +1,10 @@
 ﻿using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
+[Authorize(Roles = "Admin")]
 public class CategoryController : Controller
 {
     private readonly IRepository<Category> _categoryRepo;

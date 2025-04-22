@@ -9,9 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class OrdersController : Controller
     {
         private readonly IRepository<Order> _orderRepo;

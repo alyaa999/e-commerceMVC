@@ -10,9 +10,11 @@ using AutoMapper;
 using e_commerce.Application.Common.Interfaces;
 using e_commerce.Web.ViewModels;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [ServiceFilter(typeof(LayoutDataFilterAttribute))]
     public class AddressesController : Controller
     {
