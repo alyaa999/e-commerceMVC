@@ -4,7 +4,7 @@ namespace e_commerce.Web.Models
 {
     public class RegisterUserViewModel
     {
-        
+
 
         [Required]
         public string UserName { get; set; }

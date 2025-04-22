@@ -2,6 +2,7 @@
 using e_commerce.Domain.Enums;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Infrastructure.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,10 +11,12 @@ using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [ServiceFilter(typeof(LayoutDataFilterAttribute))]
 
     public class returnsController : Controller
     {
+
         // GET: returnsController
         IOrderRepository orderRepository;
         IReturnRepository returnRepository;

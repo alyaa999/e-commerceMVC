@@ -1,12 +1,13 @@
 ﻿using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Seller")]
     public class SellerController : Controller
     {
         private readonly IRepository<Seller> _sellerRepo;

@@ -1,12 +1,14 @@
 ﻿using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Infrastructure.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [ServiceFilter(typeof(LayoutDataFilterAttribute))]
 
     public class CheckOutController : Controller

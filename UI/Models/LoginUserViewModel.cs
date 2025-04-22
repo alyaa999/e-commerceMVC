@@ -4,7 +4,7 @@ namespace e_commerce.Web.Models
 {
     public class LoginUserViewModel
     {
-       
+
         [Required]
         [EmailAddress]
         public string Email { get; set; }

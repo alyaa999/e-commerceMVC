@@ -154,13 +154,15 @@ namespace e_commerce.Web.Controllers
                         }
 
                         await SignInManager.SignInAsync(UserFromDB, isPersistent: UserVM.RememberMe);
-                        if (Url.IsLocalUrl(returnUrl))
+                        if (!string.IsNullOrEmpty(returnUrl) && returnUrl != "/")
                         {
                             return Redirect(returnUrl);
                         }
                         else
                         {
-                            return RedirectToAction("Index", "Home");
+                            
+                            var roles = await UserManager.GetRolesAsync(UserFromDB); 
+                            return RedirectToRoleHome(roles);
                         }
                     }
                 }
@@ -168,6 +170,18 @@ namespace e_commerce.Web.Controllers
             }
             ModelState.AddModelError("", "Wrong Email or Password!!!!!");
             return View(UserVM);
+        }
+
+        private IActionResult RedirectToRoleHome(IEnumerable<string> roles)
+        {
+            if (roles.Contains("Admin"))
+                return RedirectToAction("Index", "Admin");
+            else if (roles.Contains("Seller"))
+                return RedirectToAction("Index", "Seller");
+            else if (roles.Contains("Customer"))
+                return RedirectToAction("Index", "Home");
+            else
+                return RedirectToAction("Index", "Home");
         }
 
 
@@ -193,13 +207,25 @@ namespace e_commerce.Web.Controllers
             }
 
             var info = await SignInManager.GetExternalLoginInfoAsync();
+            foreach (var claim in info.Principal.Claims)
+            {
+                Console.WriteLine($"{claim.Type} : {claim.Value}");
+            }
             if (info == null)
                 return RedirectToAction("Login");
 
             var signInResult = await SignInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (signInResult.Succeeded)
             {
-                return LocalRedirect(returnUrl);
+                var user = await UserManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+
+                if (user != null)
+                {
+                    var roles = await UserManager.GetRolesAsync(user);
+                    return RedirectToRoleHome(roles); 
+                }
+
+                return RedirectToAction("Index", "Home");
             }
 
             // If the user does not have an account, we can register them
@@ -275,7 +301,8 @@ namespace e_commerce.Web.Controllers
             await _context.SaveChangesAsync();
             await SignInManager.SignInAsync(user, isPersistent: false);
 
-            return RedirectToAction("Index", "Home");
+            var roles = await UserManager.GetRolesAsync(user);
+            return RedirectToRoleHome(roles);
         }
 
         [HttpGet]

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace e_commerce.Web.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Seller")]
     public class ProductController : Controller
     {
         private readonly IRepository<Product> _productRepo;

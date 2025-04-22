@@ -7,10 +7,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using e_commerce.Application.Common.Interfaces;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace e_commerce.Web.Controllers
 {
-
+    [Authorize(Roles = "Admin")]
     public class AdminReturnsController : Controller
     {
         private readonly IRepository<Return> _returnRepository;

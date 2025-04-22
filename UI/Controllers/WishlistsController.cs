@@ -12,9 +12,11 @@ using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.ViewModels.Home;
 using Microsoft.AspNetCore.Mvc.Filters;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [ServiceFilter(typeof(LayoutDataFilterAttribute))]
 
     public class WishlistsController : Controller

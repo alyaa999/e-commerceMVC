@@ -4,6 +4,7 @@ using e_commerce.Infrastructure.Entites;
 using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.ViewModels;
 using e_commerce.Web.ViewModels.Home;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -11,6 +12,7 @@ using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [ServiceFilter(typeof(LayoutDataFilterAttribute))]
 
     public class CartController : Controller
