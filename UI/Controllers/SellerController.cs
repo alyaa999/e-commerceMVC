@@ -3,6 +3,7 @@ using e_commerce.Domain.Entites;
 using e_commerce.Domain.Enums;
 using e_commerce.Infrastructure.Entites;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -16,7 +17,7 @@ namespace e_commerce.Web.Controllers
         private readonly IRepository<Seller> _sellerRepo;
 
         private readonly IRepository<Product> _productRepo;
-        public UserManager<ApplicationUser> _userManager { get; }
+        public Microsoft.AspNetCore.Identity.UserManager<ApplicationUser> _userManager { get; }
         public ECommerceDBContext _context { get; }
 
         public SellerController(IRepository<Seller> sellerRepo , IRepository<Product> productRepo, UserManager<ApplicationUser> userManager , ECommerceDBContext dbContext)
