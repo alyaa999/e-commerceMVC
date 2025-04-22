@@ -121,6 +121,14 @@ namespace e_commerce
 
 
             builder.Services.AddAuthentication()
+                .AddFacebook(options =>
+                {
+                    options.ClientId = "697162356148355";
+                    options.ClientSecret = "719008d493e69543fac4bd48c2065aae";
+
+                });
+
+            builder.Services.AddAuthentication()
                 .AddGoogle(options =>
                 {
                     options.ClientId = "301550065314-ec3i6m9102daudbhr0nvi075j5ne9hd2.apps.googleusercontent.com";
