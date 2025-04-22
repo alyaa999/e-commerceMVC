@@ -378,48 +378,6 @@ namespace e_commerce.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("Cart");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CreatedDate = new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = 1,
-                            TotalItemsNumber = 0,
-                            TotalPrice = 0m
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CreatedDate = new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = 2,
-                            TotalItemsNumber = 0,
-                            TotalPrice = 0m
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CreatedDate = new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = 3,
-                            TotalItemsNumber = 0,
-                            TotalPrice = 0m
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CreatedDate = new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = 4,
-                            TotalItemsNumber = 0,
-                            TotalPrice = 0m
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CreatedDate = new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            CustomerId = 5,
-                            TotalItemsNumber = 0,
-                            TotalPrice = 0m
-                        });
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.CartProduct", b =>
@@ -683,7 +641,6 @@ namespace e_commerce.Infrastructure.Migrations
                             IsApproved = true,
                             Name = "Wireless Noise-Cancelling Headphones",
                             Price = 299.99m,
-                            SellerId = 1,
                             Stock = 50,
                             SubCategoryId = 3
                         },
@@ -698,7 +655,6 @@ namespace e_commerce.Infrastructure.Migrations
                             IsApproved = true,
                             Name = "Flagship Smartphone 2023",
                             Price = 999.99m,
-                            SellerId = 2,
                             Stock = 30,
                             SubCategoryId = 4
                         },
@@ -713,7 +669,6 @@ namespace e_commerce.Infrastructure.Migrations
                             IsApproved = true,
                             Name = "Premium Cotton T-Shirt",
                             Price = 29.99m,
-                            SellerId = 3,
                             Stock = 200,
                             SubCategoryId = 5
                         },
@@ -728,7 +683,6 @@ namespace e_commerce.Infrastructure.Migrations
                             IsApproved = true,
                             Name = "Summer Floral Dress",
                             Price = 59.99m,
-                            SellerId = 4,
                             Stock = 75,
                             SubCategoryId = 6
                         },
@@ -743,7 +697,6 @@ namespace e_commerce.Infrastructure.Migrations
                             IsApproved = true,
                             Name = "Non-Stick Cookware Set",
                             Price = 149.99m,
-                            SellerId = 5,
                             Stock = 40,
                             SubCategoryId = 7
                         },
@@ -758,7 +711,6 @@ namespace e_commerce.Infrastructure.Migrations
                             IsApproved = true,
                             Name = "Professional Blender",
                             Price = 89.99m,
-                            SellerId = 1,
                             Stock = 25,
                             SubCategoryId = 8
                         });
@@ -987,278 +939,6 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Review");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Comment = "Amazing sound quality and battery life!",
-                            CustomerId = 1,
-                            ProductId = 1,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2024, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Comment = "Comfortable to wear for hours.",
-                            CustomerId = 2,
-                            ProductId = 1,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2024, 5, 18, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Comment = "Love the ANC feature!",
-                            CustomerId = 3,
-                            ProductId = 1,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2024, 5, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Comment = "Good, but a bit pricey.",
-                            CustomerId = 4,
-                            ProductId = 1,
-                            Rating = 3,
-                            ReviewDate = new DateTime(2024, 5, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Comment = "Battery lasts all day long.",
-                            CustomerId = 5,
-                            ProductId = 1,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2024, 5, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Comment = "Blazing fast and a great display.",
-                            CustomerId = 1,
-                            ProductId = 2,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2024, 6, 10, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Comment = "Camera is top-notch.",
-                            CustomerId = 2,
-                            ProductId = 2,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2024, 6, 11, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Comment = "Great battery life.",
-                            CustomerId = 3,
-                            ProductId = 2,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2024, 6, 13, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Comment = "Performance is smooth, but gets hot.",
-                            CustomerId = 4,
-                            ProductId = 2,
-                            Rating = 3,
-                            ReviewDate = new DateTime(2024, 6, 14, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 10,
-                            Comment = "Definitely worth the upgrade.",
-                            CustomerId = 5,
-                            ProductId = 2,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2024, 6, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 11,
-                            Comment = "Very comfortable and stylish.",
-                            CustomerId = 1,
-                            ProductId = 3,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2024, 6, 18, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 12,
-                            Comment = "Color doesn't fade after wash.",
-                            CustomerId = 2,
-                            ProductId = 3,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2024, 6, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 13,
-                            Comment = "Fits as expected.",
-                            CustomerId = 3,
-                            ProductId = 3,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2024, 6, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 14,
-                            Comment = "Material is decent.",
-                            CustomerId = 4,
-                            ProductId = 3,
-                            Rating = 3,
-                            ReviewDate = new DateTime(2024, 6, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 15,
-                            Comment = "Great value for money!",
-                            CustomerId = 5,
-                            ProductId = 3,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2024, 6, 23, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 16,
-                            Comment = "Beautiful dress, perfect fit!",
-                            CustomerId = 1,
-                            ProductId = 4,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2024, 7, 2, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 17,
-                            Comment = "A bit short, but cute.",
-                            CustomerId = 2,
-                            ProductId = 4,
-                            Rating = 3,
-                            ReviewDate = new DateTime(2024, 7, 3, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 18,
-                            Comment = "Love the floral pattern!",
-                            CustomerId = 3,
-                            ProductId = 4,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2024, 7, 4, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 19,
-                            Comment = "Light and breathable.",
-                            CustomerId = 4,
-                            ProductId = 4,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2024, 7, 5, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 20,
-                            Comment = "Straps are adjustable, nice touch.",
-                            CustomerId = 5,
-                            ProductId = 4,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2024, 7, 6, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 21,
-                            Comment = "Excellent quality cookware.",
-                            CustomerId = 1,
-                            ProductId = 5,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2024, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 22,
-                            Comment = "Non-stick works as promised.",
-                            CustomerId = 2,
-                            ProductId = 5,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2024, 7, 13, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 23,
-                            Comment = "Easy to clean and durable.",
-                            CustomerId = 3,
-                            ProductId = 5,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2024, 7, 14, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 24,
-                            Comment = "Handles get a little hot.",
-                            CustomerId = 4,
-                            ProductId = 5,
-                            Rating = 3,
-                            ReviewDate = new DateTime(2024, 7, 15, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 25,
-                            Comment = "Perfect for everyday use.",
-                            CustomerId = 5,
-                            ProductId = 5,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2024, 7, 16, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 26,
-                            Comment = "Very powerful and fast blending.",
-                            CustomerId = 1,
-                            ProductId = 6,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2024, 7, 19, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 27,
-                            Comment = "Crushes ice like a champ!",
-                            CustomerId = 2,
-                            ProductId = 6,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2024, 7, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 28,
-                            Comment = "Great for smoothies.",
-                            CustomerId = 3,
-                            ProductId = 6,
-                            Rating = 4,
-                            ReviewDate = new DateTime(2024, 7, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 29,
-                            Comment = "A bit noisy but works well.",
-                            CustomerId = 4,
-                            ProductId = 6,
-                            Rating = 3,
-                            ReviewDate = new DateTime(2024, 7, 22, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        },
-                        new
-                        {
-                            Id = 30,
-                            Comment = "Blends in seconds, love it!",
-                            CustomerId = 5,
-                            ProductId = 6,
-                            Rating = 5,
-                            ReviewDate = new DateTime(2024, 7, 23, 0, 0, 0, 0, DateTimeKind.Unspecified)
-                        });
                 });
 
             modelBuilder.Entity("e_commerce.Infrastructure.Entites.Seller", b =>
@@ -1371,38 +1051,6 @@ namespace e_commerce.Infrastructure.Migrations
                     b.HasIndex("CustomerId");
 
                     b.ToTable("Wishlist");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CustomerId = 1,
-                            Name = "my wishlist"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CustomerId = 1,
-                            Name = "my wishlist"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            CustomerId = 1,
-                            Name = "my wishlist"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            CustomerId = 1,
-                            Name = "my wishlist"
-                        },
-                        new
-                        {
-                            Id = 5,
-                            CustomerId = 1,
-                            Name = "my wishlist"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

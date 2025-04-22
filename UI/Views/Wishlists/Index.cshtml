@@ -62,7 +62,11 @@ else
                                 <span class="table__stock">Out of Stock</span>
                             }
                         </td>
-                            <td><a  class="btn btn--sm ">Add to Cart</a></td>
+                            <td>
+                                <a data-product-id="@item.Id" class="action_btn cart_btn add-to-cart" aria-label="Add To Cart">
+                                    <i class="fi fi-rs-shopping-bag-add"></i>
+                                </a>
+                            </td>
                         <td><a data-id="@item.Id" class="btn-delete"><i class="fi fi-rs-trash table__trash"></i></a></td>
                     </tr>
                 }
@@ -71,3 +75,6 @@ else
     </div>
 </section>
 }
+<a data-product-id="5" class="action_btn cart_btn add-to-cart" aria-label="Add To Cart">
+    <i class="fi fi-rs-shopping-bag-add"></i>
+</a>

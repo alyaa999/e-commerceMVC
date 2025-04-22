@@ -116,6 +116,10 @@ namespace e_commerce.Infrastructure.Repository
                 throw new Exception("Address not found");
             }
         }
+        public bool isAddressConnectedToOrder(int AddressID)
+        {
+            return context.Orders.Any(o => o.ShippingAddressId == AddressID && o.Status != Domain.Enums.orderstateEnum.Cancelled);
+        }
 
 
     }

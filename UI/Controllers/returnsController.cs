@@ -2,6 +2,7 @@
 using e_commerce.Domain.Enums;
 using e_commerce.Infrastructure.Entites;
 using e_commerce.Infrastructure.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,10 +11,12 @@ using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [ServiceFilter(typeof(LayoutDataFilterAttribute))]
 
     public class returnsController : Controller
     {
+
         // GET: returnsController
         IOrderRepository orderRepository;
         IReturnRepository returnRepository;
@@ -65,7 +68,7 @@ namespace e_commerce.Web.Controllers
                 var returnList = new List<Return>();
                 for (int i = 0; i < ProductId.Count; i++)
                 {
-                    amountOfReturns += orderRepository.getOrderByOrderID(1, OrderId).OrderProducts
+                    amountOfReturns += orderRepository.getOrderByOrderID((custrepo.getcustomerid(userId).Id), OrderId).OrderProducts
                         .Where(p => p.ProductId == ProductId[i]).FirstOrDefault().ItemTotal;
                     var returnRequest = new Return
                     {

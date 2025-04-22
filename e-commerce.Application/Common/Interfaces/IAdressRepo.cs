@@ -14,5 +14,6 @@ namespace e_commerce.Application.Common.Interfaces
         List<Address> GetAllAddressAsync(int userID);
         void UpdateAddress(Address address,int cid,int addID);
         public Address GetAddressById(int id, int cID);
+        public bool isAddressConnectedToOrder(int AddressID);
     }
 }

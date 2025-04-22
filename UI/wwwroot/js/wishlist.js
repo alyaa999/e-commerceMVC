@@ -13,14 +13,27 @@
             type: 'POST',
             data: { productId: productId },
             success: function (response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Added to Wishlist!',
-                    showConfirmButton: false,
-                    timer: 1500,
-                    position: 'top-end',
-                    toast: true
-                });
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Added to Wishlist!',
+                        showConfirmButton: false,
+                        timer: 1500,
+                        position: 'top-end',
+                        toast: true
+                    });
+                }
+                else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Faild to add!',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        position: 'top-end',
+                        toast: true,
+                        text: response.message
+                    });
+                }
             },
             error: function () {
                 Swal.fire({

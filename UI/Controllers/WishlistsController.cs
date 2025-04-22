@@ -12,9 +12,11 @@ using e_commerce.Infrastructure.Repository;
 using e_commerce.Web.ViewModels.Home;
 using Microsoft.AspNetCore.Mvc.Filters;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [ServiceFilter(typeof(LayoutDataFilterAttribute))]
 
     public class WishlistsController : Controller
@@ -66,7 +68,14 @@ namespace e_commerce.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToWishlist(int productId)
         {
-            var res = await repo.addToWishlist(productId);
+            try
+            {
+               var res = await repo.addToWishlist(productId);
+            }
+            catch(Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
             return Json(new
             {
                 success = true,

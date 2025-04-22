@@ -17,28 +17,45 @@
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '/Addresses/Delete',
+                url: '/Addresses/checkifAddAlreadyAttatchToOrd',
                 data: { id: itemId },
                 type: 'POST',
                 success: function (response) {
-                    if (response.success) {
+                    if (response === true) {
                         Swal.fire({
-                            icon: 'success',
-                            title: 'Deleted!',
-                            text: 'Your item has been deleted.',
-                            timer: 1500,
-                            showConfirmButton: false,
-                            position: 'top-end',
-                            toast: true
-                        }).then(() => {
-                            location.reload();
+                            title: 'Attention',
+                            text: "This Address cann't be deleted. it is already attatched to an order!",
+                            icon: 'warning',
+                            confirmButtonColor: '#d33',
+                            confirmButtonText: 'ok got it!'
                         });
                     } else {
-                        Swal.fire('Error', response.message || 'Failed to delete item', 'error');
+                        $.ajax({
+                            url: '/Addresses/Delete',
+                            data: { id: itemId },
+                            type: 'POST',
+                            success: function (response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Deleted!',
+                                        text: 'Your item has been deleted.',
+                                        timer: 1500,
+                                        showConfirmButton: false,
+                                        position: 'top-end',
+                                        toast: true
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                } else {
+                                    Swal.fire('Error', response.message || 'Failed to delete item', 'error');
+                                }
+                            },
+                            error: function () {
+                                Swal.fire('Error', 'Could not delete the item', 'error');
+                            }
+                        });
                     }
-                },
-                error: function () {
-                    Swal.fire('Error', 'Could not delete the item', 'error');
                 }
             });
         }

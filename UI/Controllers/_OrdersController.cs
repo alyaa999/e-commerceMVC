@@ -8,9 +8,11 @@ using e_commerce.Infrastructure.Entites;
 
 using Stripe;
 using Stripe.Climate;
+using Microsoft.AspNetCore.Authorization;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [ServiceFilter(typeof(LayoutDataFilterAttribute))]
 
     public class _OrdersController : Controller
@@ -18,18 +20,20 @@ namespace e_commerce.Web.Controllers
         public IOrderRepository IOrderRepo { get; }
         private readonly IcartRepository repo;
         private readonly IAdressRepo ADDrepo;
+        private readonly ICustRepo custrepo;
 
         // GET: orderController
-        public _OrdersController(IOrderRepository _orderrepo, IcartRepository _repo, IAdressRepo aDDrepo)
+        public _OrdersController(IOrderRepository _orderrepo, IcartRepository _repo, IAdressRepo aDDrepo, ICustRepo custrepo)
         {
             IOrderRepo = _orderrepo;
             this.repo = _repo;
             ADDrepo = aDDrepo;
+            this.custrepo = custrepo;
         }
         public ActionResult getAllCustOrder()
         {
-
-            return View(IOrderRepo.viewAllOrders(1));
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return View(IOrderRepo.viewAllOrders(custrepo.getcustomerid(userId).Id));
         }
 
 
@@ -102,25 +106,32 @@ namespace e_commerce.Web.Controllers
             }
         }
 
-        // GET: orderController/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
+      
         // POST: orderController/Delete/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id)
         {
-            try
+            var canceledOrder = IOrderRepo.GetOrderById(id);
+            if (DateTime.Now.Day - canceledOrder.OrderDate.Value.Day <= 3 && canceledOrder.OrderDate.Value.Year == DateTime.Now.Year && DateTime.Now.Month == canceledOrder.OrderDate.Value.Month)
             {
-                return RedirectToAction(nameof(Index));
+                if (canceledOrder.PaymentStatus == Domain.Enums.PaymentStatusEnum.Paid)
+                {
+                    try
+                    {
+                        return Json(new { success = true, message = "Refund requested. Proceed with the refund process." });
+                    }
+                    catch (Exception ex)
+                    {
+                        return Json(new { success = false, message = $"An error occurred: {ex.Message}" });
+                    }
+                }
+                else if (canceledOrder.PaymentStatus == Domain.Enums.PaymentStatusEnum.PaymentPending)
+                {
+                    IOrderRepo.DeleteOrder(id);
+                    return Json(new { success = true, message = "Your order has been cancelled successfully." });
+                }
             }
-            catch
-            {
-                return View();
-            }
+            return Json(new { success = false, message = "You cannot cancel the order after 3 days." });
         }
     }
 }

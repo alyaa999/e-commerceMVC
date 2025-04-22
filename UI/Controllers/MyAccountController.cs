@@ -15,6 +15,7 @@ using e_commerce.Application.Common.Interfaces;
 namespace e_commerce.Web.Controllers
 {
     [ServiceFilter(typeof(LayoutDataFilterAttribute))]
+    [Authorize]
 
     public class MyAccountController : Controller
     {

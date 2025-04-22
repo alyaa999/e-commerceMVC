@@ -25,7 +25,7 @@ namespace e_commerce.Infrastructure.Repository
             if (returns != null) {
                 for (int i = 0; i < returns.Count; i++) { 
                  context.Returns.Add(returns[i]);
-                 var order = OrderRepository.getOrderByOrderID(1,returns[i].OrderId).ReturnStatus = Domain.Enums.ReturnStatusEnum.Pending;
+                 var order = OrderRepository.getOrderByOrderID(returns[i].custId,returns[i].OrderId).ReturnStatus = Domain.Enums.ReturnStatusEnum.Pending;
                 }
                 context.SaveChanges();
             }
@@ -37,7 +37,7 @@ namespace e_commerce.Infrastructure.Repository
         }
         public List<Order> getOrdersCanReturn(int userId)
         {
-            var orders = OrderRepository.viewAllOrders(1);
+            var orders = OrderRepository.viewAllOrders(userId);
             var returnOrders = new List<Order>();
             if (orders != null)
             {

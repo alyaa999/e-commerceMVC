@@ -25,7 +25,7 @@ namespace e_commerce.Infrastructure.Repository
 
         public IQueryable<Product> GetProducts(ShopDTO shopDTO)
         {
-            IQueryable<Product> queryable = _context.Products;
+            IQueryable<Product> queryable = _context.Products.Where(i=>i.IsApproved);
 
             if (!string.IsNullOrWhiteSpace(shopDTO.Name))
             {
@@ -51,7 +51,10 @@ namespace e_commerce.Infrastructure.Repository
             {
                 queryable = queryable.Where(p => p.Price >= 0 && p.Price <= shopDTO.PriceFilter.Value);
             }
-
+            if (shopDTO.TagFilter?.Any() == true)
+            {
+                queryable = queryable.Where(p => shopDTO.TagFilter.Contains(p.TagId));
+            }
 
 
 
@@ -59,7 +62,8 @@ namespace e_commerce.Infrastructure.Repository
             return queryable
                 .Include(p => p.SubCategory)
                 .Include(p => p.ProductImages)
-                .Include(p => p.Reviews);
+                .Include(p => p.Reviews)
+                .Include(p => p.TagObj);
         }
 
 
@@ -81,7 +85,7 @@ namespace e_commerce.Infrastructure.Repository
         }
         public IQueryable<Product> GetProductsByCategory(int? CategoryId, int? SubCategoryId)
         {
-            IQueryable<Product> queryable = _context.Products;
+            IQueryable<Product> queryable = _context.Products.Where(i => i.IsApproved);
 
             if (CategoryId.HasValue)
             {
@@ -92,19 +96,21 @@ namespace e_commerce.Infrastructure.Repository
             {
                 queryable = queryable.Where(p => p.SubCategoryId == SubCategoryId.Value);
             }
-            return queryable.Include(i => i.SubCategory).Include(i => i.ProductImages).Include(i => i.Reviews);
+            return queryable.Include(i => i.SubCategory).Include(i => i.ProductImages).Include(i => i.Reviews).Include(i=>i.TagObj);
 
         }
         public IQueryable<Product> GetProductsByTag(int? Tager)
         {
-            return _context.Products
+            return _context.Products.Where(i=>i.IsApproved)
                 .Include(i=>i.SubCategory.Category)
+                .Include(i => i.Reviews)
+                .Include(i => i.TagObj)
                 .Include(i=>i.ProductImages).Where(i => i.TagId == Tager);
         }
 
         public Product? GetProductById(int id)
         {
-            return _context.Products.Include(i => i.ProductImages).Include(i=>i.SubCategory.Category).Include(i=>i.Reviews).FirstOrDefault(i => i.Id == id);
+            return _context.Products.Include(i => i.ProductImages).Include(i=>i.SubCategory.Category).Include(i=>i.Reviews).Include(i=>i.TagObj).FirstOrDefault(i => i.Id == id);
         }
 
        

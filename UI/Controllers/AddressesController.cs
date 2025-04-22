@@ -10,9 +10,11 @@ using AutoMapper;
 using e_commerce.Application.Common.Interfaces;
 using e_commerce.Web.ViewModels;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace e_commerce.Web.Controllers
 {
+    [Authorize(Roles = "Customer")]
     [ServiceFilter(typeof(LayoutDataFilterAttribute))]
     public class AddressesController : Controller
     {
@@ -40,8 +42,9 @@ namespace e_commerce.Web.Controllers
         }
 
         // GET: Addresses/Create
-        public IActionResult Create()
+        public IActionResult Create(string? returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             ViewBag.Cities = new SelectList(cities);
             return View();
         }
@@ -51,7 +54,7 @@ namespace e_commerce.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(AddressVM address)
+        public async Task<IActionResult> Create(AddressVM address,string? returnUrl)
         {
             try
             {
@@ -70,7 +73,10 @@ namespace e_commerce.Web.Controllers
                         return View(mapper.Map<Address>(address));
                     }
                 }
-                    return RedirectToAction("Index", "CheckOut");
+                if (!string.IsNullOrEmpty(returnUrl))
+                    return Redirect(returnUrl);
+                else
+                    return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -80,8 +86,9 @@ namespace e_commerce.Web.Controllers
         }
 
         // GET: Addresses/Edit/5
-        public async Task<IActionResult> Edit(int id)
+        public async Task<IActionResult> Edit(int id,string? returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if (id == null)
@@ -98,7 +105,7 @@ namespace e_commerce.Web.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, AddressVM address)
+        public async Task<IActionResult> Edit(int id, AddressVM address,string? returnUrl)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -118,7 +125,10 @@ namespace e_commerce.Web.Controllers
                         ViewBag.Cities = new SelectList(cities);
                         return View(address_);
                     }
-                   return RedirectToAction("Index","CheckOut");
+                    if (!string.IsNullOrEmpty(returnUrl))
+                        return Redirect(returnUrl);
+                    else
+                        return RedirectToAction("Index");
                }
                return View(address_);
 
@@ -150,6 +160,12 @@ namespace e_commerce.Web.Controllers
 
             return Json(new { success = true });
         }
-        
+        public async Task<IActionResult> checkifAddAlreadyAttatchToOrd(int id)
+        {
+
+            var result = repo.isAddressConnectedToOrder(id);
+            return Json(result);
+        }
+
     }
 }

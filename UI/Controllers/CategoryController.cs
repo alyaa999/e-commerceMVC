@@ -1,7 +1,10 @@
 ﻿using e_commerce.Application.Common.Interfaces;
 using e_commerce.Infrastructure.Entites;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+
+[Authorize(Roles = "Admin")]
 public class CategoryController : Controller
 {
     private readonly IRepository<Category> _categoryRepo;
@@ -111,8 +114,8 @@ public class CategoryController : Controller
             return NotFound();
         }
 
-        var category = await _categoryRepo.GetByIdAsync(id.Value);
-
+        var categories = await _categoryRepo.GetAllIncludingAsync(c => c.SubCategories);
+        var category = categories.FirstOrDefault(c => c.Id == id);
         if (category == null)
         {
             return NotFound();
