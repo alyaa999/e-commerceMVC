@@ -83,6 +83,7 @@
                     </div>
                 </div>
                 <ul class="nav__list">
+                    @* @if (!User.IsInRole("Admin") || !User.IsInRole("Seller")) *@
                     <li class="nav__item">
                         <a  asp-action="Index" class="nav__link active-link">Home</a>
                     </li>
@@ -90,7 +91,7 @@
                         <a asp-action="ShopNow" class="nav__link">Shop</a>
                     </li>
 
-                  
+
                     <li class="nav__item relative">
                         <a href="#" class="nav__link" onclick="toggleCategories()">Categories</a>
                         <ul id="category-menu" class="absolute hidden z-50 left-0 top-full mt-2 w-max bg-white shadow-lg rounded-md">
@@ -200,37 +201,37 @@
                                                 <li><a href="#" class="block text-sm text-gray-600 hover:text-pink-600 hover:bg-gray-50 px-3 py-1 rounded">Skincare</a></li>
                                                 <li><a href="#" class="block text-sm text-gray-600 hover:text-pink-600 hover:bg-gray-50 px-3 py-1 rounded">Makeup</a></li>
                                             </ul>
-                                            </div>
-                                            <!--AnotherCategories Dynamic-->
-                                                @foreach(var item in categories)
-                                                {
-                                                    <div class="group">
-                                                        <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
-                                                            <div class="flex items-center space-x-3">
-                                                                <i class="fas fa-star text-pink-400"></i>
-                                                        <a asp-action="ShopNow"  asp-route-CategoryId="@item.Id" class="text-gray-800 font">@item.Name</a>
-                                                            </div>
-                                                    <button onclick="toggleSubcategories(this,'@item.Name')" class="text-gray-400 group-hover:text-gray-600" >
-                                                                +
-                                                            </button>
-                                                        </div>
-
-                                                        @if (item.subCategory != null)
-                                                        {
-                                                            <ul id="@item.Name" class="ml-8 mt-1 space-y-1 hidden">
-                                                                @foreach (var sub in item.subCategory)
-                                                                {
-                                                                  <li><a asp-action="ShopNow" asp-route-CategoryId="@item.Id"   asp-route-SubCategoryId="@sub.Id" class="block text-sm text-gray-600 hover:text-pink-600 hover:bg-gray-50 px-3 py-1 rounded">@sub.Name</a></li>
-                                                                }
-                                                            </ul>
-                                                        }
-
-                                                      
-                                                </div>
-                                            }
-                                     
-                                       
                                         </div>
+                                        <!--AnotherCategories Dynamic-->
+                                        @foreach(var item in categories)
+                                        {
+                                            <div class="group">
+                                                <div class="flex items-center justify-between hover:bg-gray-50 px-3 py-2 rounded">
+                                                    <div class="flex items-center space-x-3">
+                                                        <i class="fas fa-star text-pink-400"></i>
+                                                        <a asp-action="ShopNow"  asp-route-CategoryId="@item.Id" class="text-gray-800 font">@item.Name</a>
+                                                    </div>
+                                                    <button onclick="toggleSubcategories(this,'@item.Name')" class="text-gray-400 group-hover:text-gray-600" >
+                                                        +
+                                                    </button>
+                                                </div>
+
+                                                @if (item.subCategory != null)
+                                                {
+                                                    <ul id="@item.Name" class="ml-8 mt-1 space-y-1 hidden">
+                                                        @foreach (var sub in item.subCategory)
+                                                        {
+                                                            <li><a asp-action="ShopNow" asp-route-CategoryId="@item.Id"   asp-route-SubCategoryId="@sub.Id" class="block text-sm text-gray-600 hover:text-pink-600 hover:bg-gray-50 px-3 py-1 rounded">@sub.Name</a></li>
+                                                        }
+                                                    </ul>
+                                                }
+
+
+                                            </div>
+                                        }
+
+
+                                    </div>
                                 </div>
                             </li>
                         </ul>
@@ -248,6 +249,26 @@
                     }
                     else
                     {
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav__item"><a asp-controller="Admin" asp-action="Index" class="nav__link">Admin Panel</a></li>
+                        }
+                        else if (User.IsInRole("Seller"))
+                        {
+                            <li class="nav__item"><a asp-controller="Seller" asp-action="Index" class="nav__link">Seller Panel</a></li>
+                        }
+                        else
+                        {
+                            <li class="nav__item">
+                                <a asp-controller="Home" asp-action="Index" class="nav__link active-link">Home</a>
+                            </li>
+                            <li class="nav__item">
+                                <a asp-controller="Home" asp-action="ShopNow" class="nav__link">Shop</a>
+                            </li>
+                        }
+
+                            <li class="nav__item"><a asp-controller="MyAccount" asp-action="Index" class="nav__link">My Account</a></li>
+                        
 
                         <li class="nav__item">
                             <a asp-controller="MyAccount" asp-action="Index" class="nav__link">My Account</a>
