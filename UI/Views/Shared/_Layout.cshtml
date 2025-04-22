@@ -93,13 +93,29 @@
                     </div>
                 </div>
                 <ul class="nav__list">
-                    @* @if (!User.IsInRole("Admin") || !User.IsInRole("Seller")) *@
-                    <li class="nav__item">
-                        <a asp-controller="Home" asp-action="Index" class="nav__link active-link">Home</a>
-                    </li>
-                    <li class="nav__item">
-                        <a asp-controller="Home" asp-action="ShopNow" class="nav__link">Shop</a>
-                    </li>
+                    @if (!User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav__item">
+                            <a asp-controller="Home" asp-action="Index" class="nav__link active-link">Home</a>
+                        </li>
+                        <li class="nav__item">
+                            <a asp-controller="Home" asp-action="ShopNow" class="nav__link">Shop</a>
+                        </li>
+                    }
+                    else
+                    {
+                        @if (User.IsInRole("Customer"))
+                        {
+                            <li class="nav__item">
+                                <a asp-controller="Home" asp-action="Index" class="nav__link active-link">Home</a>
+                            </li>
+                            <li class="nav__item">
+                                <a asp-controller="Home" asp-action="ShopNow" class="nav__link">Shop</a>
+                            </li>
+                        }
+
+                    }
+
 
 
                     <li class="nav__item relative">
@@ -267,15 +283,7 @@
                         {
                             <li class="nav__item"><a asp-controller="Seller" asp-action="Index" class="nav__link">Seller Panel</a></li>
                         }
-                        else
-                        {
-                            <li class="nav__item">
-                                <a asp-controller="Home" asp-action="Index" class="nav__link active-link">Home</a>
-                            </li>
-                            <li class="nav__item">
-                                <a asp-controller="Home" asp-action="ShopNow" class="nav__link">Shop</a>
-                            </li>
-                        }
+
 
                             <li class="nav__item"><a asp-controller="MyAccount" asp-action="Index" class="nav__link">My Account</a></li>
                         

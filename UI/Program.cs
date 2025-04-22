@@ -121,18 +121,10 @@ namespace e_commerce
 
 
             builder.Services.AddAuthentication()
-                .AddFacebook(options =>
-                {
-                    options.ClientId = "697162356148355";
-                    options.ClientSecret = "719008d493e69543fac4bd48c2065aae";
-
-                });
-
-            builder.Services.AddAuthentication()
                 .AddGoogle(options =>
                 {
-                    options.ClientId = "301550065314-ec3i6m9102daudbhr0nvi075j5ne9hd2.apps.googleusercontent.com";
-                    options.ClientSecret = "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";
+                    options.ClientId = "1075456295809-7vccccvq60amse5uhidjonvt8jimq0l7.apps.googleusercontent.com";
+                    options.ClientSecret = "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";
                 });
 
             builder.Services.AddAuthentication()

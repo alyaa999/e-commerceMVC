@@ -235,7 +235,7 @@ namespace e_commerce.Web.Controllers
             {
                 var user = new ApplicationUser
                 {
-                    UserName = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.GivenName) ?? "First",
+                    UserName = email,
                     Email = email,
                     FirstName = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.GivenName) ?? "First",
                     LastName = info.Principal.FindFirstValue(System.Security.Claims.ClaimTypes.Surname) ?? "Last",

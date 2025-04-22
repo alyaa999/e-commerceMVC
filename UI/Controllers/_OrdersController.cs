@@ -9,6 +9,7 @@ using e_commerce.Infrastructure.Entites;
 using Stripe;
 using Stripe.Climate;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace e_commerce.Web.Controllers
 {
