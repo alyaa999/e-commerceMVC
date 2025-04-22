@@ -29,6 +29,8 @@ namespace e_commerce.Web.Mappers
 
              .ForMember(dest => dest.SubCategoryName,
                         opt => opt.MapFrom(src => src.SubCategory != null ? src.SubCategory.Name : ""))
+             .ForMember(dest => dest.Tag,
+             opt => opt.MapFrom(src => src.TagObj.Name))
              .ForMember(dest => dest.CategoryName,
                         opt => opt.MapFrom(src => src.SubCategory != null && src.SubCategory.Category != null
                             ? src.SubCategory.Category.Name : ""))
@@ -57,7 +59,9 @@ namespace e_commerce.Web.Mappers
                 .ForMember(des => des.subCategory,
                     opt => opt.MapFrom(src => src.SubCategories));
 
-            CreateMap<ProductViewModel, Product>();
+            CreateMap<ProductViewModel, Product>()
+                 .ForMember(dest => dest.TagId,
+             opt => opt.MapFrom(src => src.TagId));
 
 
 

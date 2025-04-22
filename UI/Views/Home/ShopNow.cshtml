@@ -77,9 +77,10 @@
         <div class="products__container grid">
             @foreach (var item in Model.Products)
             {
+
                 <div class="product__item">
                     <div class="product__banner">
-                        <a href="details.html" class="product__images">
+                        <a asp-action="ProductDetials" asp-controller="Home" asp-route-id="@item.Id" class="product__images">
                             @{
                                 int imageCount = 0;
                             }
@@ -111,9 +112,8 @@
                             <a data-product-id="@item.Id" class="action__btn add-to-wishlist" aria-label="Add to Wishlist">
                                 <i class="fi fi-rs-heart"></i>
                             </a>
-                            <a href="#" class="action__btn" aria-label="Compare">
-                                <i class="fi fi-rs-shuffle"></i>
-                            </a>
+                            
+                            
                         </div>
                         @if (item.Tag == "New")
                         {
@@ -167,7 +167,7 @@
                             }
 
                         </div>
-                        <a data-product-id="@item.Id" class="action_btn cart_btn add-to-cart" aria-label="Add To Cart">
+                        <a data-product-id="@item?.Id" class="action_btn cart_btn add-to-cart" aria-label="Add To Cart">
                             <i class="fi fi-rs-shopping-bag-add"></i>
                         </a>
                     </div>

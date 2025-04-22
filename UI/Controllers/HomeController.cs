@@ -40,7 +40,7 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index(int pageNumber = 1)
     {
-        int pageSize = 1;
+        int pageSize = 2;
 
         var items = homeRepository.GetProductsByCategory(null, null);
         var paginatedList = await PaginatedList<Product>.CreateAsync(items, pageNumber, pageSize);
@@ -65,9 +65,13 @@ public class HomeController : Controller
     }
 
     //In AutoMapper, mapping a valid source object (like a list) will usually return an empty list, not null, even if the source list is empty or null.
-    public async  Task<IActionResult> ShopNow(ShopViewModel ShopVm,int pageNumber= 1)
+    public async  Task<IActionResult> ShopNow(ShopViewModel ShopVm, int? Filter, int pageNumber= 1 )
     {
         int pageSize = 1;
+        if(Filter != null)
+        {
+            ShopVm.TagFilter.Add(Filter.Value);
+        }
         var shopDTO = _mapper.Map<ShopDTO>(ShopVm);
        
         var items = homeRepository.GetProducts(shopDTO);
@@ -86,11 +90,12 @@ public class HomeController : Controller
             PriceFilter = ShopVm.PriceFilter,
             TagFilter = ShopVm.TagFilter,
             PageNumber = pageNumber,
-            productCount = paginatedList.Count(),
+            productCount = items.Count(),
             TotalPages = paginatedList.TotalPages,
             Brands = brands,
             tagers = tagers,
             Name = ShopVm.Name,
+            
             Products = _mapper.Map<List<ProductViewModel>>(paginatedList)
         };
       

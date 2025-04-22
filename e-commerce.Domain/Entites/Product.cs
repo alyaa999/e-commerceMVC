@@ -44,6 +44,8 @@ public partial class Product
     [Column(TypeName = "bit")]
     public bool IsApproved { get; set; } = false;
 
+   
+
 
     public bool IsActive { get; set; }
 
