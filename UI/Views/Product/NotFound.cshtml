@@ -1,0 +1,18 @@
+﻿@{
+    Layout = "_SellerLayout"; // Or use "_SellerLayout" / "_AdminLayout" depending on your app structure
+    ViewData["Title"] = "Page Not Found";
+}
+
+<div class="container text-center mt-5">
+    <div class="card shadow-lg border-0 p-5" style="border-radius: 20px;">
+        <h1 class="display-1 text-danger fw-bold">404</h1>
+        <h2 class="mb-3">Oops! Page Not Found</h2>
+        <p class="text-muted mb-4">
+            The page you’re looking for doesn’t exist or has been moved.
+        </p>
+
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">
+            <i class="fas fa-home me-1"></i> Go to Homepage
+        </a>
+    </div>
+</div>

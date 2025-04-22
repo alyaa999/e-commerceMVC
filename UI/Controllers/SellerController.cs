@@ -1,9 +1,12 @@
 ﻿using e_commerce.Application.Common.Interfaces;
+using e_commerce.Domain.Entites;
+using e_commerce.Domain.Enums;
 using e_commerce.Infrastructure.Entites;
-
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace e_commerce.Web.Controllers
 {
@@ -12,120 +15,107 @@ namespace e_commerce.Web.Controllers
         private readonly IRepository<Seller> _sellerRepo;
 
         private readonly IRepository<Product> _productRepo;
-        public SellerController(IRepository<Seller> sellerRepo , IRepository<Product> productRepo)
+        public UserManager<ApplicationUser> _userManager { get; }
+        public ECommerceDBContext _context { get; }
+
+        public SellerController(IRepository<Seller> sellerRepo , IRepository<Product> productRepo, UserManager<ApplicationUser> userManager , ECommerceDBContext dbContext)
         {
             _sellerRepo = sellerRepo;
             _productRepo = productRepo;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Index(string searchString)
-        {
-            var allSellers = await _sellerRepo.GetAllIncludingAsync(s => s.ApplicationUser);
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                allSellers = allSellers.Where(s =>
-                    s.Id.ToString().Contains(searchString) ||
-                    (s.ApplicationUser.FirstName != null && s.ApplicationUser.FirstName.Contains(searchString, StringComparison.OrdinalIgnoreCase)) ||
-                    (s.ApplicationUser.Email != null && s.ApplicationUser.Email.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
-                    .ToList();
-            }
-
-            return View(allSellers);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
-        {
-            try
-            {
-                var seller = await _sellerRepo.GetByIdAsync(id);
-                if (seller == null)
-                {
-                    TempData["Error"] = "Seller not found";
-                    return RedirectToAction("Index");
-                }
-
-                return View(seller);
-            }
-            catch (Exception ex)
-            {
-           
-                TempData["Error"] = "Error loading seller details";
-                return RedirectToAction("Index");
-            }
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Seller seller)
-        {
-            try
-            {
-                if (!ModelState.IsValid)
-                {
-                    return View(seller);
-                }
-
-                var existingSeller = await _sellerRepo.GetByIdAsync(seller.Id);
-                if (existingSeller == null)
-                {
-                    TempData["Error"] = "Seller not found";
-                    return RedirectToAction("Index");
-                }
-
-      
-                existingSeller.ApplicationUser.FirstName = seller.ApplicationUser.FirstName;
-                existingSeller.ApplicationUser.LastName = seller.ApplicationUser.LastName;
-                existingSeller.ApplicationUser.Email = seller.ApplicationUser.Email;
-               
-                _sellerRepo.Update(existingSeller);
-                await _sellerRepo.SaveChangesAsync();
-
-                TempData["Success"] = "Seller updated successfully";
-                return RedirectToAction("Index");
-            }
-            catch (DbUpdateException ex)
-            {
-             
-                ModelState.AddModelError("", "Unable to save changes. Try again, and if the problem persists contact your system administrator.");
-                return View(seller);
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = "An unexpected error occurred";
-                return RedirectToAction("Index");
-            }
-        }
-        [HttpGet]
-        public async Task<IActionResult> Details(int id)
-        {
-            var seller = await _sellerRepo.GetByIdAsync(id);
-            if (seller == null)
-                return NotFound();
-
-            return View(seller);
+            _userManager = userManager;
+            _context = dbContext;
         }
 
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Index()
         {
+            var user = await _userManager.GetUserAsync(User); // Get the currently logged-in user
+            var seller = _sellerRepo.Find(i => i.ApplicationUserId == user.Id).First();
+            var products = await _productRepo.FindAsync(i => i.SellerId == seller.Id);
+            
+            var totalSold = await _context.Products
+            .Where(p => p.SellerId == seller.Id)
+            .SelectMany(p => p.OrderProducts)
+            .SumAsync(op => (int?)op.Quantity) ?? 0;
+
+            var totalRevenue = await _context.Products
+             .Where(p => p.SellerId == seller.Id)
+             .SelectMany(p => p.OrderProducts)
+             .SumAsync(op => (decimal?)(op.Quantity * op.UnitPrice)) ?? 0;
+
+            
+            DateTime oneWeekAgo = DateTime.Now.AddDays(-7);
+
+            var query = _context.OrderProducts
+                .Where(op => op.Product.SellerId == seller.Id)
+                .Select(op => op.Order)
+                .Distinct(); // Avoid double-counting the same order if multiple products in it
+
+            int PendingOrdersCount = query.Count(o => o.Status == orderstateEnum.Pending);
+            int deliveredOrdersCount = query.Count(o => o.Status == orderstateEnum.Delivered );
+            ViewBag.productsCount = products.Count();
+
+            ViewBag.Revenue = totalRevenue;
+            ViewBag.Sold = totalSold;
+            ViewBag.PendingOrdersCount = PendingOrdersCount;
+            ViewBag.DeliveredOrdersCount = deliveredOrdersCount;
+
+
+
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Seller seller)
+        public async Task<IActionResult> GetSalesData()
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return View(seller);
-            }
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null) return Json(new { error = "User not found" });
 
-            await _sellerRepo.AddAsync(seller);
-            return RedirectToAction("Index");
+                var seller = _sellerRepo.Find(i => i.ApplicationUserId == user.Id).FirstOrDefault();
+                if (seller == null) return Json(new { error = "Seller not found" });
+
+                // Get monthly sales data grouped by OrderDate's month
+                var monthlySales = await _context.Orders
+                     .Where(o => o.OrderDate != null) // Filter out NULL dates
+                     .GroupBy(o => new {
+                         Year = o.OrderDate.Value.Year,
+                         Month = o.OrderDate.Value.Month
+                     })
+                     .Select(g => new {
+                         Year = g.Key.Year,
+                         Month = g.Key.Month,
+                         MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(g.Key.Month),
+                         TotalSales = g.Sum(o => o.TotalPrice),
+                         OrderCount = g.Count()
+                     })
+                     .OrderBy(x => x.Year)
+                     .ThenBy(x => x.Month)
+                     .ToListAsync();
+
+                // If you want data for the current year only:
+                var currentYear = DateTime.Now.Year;
+                var currentYearSales = monthlySales
+                    .Where(x => x.Year == currentYear)
+                    .ToList();
+
+                // Fill in missing months with 0
+                var result = Enumerable.Range(1, 12)
+                    .Select(month => new {
+                        Month = month,
+                        MonthName = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(month),
+                        TotalSales = currentYearSales.FirstOrDefault(ms => ms.Month == month)?.TotalSales ?? 0
+                    })
+                    .ToList();
+
+                return Json(result);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { error = ex.Message });
+            }
         }
+
     }
 }
