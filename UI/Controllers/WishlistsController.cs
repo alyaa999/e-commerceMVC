@@ -66,7 +66,14 @@ namespace e_commerce.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> AddToWishlist(int productId)
         {
-            var res = await repo.addToWishlist(productId);
+            try
+            {
+               var res = await repo.addToWishlist(productId);
+            }
+            catch(Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
             return Json(new
             {
                 success = true,

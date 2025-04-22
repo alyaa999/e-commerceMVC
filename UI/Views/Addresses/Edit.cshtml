@@ -17,11 +17,11 @@
     <!-- Form Start -->
     <form asp-action="Edit">
         @Html.Partial("_AddressForm", Model)
-
+        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
         <!-- Submit + Back -->
         <div class="form-group">
             <button type="submit" class="btn-submit">Save</button>
-            <a asp-action="Index" asp-controller="CheckOut" class="btn-back">Back to List</a>
+            <a asp-action="Index" asp-controller="addresses" class="btn-back">Back to List</a>
         </div>
     </form>
 </div>

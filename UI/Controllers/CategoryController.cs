@@ -111,8 +111,8 @@ public class CategoryController : Controller
             return NotFound();
         }
 
-        var category = await _categoryRepo.GetByIdAsync(id.Value);
-
+        var categories = await _categoryRepo.GetAllIncludingAsync(c => c.SubCategories);
+        var category = categories.FirstOrDefault(c => c.Id == id);
         if (category == null)
         {
             return NotFound();

@@ -70,9 +70,8 @@
                 </li>
             </ul>
             <div class="details__action">
-                <input type="number" class="quantity" value="3" />
-                <a href="#" class="btn btn--sm">Add To Card</a>
-                <a href="#" class="details__action-btn">
+                <a data-product-id="@Model.ProductDetials.Id" class="btn btn--sm add-to-cart">Add To Card</a>
+                <a data-product-id="@Model.ProductDetials.Id" class="details__action-btn add-to-wishlist">
                     <i class="fi fi-rs-heart"></i>
                 </a>
             </div>

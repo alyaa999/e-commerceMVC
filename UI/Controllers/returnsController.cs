@@ -65,7 +65,7 @@ namespace e_commerce.Web.Controllers
                 var returnList = new List<Return>();
                 for (int i = 0; i < ProductId.Count; i++)
                 {
-                    amountOfReturns += orderRepository.getOrderByOrderID(1, OrderId).OrderProducts
+                    amountOfReturns += orderRepository.getOrderByOrderID((custrepo.getcustomerid(userId).Id), OrderId).OrderProducts
                         .Where(p => p.ProductId == ProductId[i]).FirstOrDefault().ItemTotal;
                     var returnRequest = new Return
                     {

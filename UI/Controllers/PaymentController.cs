@@ -110,7 +110,8 @@ namespace e_commerce.Web.Controllers
                 TotalPrice = total,
                 OrderDate = DateTime.Now,
                 PaymentMethod =Domain.Enums.PaymentMethod.card,
-                Status = (Domain.Enums.orderstateEnum)Domain.Enums.PaymentStatusEnum.Paid, 
+                Status = (Domain.Enums.orderstateEnum)Domain.Enums.orderstateEnum.Pending,
+                PaymentStatus = Domain.Enums.PaymentStatusEnum.Paid,
                 PaymentIntentId = paymentIntentId,
                 OrderProducts = cart_.CartProducts.Select(cp => new OrderProduct
                 {
@@ -154,6 +155,7 @@ namespace e_commerce.Web.Controllers
                 var refund = refundService.Create(refundOptions);
 
                 order.PaymentStatus = Domain.Enums.PaymentStatusEnum.Refunded;
+                order.Status = Domain.Enums.orderstateEnum.Cancelled;
                 _orderRepository.UpdateOrder(order);
 
                 return Json(new { success = true, message = $"Your money has been refunded (${order.TotalPrice}) successfully." });

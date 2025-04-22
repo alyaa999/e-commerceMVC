@@ -1,9 +1,54 @@
-﻿    $(document).on('click', '.cancel-order-btn', function () {
-        var orderId = $(this).data('order-id');
-        console.log(orderId)
+﻿$(document).on('click', '.cancel-order-btn', function () {
+    var orderId = $(this).data('order-id');
+    var msg = $(this).data('message');
+    console.log(orderId)
+    if (msg.includes("page")) {
         Swal.fire({
             title: 'Are you sure?',
-            text: "You are about to cancel the order and request a refund.",
+            text: msg,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, Go to it!',
+            cancelButtonText: 'No, cancel process'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '/returns/create?orderId=' + orderId;
+            }
+        });
+    }
+    else if (msg.includes("request")) {
+            Swal.fire({
+                title: 'Attention?',
+                text: msg,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'OK!',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/_Orders/getAllCustOrder';
+                }
+            });
+        }
+        else if (msg.includes("cancelled")) {
+            Swal.fire({
+                title: 'Aleady Cancelled!',
+                text: msg,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Ok',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/_Orders/getAllCustOrder',
+                        type: 'POST'
+                    })
+                }
+            });
+        }
+        else { 
+        Swal.fire({
+            title: 'Are you sure?',
+            text: msg,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Yes, cancel it!',
@@ -20,9 +65,9 @@
                             text: response.message,
                             icon: response.success ? 'success' : 'error'
                         }).then(() => {
+                            $("#ordersTable").load(location.href + " #ordersTable");
                             console.log(response.message)
                             if (response.success) {
-                                console.log("hello")
                                 if(response.message.includes("Refund")) {
                                     $.ajax({
                                         url: '/Payment/Refund',
@@ -49,5 +94,5 @@
                 });
             }
         });
+}
     });
-
