@@ -65,13 +65,10 @@ public class HomeController : Controller
     }
 
     //In AutoMapper, mapping a valid source object (like a list) will usually return an empty list, not null, even if the source list is empty or null.
-    public async  Task<IActionResult> ShopNow(ShopViewModel ShopVm, int? Filter, int pageNumber= 1 )
+    public async  Task<IActionResult> ShopNow(ShopViewModel ShopVm, int pageNumber= 1 )
     {
         int pageSize = 1;
-        if(Filter != null)
-        {
-            ShopVm.TagFilter.Add(Filter.Value);
-        }
+      
         var shopDTO = _mapper.Map<ShopDTO>(ShopVm);
        
         var items = homeRepository.GetProducts(shopDTO);
