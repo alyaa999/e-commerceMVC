@@ -76,6 +76,28 @@ namespace e_commerce.Web.Controllers
 
 
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateStatus(int id, int status)
+        {
+            var order = await _orderRepo.GetByIdAsync(id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+
+            order.Status = (orderstateEnum)status;
+
+         
+            if (order.Status == orderstateEnum.Delivered && order.PaymentMethod == PaymentMethod.cash)
+            {
+                order.PaymentStatus = PaymentStatusEnum.Paid;
+            }
+
+          _orderRepo.Update(order); 
+
+            return RedirectToAction("Details", new { id = order.Id });
+        }
 
         public async Task<IActionResult> Details(int id)
         {

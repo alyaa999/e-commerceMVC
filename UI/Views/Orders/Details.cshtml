@@ -24,7 +24,7 @@
             <p><strong>Order ID:</strong> @Model.Id</p>
             <p><strong>Customer Email:</strong> @Model.Customer?.ApplicationUser?.FirstName</p>
             <p><strong>Order Date:</strong> @Model.OrderDate?.ToString("g")</p>
-            <p><strong>Total Amount:</strong> @Model.TotalPrice.ToString("C")</p>
+            <p><strong>Total Amount:marwa</strong> @Model.TotalPrice.ToString("C")</p>
             <p>
                 <strong>Status:</strong>
                 <span class="badge @GetOrderStatusClass((int)Model.Status)">
@@ -38,6 +38,23 @@
                     }
                 </span>
             </p>
+            <form asp-action="UpdateStatus" method="post" class="mt-3">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="form-group">
+                    <label for="Status" class="fw-bold">Change Order Status:</label>
+                    <select name="status" class="form-control w-50">
+                        @foreach (var enumValue in Enum.GetValues(typeof(orderstateEnum)).Cast<orderstateEnum>())
+                        {
+                            <option value="@((int)enumValue)" selected="@(Model.Status == enumValue)">
+                                @enumValue.ToString()
+                            </option>
+                        }
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2">Update</button>
+            </form>
+
+
         </div>
         <div class="col-md-6">
             <h3>Customer Information</h3>
@@ -45,7 +62,7 @@
             {
                 <p><strong>Name:</strong> @Model.Customer?.ApplicationUser?.FirstName</p>
                 <p><strong>Email:</strong> @Model.Customer?.ApplicationUser?.Email</p>
-                <p><strong>Phone:</strong> @Model.Customer?.ApplicationUser?.PhoneNumber</p>
+       
             }
             else
             {
