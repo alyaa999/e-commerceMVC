@@ -20,7 +20,7 @@ Key Features
 
 | Frontend  | Backend       | Database   | Tools           |
 |-----------|---------------|------------|-----------------|
-| Angular   | .NET Core     | SQL Server | visual studio code |
+| Ajax  | .NET Core     | SQL Server | visual studio code |
 | Bootstrap | ASP.NET WebAPI| EntityFramework | 
 
 
