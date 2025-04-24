@@ -24,12 +24,23 @@ Key Features
 ![Landing Page](./assets/land.png)
 
 ---
+## 📘 UML Diagrams
 
-## 📊 UML Architecture
+### Class Diagram
 
-### **High-Level Architecture**
+![Class Diagram](./assets/classDiagram.png)
 
-![UML Diagram](./image/1.jpg)
+### Sequence Diagram
+
+![Sequence Diagram](./assets/uml-sequence-diagram.png)
+
+### Use Case Diagram
+
+![Use Case Diagram](./assets/uml-use-case-diagram.png)
+### Interaction Diagram
+
+![Interaction Diagram](./assets/Interaction Diagram.png)
+
 
 ### **Order Flow Diagram**
 
