@@ -28,15 +28,12 @@ Key Features
 
 ### Class Diagram
 
-![Class Diagram](./assets/classDiagram.png)
+![Class Diagram](./assets/uml-class-diagram.png)
 
-### Sequence Diagram
+### classDiagram
 
-![Sequence Diagram](./assets/uml-sequence-diagram.png)
+![classDiagram](./assets/classDiagram.png)
 
-### Use Case Diagram
-
-![Use Case Diagram](./assets/uml-use-case-diagram.png)
 ### Interaction Diagram
 
 ![Interaction Diagram](./assets/Interaction Diagram.png)
