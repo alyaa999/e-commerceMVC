@@ -1,18 +1,15 @@
-# EvAra E-commerce 🛒
+![image](https://github.com/user-attachments/assets/18c680e6-eb59-4bc7-92e9-c7da76974937)# EvAra E-commerce 🛒
 
 Welcome to **EvAra E-commerce**, a full-stack online marketplace for stylish clothing & accessories.  
 **Modern design** meets **powerful tech**.
 
 ---
 
-## 🚀 Live Demo
-[🔗 Click here to view the live demo](https://evAra-shop.com)
-
 ---
 
 ## 🌟 Landing Page Preview
 
-![Landing Page](./assets/landing-page.png)
+![Landing Page](./assets/land.png)
 
 ---
 
