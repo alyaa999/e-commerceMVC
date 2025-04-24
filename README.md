@@ -17,11 +17,6 @@ Key Features
 
 ---
 
----
-
-## 🌟 Landing Page Preview
-
-![Landing Page](./assets/land.png)
 
 ---
 ## 📘 UML Diagrams
@@ -32,7 +27,7 @@ Key Features
 
 ### classDiagram
 
-![classDiagram](./assets/classDiagram.png)
+![classDiagram](https://drive.google.com/drive/folders/181sdzldFozvp8k09ajallaj_v4QQDuva)
 
 ### Interaction Diagram
 
