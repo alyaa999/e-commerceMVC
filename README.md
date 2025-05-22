@@ -115,7 +115,7 @@ Acknowledgments
 
     ASP.NET Core MVC Documentation
     Entity Framework Core
-   stripe API
+    stripe API
 
 
 
