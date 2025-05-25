@@ -1,0 +1,188 @@
+﻿@using System.Text.Json
+@using e_commerce.Web.ViewModels.Home
+@model ProductViewModel
+@{
+    ViewData["Title"] = "Create product";
+    Layout = "_SellerLayout";
+}
+
+<div class="container mt-4">
+    <h2>Create Category</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Create" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Code" class="control-label"></label>
+                    <input asp-for="Code" class="form-control" required />
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Price" class="control-label"></label>
+                    <input asp-for="Price" class="form-control" type="number"required />
+                    <span asp-validation-for="Price" class="text-danger"  ></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Discount" class="control-label"></label>
+                    <input asp-for="Discount" class="form-control" type="number" required />
+                    <span asp-validation-for="Discount" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="TagId" class="control-label" required></label>
+                    <select asp-for="TagId" asp-items="@(new SelectList(ViewBag.Tags, "Id", "Name"))" class="form-control" ></select>
+                    <span asp-validation-for="TagId" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label for="CategoryId" class="control-label">Category</label>
+                    <select id="CategoryId" class="form-control" required>
+                        <option value="">Select a Category</option>
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="CategoryId" class="text-danger"></span>
+
+                </div>
+
+                <div class="form-group">
+                    <label for="SubCategoryId" class="control-label">Subcategory</label>
+                    <select id="SubCategoryId" class="form-control" name="SubCategoryId" required>
+                        <option value="">Select a Subcategory</option>
+                    </select>
+                    <span asp-validation-for="SubCategoryId" class="text-danger"></span>
+
+                </div>
+                
+                <div class="form-group">
+                    <label asp-for="Brand" class="control-label"></label>
+                    <input asp-for="Brand" class="form-control" />
+                    <span asp-validation-for="Brand" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Desc" class="control-label"></label>
+                       <textarea asp-for="Desc" class="form-control"></textarea>
+
+                    <span asp-validation-for="Desc" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="ImagesUpload" class="control-label">Upload Images</label>
+                    <input type="file" id="images" name="ImagesUpload" class="form-control" multiple accept="image/*" onchange="previewImages()" required />
+                    <input type="hidden" id="PrimaryImageIndex" name="PrimaryImageIndex" />
+                    <div id="preview" class="mt-3 d-flex flex-wrap gap-2"></div>
+                    <span asp-validation-for="ImagesUpload" class="text-danger"></span>
+                </div>
+
+
+
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Create
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+    }
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+                 $(document).ready(function () {
+                var categories = @Html.Raw(JsonSerializer.Serialize(ViewBag.Categories));
+
+                $('#CategoryId').change(function () {
+                    var categoryId = parseInt($(this).val());
+                    var subcategorySelect = $('#SubCategoryId');
+                    subcategorySelect.empty();
+                    subcategorySelect.append('<option value="">Select a Subcategory</option>');
+                    if (!isNaN(categoryId)) {
+
+                        var selectedCategory = categories.find(c => c.Id === categoryId);
+                                                                                     console.log(categories);
+                                                                                         console.log(selectedCategory);
+
+                        if (selectedCategory && selectedCategory.subCategory) {
+
+                            $.each(selectedCategory.subCategory, function (i, sub) {
+                                  console.log("hello");
+
+                                console.log(sub.name);
+                                console.log(sub.id);
+                                subcategorySelect.append(
+                                    $('<option>', {
+                                        value: sub.Id,
+                                        text: sub.Name
+                                    })
+                                );
+                            });
+                        }
+                    }
+                    console.log(1);
+                });
+            });
+          
+        
+        function previewImages() {
+            const preview = document.getElementById('preview');
+            preview.innerHTML = '';
+            const files = document.getElementById('images').files;
+
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const wrapper = document.createElement('div');
+                    wrapper.style.position = 'relative';
+                    wrapper.style.display = 'inline-block';
+                    wrapper.style.margin = '5px';
+                    wrapper.style.textAlign = 'center';
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.maxHeight = '100px';
+                    img.style.display = 'block';
+
+                    const radio = document.createElement('input');
+                    radio.type = 'radio';
+                    radio.name = 'primaryImage';
+                    radio.value = i;
+                    radio.onclick = function () {
+                        document.getElementById('PrimaryImageIndex').value = i;
+                    };
+
+                    const label = document.createElement('label');
+                    label.innerText = 'Primary';
+                    label.style.display = 'block';
+                    label.appendChild(radio);
+
+                    wrapper.appendChild(img);
+                    wrapper.appendChild(label);
+
+                    preview.appendChild(wrapper);
+                };
+                reader.readAsDataURL(files[i]);
+            }
+        }
+
+
+
+    </script>
+}

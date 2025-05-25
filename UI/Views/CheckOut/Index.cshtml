@@ -1,0 +1,329 @@
+﻿@using e_commerce.Infrastructure.Entites
+@model e_commerce.Infrastructure.Entites.Cart
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<section class="checkout section--lg">
+    <div class="checkout__container container grid">
+        <div class="checkout__group"> 
+            <h3 class="section__title alert-info">pick an Address or Add one </h3>
+            @if (ViewBag.Addresses.Count == 0)
+            {
+                <a asp-action="Create" asp-controller="Addresses" asp-route-returnUrl="@Url.Action("Index","Checkout")" class="btn btn-light mx-5">Create</a>
+                <div class="alert alert-info" role="alert">
+                    <strong>Info!</strong> No addresses found. Please create a new address.
+                </div>
+            }
+            else
+            {
+                <p>
+                    <a asp-action="Create" asp-controller="Addresses" id="createAddressBtn" asp-route-returnUrl="@Url.Action("Index","Checkout")" class="btn btn-light mx-5 my-3">Create</a>
+                </p>
+
+                @foreach (var item in ViewBag.Addresses as IEnumerable<Address>)
+                {
+                    <div class="address-card @(item.IsDefault ? "default-address" : "")" data-address-id="@item.Id" onclick="setAsDefault(this)">
+                        <h3 class="tab__header">Shipping Address @(item.IsDefault ? "(Default)" : "")</h3>
+                        <div class="address-details">
+                            <address>
+                                <span class="address-label">City:</span> @Html.DisplayFor(modelItem => item.City) <br />
+                                <span class="address-label">Street:</span> @Html.DisplayFor(modelItem => item.Street) <br />
+                                <span class="address-label">Dept No:</span> @Html.DisplayFor(modelItem => item.DeptNo) <br />
+                                <span class="address-label">Is Default:</span> @Html.DisplayFor(modelItem => item.IsDefault) <br />
+                            </address>
+                        </div>
+                        <div class="address-actions">
+                            <a asp-action="Edit" asp-controller="Addresses" asp-route-id="@item.Id" asp-route-customerId="@item.CustomerId" asp-route-returnUrl="@Url.Action("Index","Checkout")">
+                                <i class="fas fa-edit" style="color: gray;"></i>
+                            </a> |
+                            <a data-address-id="@item.Id" class="btn-delete-address">
+                                <i class="fi fi-rs-trash table__trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
+
+        </div>
+        <div class="checkout__group">
+            <h3 class="section__title">Cart Totals</h3>
+            <table class="order__table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Products</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model.CartProducts)
+                    {
+                        <tr>
+                            <td>
+                                <img src=@Url.Content($"~/image/{item.ProductCodeNavigation.ProductImages.FirstOrDefault().ImageUrl}")
+                                alt="no image"
+                                class="table__img" />
+                            </td>
+                            <td>
+                                <h3 class="table__title"> @item.ProductCodeNavigation.Name</h3>
+                                <p class="table__quantity">x @item.Quantity</p>
+                            </td>
+                            <td><span class="table__price">$@(item.UnitPrice * item.Quantity)</span></td>
+                        </tr>
+                    }
+
+                    <tr>
+                        <td><span class="order__subtitle">Subtotal</span></td>
+                        <td colspan="2"><span class="table__price">$ @Model.TotalPrice</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="order__subtitle">Shipping</span></td>
+                        <td colspan="2">
+                            @if(@ViewBag.isFirstTime){
+                                <span class="table__price">Free Shipping</span>
+                            }
+                            else{
+                                <span class="table__price">$50</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="order__subtitle">Total</span></td>
+                        <td colspan="2">
+                            @if(@ViewBag.isFirstTime)
+                            {
+                                <span class="order__grand-total">$ @Model.TotalPrice</span>
+                            }
+                            else
+                            {
+                                <span class="order__grand-total">$ @(@Model.TotalPrice+50)</span>
+
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="payment__methods">
+                <h3 class="checkout__title payment__title">Payment</h3>
+                <div class="payment__option flex">
+                    <input type="radio" required
+                           name="radio"
+                           id="l2"
+                           class="payment__input" />
+                    <label for="l2" class="payment__label">Credit Card</label>
+                </div>
+                <div class="payment__option flex">
+                    <input type="radio" required
+                           name="radio"
+                           id="l3"
+                           class="payment__input" />
+                    <label for="l3" class="payment__label">Cash</label>
+                </div>
+            </div>
+            <a data-customerid="@Model.CustomerId" class="btn btn--md placeOrderBtn">Place Order</a>
+        </div>
+    </div>
+</section>
+<!-- Modal -->
+<div id="errorModal" class="custom-modal">
+    <div class="custom-modal-content error-modal">
+        <div class="modal-header">
+            <h2 class="error-title">⚠️ Limit Exceeded</h2>
+            <span class="close-modal">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>You cannot add more than 3 addresses.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="error-button">I Understand</button>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        let selectedAddressId = @((ViewBag.Addresses as IEnumerable<Address>).FirstOrDefault(a => a.IsDefault)?.Id ?? 0);
+        // Show modal function
+        function showErrorModal() {
+            const modal = document.getElementById('errorModal');
+            modal.style.display = 'block';
+
+            // Add vibration effect for emphasis
+            modal.querySelector('.custom-modal-content').classList.add('vibrate');
+            setTimeout(() => {
+                modal.querySelector('.custom-modal-content').classList.remove('vibrate');
+            }, 500);
+        }
+        function setAsDefault(element) {
+            $('.address-card').removeClass('default-address');
+            $(element).addClass('default-address');
+            selectedAddressId = $(element).data('address-id');
+        }
+
+        // Close modal handlers
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('errorModal');
+
+            // Close when clicking X
+            document.querySelector('.close-modal').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            // Close when clicking button
+            document.querySelector('.error-button').addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            // Close when clicking outside
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+
+            // Address limit checks
+            document.querySelectorAll('.edit-address-link, #createAddressBtn').forEach(element => {
+                element.addEventListener('click', function(e) {
+                    if (@ViewBag.Addresses.Count >= 3) {
+                        e.preventDefault();
+                        showErrorModal();
+                    }
+                });
+            });
+        });
+    </script>
+}
+<style>
+    /* Address Card Styles */
+    .address-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+        background-color: #f9f9f9;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+
+        .address-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            background-color: #faebee;
+        }
+
+    .tab__header {
+        background-color: var(--container-color);
+        border-bottom: 1px solid var(--border-color-alt);
+        padding: 1rem;
+        font-size: var(--small-font-size);
+    }
+    /* Address Details */
+    .address-details {
+        margin-bottom: 15px;
+    }
+
+        .address-details span {
+            font-weight: 600;
+            color: #555;
+        }
+
+    .section__title {
+        font-size: var(--h4-font-size);
+        margin-bottom: 1.5rem;
+    }
+
+        .section__title span {
+            color: var(--first-color);
+        }
+    /* No addresses info box */
+    .alert-info {
+        margin-top: 10px;
+        background-color: #faebee;
+        border-color: #fadce1;
+        text-align: center;
+        padding: 10px;
+        border-radius: 5px;
+    }
+
+    .default-address {
+        border: 2px solid rgb(248, 215, 221) ;
+        background-color: #faebee ;
+        box-shadow: 0 0 15px #fadce1;
+    }
+    /* Error Modal Styling */
+.custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(3px);
+}
+
+.custom-modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 20% auto;
+    padding: 0;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 8px;
+    overflow: hidden;
+    animation: modalAppear 0.3s ease-out;
+}
+
+/* Error-specific styling */
+.error-modal {
+    border-top: 5px solid #ff4444;
+    box-shadow: 0 0 25px rgba(255, 50, 50, 0.3);
+}
+
+.error-title {
+    color: #ff4444;
+    padding: 15px 20px;
+    margin: 0;
+    background-color: #fff8f8;
+    font-size: 1.3rem;
+}
+
+.modal-body {
+    padding: 20px;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.error-button {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    float: right;
+    transition: all 0.2s;
+}
+
+    .error-button:hover {
+        background-color: #ff2222;
+        transform: translateY(-1px);
+    }
+
+.close-modal {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 24px;
+    color: #aaa;
+    cursor: pointer;
+}
+
+    .close-modal:hover {
+        color: #ff4444;
+    }
+</style>

@@ -1,0 +1,224 @@
+﻿@using System.Text.Json
+@using e_commerce.Web.ViewModels.Home
+@model ProductViewModel
+@{
+    ViewData["Title"] = "Edit Product";
+    Layout = "_SellerLayout";
+}
+
+<div class="container mt-4">
+    <h2>Edit Product</h2>
+    <hr />
+
+    <div class="row">
+        <div class="col-md-6">
+            <form asp-action="Edit" enctype="multipart/form-data">
+                <input type="hidden" asp-for="Id" />
+
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Name" class="control-label"></label>
+                    <input asp-for="Name" class="form-control" required />
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Code" class="control-label"></label>
+                    <input asp-for="Code" class="form-control" required />
+                    <span asp-validation-for="Code" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Price" class="control-label"></label>
+                    <input asp-for="Price" class="form-control" type="number" required />
+                    <span asp-validation-for="Price" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Discount" class="control-label"></label>
+                    <input asp-for="Discount" class="form-control" type="number" required />
+                    <span asp-validation-for="Discount" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="TagId" class="control-label"></label>
+                    <select asp-for="TagId" asp-items="@(new SelectList(ViewBag.Tags, "Id", "Name", Model.TagId))" class="form-control"></select>
+                    <span asp-validation-for="TagId" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="CategoryId" class="control-label">Category</label>
+                    <select id="CategoryId" class="form-control" required>
+                        <option value="">Select a Category</option>
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            @if( category.Id == Model.CategoryId)
+                            {
+                                <option value = "@category.Id"  selected> @category.Name </option >
+
+                            }
+                            else
+                            {
+                               <option value = "@category.Id")> @category.Name </option >
+    
+                            }
+
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="SubCategoryId" class="control-label">Subcategory</label>
+                    <select id="SubCategoryId" name="SubCategoryId" class="form-control">
+                        <option value="">Select a Subcategory</option>
+                        @* JS will populate these dynamically *@
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Brand" class="control-label"></label>
+                    <input asp-for="Brand" class="form-control" />
+                    <span asp-validation-for="Brand" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Desc" class="control-label"></label>
+                    <textarea asp-for="Desc" class="form-control"></textarea>
+                    <span asp-validation-for="Desc" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="@Model.ImagesUpload" class="control-label">Upload Images</label>
+                    <input type="file" id="images" name="ImagesUpload" class="form-control" multiple accept="image/*" onchange="previewImages()" />
+                    <input type="hidden" id="PrimaryImageIndex" name="PrimaryImageIndex" value="@Model.PrimaryImageIndex" />
+                    <div id="preview" class="mt-3 d-flex flex-wrap gap-2">
+                        @foreach (var image in Model.Images)
+                        {
+                            <div style="position: relative; display: inline-block; margin: 5px; text-align: center;">
+                                <img src="~/image/@image.ImageUrl" style="max-height: 100px; display: block;" />
+                                <input type="radio" name="primaryImage" value="@Model.Images.IndexOf(image)"
+                                @(Model.PrimaryImageIndex == Model.Images.IndexOf(image) ? "checked" : "")
+                                       onclick="setPrimaryImage(@Model.Images.IndexOf(image))" />
+                                <label>Primary</label>
+                            </div>
+                        }
+                    </div>
+                    <span asp-validation-for="@Model.ImagesUpload" class="text-danger"></span>
+                </div>
+
+
+             
+
+                <div class="form-group mt-3">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+    }
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+                 $(document).ready(function () {
+            var categories = @Html.Raw(JsonSerializer.Serialize(ViewBag.Categories));
+            var selectedCategoryId = '@Model.CategoryId';
+            var selectedSubCategoryId = '@Model.SubCategoryId';
+
+            function loadSubcategories(categoryId, selectedSubCategoryId) {
+                var subcategorySelect = $('#SubCategoryId');
+                subcategorySelect.empty();
+                subcategorySelect.append('<option value="">Select a Subcategory</option>');
+
+                var selectedCategory = categories.find(c => c.Id == categoryId);
+                if (selectedCategory && selectedCategory.subCategory) {
+                    $.each(selectedCategory.subCategory, function (i, sub) {
+                        var selected = sub.Id == selectedSubCategoryId ? "selected" : "";
+                        subcategorySelect.append(
+                            `<option value="${sub.Id}" ${selected}>${sub.Name}</option>`
+                        );
+                    });
+                }
+            }
+
+            // Trigger once on load if editing
+            if (selectedCategoryId) {
+                $('#CategoryId').val(selectedCategoryId); // Make sure the category is selected
+                loadSubcategories(selectedCategoryId, selectedSubCategoryId);
+            }
+
+            $('#CategoryId').change(function () {
+                var newCatId = $(this).val();
+                loadSubcategories(newCatId, null); // Don't preselect anything when changed manually
+            });
+        });
+
+
+
+        // Handle preview of new images
+             function previewImages() {
+                 const preview = document.getElementById('preview');
+                 preview.innerHTML = '';  // Clear the current preview
+
+                 const files = document.getElementById('images').files;
+
+                 // Render new images selected by the user
+                 for (let i = 0; i < files.length; i++) {
+                     const reader = new FileReader();
+                     reader.onload = function (e) {
+                         const wrapper = document.createElement('div');
+                         wrapper.style.position = 'relative';
+                         wrapper.style.display = 'inline-block';
+                         wrapper.style.margin = '5px';
+                         wrapper.style.textAlign = 'center';
+
+                         const img = document.createElement('img');
+                         img.src = e.target.result;
+                         img.style.maxHeight = '100px';
+                         img.style.display = 'block';
+
+                         const radio = document.createElement('input');
+                         radio.type = 'radio';
+                         radio.name = 'primaryImage';
+                         radio.value = i;
+                         radio.onclick = function () {
+                             document.getElementById('PrimaryImageIndex').value = i;
+                         };
+
+                         const label = document.createElement('label');
+                         label.innerText = 'Primary';
+                         label.style.display = 'block';
+                         label.appendChild(radio);
+
+                         wrapper.appendChild(img);
+                         wrapper.appendChild(label);
+
+                         preview.appendChild(wrapper);
+                     };
+                     reader.readAsDataURL(files[i]);
+                 }
+             }
+
+             // Update the primary image index when a radio button is selected
+             function setPrimaryImage(index) {
+                 document.getElementById('PrimaryImageIndex').value = index;
+             }
+
+
+
+    </script>
+}

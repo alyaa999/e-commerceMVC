@@ -1,0 +1,33 @@
+﻿@model e_commerce.Infrastructure.Entites.Address
+
+@{
+    ViewData["Title"] = "Edit Address";
+}
+
+<div class="form-container">
+    <!-- Page Title -->
+    <div class="form-title">Shipping Address</div>
+
+    <!-- Optional tab navigation (mimics "Your Address" / "UPS Access Point") -->
+    <div class="tab-nav">
+        <a href="#" class="tab-link active">Your Address</a>
+        @* <a href="#" class="tab-link">UPS Access Point</a> *@
+    </div>
+
+    <!-- Form Start -->
+    <form asp-action="Edit">
+        @Html.Partial("_AddressForm", Model)
+        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+        <!-- Submit + Back -->
+        <div class="form-group">
+            <button type="submit" class="btn-submit">Save</button>
+            <a asp-action="Index" asp-controller="addresses" class="btn-back">Back to List</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

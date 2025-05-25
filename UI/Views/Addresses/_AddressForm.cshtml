@@ -1,0 +1,141 @@
+﻿@model e_commerce.Infrastructure.Entites.Address
+<div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+<!-- City Dropdown -->
+<div class="form-group">
+    <label asp-for="City" class="form-label required">City</label><br />
+    <select asp-for="City" class="form-control" asp-items="ViewBag.Cities">
+        <option value="">Select a City</option>
+    </select>
+    <span asp-validation-for="City" class="text-danger"></span>
+</div>
+
+
+<!-- Street -->
+<div class="form-group">
+    <label asp-for="Street" class="form-label required">Street</label><br />
+    <input asp-for="Street" class="form-control" placeholder="Address line 1" />
+    <span asp-validation-for="Street" class="text-danger"></span>
+</div>
+
+<!-- DeptNo (Optional) -->
+<div class="form-group">
+    <label asp-for="DeptNo" class="form-label">Department no</label><br />
+    <input asp-for="DeptNo" class="form-control" placeholder="Apartment, suite, etc." />
+    <span asp-validation-for="DeptNo" class="text-danger"></span>
+</div>
+
+<div class="form-group">
+    <label asp-for="IsDefault" class="form-label">Set as Default</label><br />
+    <input asp-for="IsDefault" class="form-check-input" />
+    <span asp-validation-for="IsDefault" class="text-danger"></span>
+</div>
+
+<style>
+    /* Overall container spacing */
+    .form-container {
+        max-width: 500px; /* controls the form width, increase this value if needed */
+        margin: 0 auto; /* center horizontally */
+        padding: 1rem;
+    }
+
+    /* Form header */
+    .form-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    /* Tab-like navigation (just visual) */
+    .tab-nav {
+        border-bottom: 2px solid #eee;
+        margin-bottom: 1.5rem;
+    }
+
+        .tab-nav .tab-link {
+            display: inline-block;
+            margin-right: 1rem;
+            font-weight: 600;
+            color: #000;
+            text-decoration: none;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid transparent;
+        }
+
+            .tab-nav .tab-link.active {
+                border-bottom-color: #000; /* active tab underline */
+            }
+
+    /* Form group spacing */
+    .form-group {
+        margin-bottom: 1.25rem;
+    }
+
+    /* Label style */
+    .form-label {
+        display: inline-block;
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+    }
+
+    /* Required asterisk */
+    .required::after {
+        content: "*";
+        margin-left: 3px;
+        color: red;
+    }
+
+    /* Input fields - thicker border, rounded corners, consistent height */
+    .form-control {
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        height: 48px;
+        font-size: 1rem;
+        padding: 0.5rem 0.75rem;
+        width: 100%;
+    }
+
+        .form-control::placeholder {
+            color: #999;
+        }
+
+        .form-control:focus {
+            border-color: #999;
+            outline: none;
+            box-shadow: none;
+        }
+
+    /* Button styling: Save and Back to List */
+    .btn-submit, .btn-back {
+        background-color: rgb(248, 215, 221);
+        color: #000;
+        border-radius: 8px;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        font-weight: 600;
+    }
+
+        .btn-submit:hover {
+            background-color: #333;
+        }
+
+    /* .btn-back { */
+    /*     background-color: #f0f0f0; */
+    /*     border-radius: 8px; */
+    /*     padding: 0.75rem 1.5rem; */
+    /*     border: none; */
+    /*     font-weight: 600; */
+    /*     color: #333; */
+    /*     text-decoration: none; */
+    /*     margin-left: 0.5rem; */
+    /* } */
+
+        .btn-back:hover {
+            background-color: #ddd;
+        }
+
+    /* If you have error messages, color them red */
+    .text-danger {
+        color: red;
+    }
+</style>

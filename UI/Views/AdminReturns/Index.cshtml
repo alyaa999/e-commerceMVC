@@ -1,0 +1,89 @@
+﻿@model IEnumerable<e_commerce.Infrastructure.Entites.Return>
+
+@{
+    ViewData["Title"] = "Return Requests";
+    Layout = "_AdminLayout";
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">Return Requests</h6>
+    </div>
+    <div class="card-body">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["SuccessMessage"]
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        }
+
+        <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Return ID</th>
+                        <th>Order ID</th>
+                        <th>Product</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.OrderId</td>
+                            <td>@item.Product.Name</td>
+                            <td>@(item.Reason.Length > 50 ? item.Reason.Substring(0, 50) + "..." : item.Reason)</td>
+                            <td>
+                                <span class="badge @(item.Status == e_commerce.Domain.Enums.ReturnStatusEnum.Approved ? "badge-success" :
+                         item.Status == e_commerce.Domain.Enums.ReturnStatusEnum.Rejected ? "badge-danger" : "badge-warning") badge">
+                                    @item.Status
+                                </span>
+                            </td>
+
+                            <td>@item.ReturnDate?.ToString("dd MMM yyyy")</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">
+                                    <i class="fas fa-eye"></i> Details
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+        $(document).ready(function() {
+        // Initialize DataTable
+        $('#dataTable').DataTable({
+            responsive: true,
+            order: [[0, 'desc']]
+        });
+
+        // Image gallery lightbox functionality
+        $('.return-image').click(function() {
+            var src = $(this).attr('src');
+            $('#imageModal img').attr('src', src);
+            $('#imageModal').modal('show');
+        });
+
+        // Confirm before rejecting
+        $('#rejectForm').submit(function(e) {
+            if ($('#rejectionReason').val().trim() === '') {
+                e.preventDefault();
+                alert('Please provide a reason for rejection.');
+                return false;
+            }
+            return confirm('Are you sure you want to reject this return request?');
+        });
+    });
+</script>

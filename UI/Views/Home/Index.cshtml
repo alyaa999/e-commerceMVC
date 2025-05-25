@@ -1,19 +1,18 @@
-﻿  <!--=============== HOME ===============-->
-<link href="~/css/home.css" rel="stylesheet" />
-<!-- Add this in <head> -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+﻿@using e_commerce.Web.ViewModels.Home
+@model HomeViewModel
+
 
 <section class="home section--lg">
     <div class="home__container container grid">
         <div class="home__content">
             <span class="home__subtitle">Hot Promotions</span>
             <h1 class="home__title">
-                Fashion Trending <span>Great Collection</span>
+                Great Collections, Hot Trends <span>  All in One Place!</span>
             </h1>
             <p class="home__description">
                 Save more with coupons & up tp 20% off
             </p>
-            <a href="shop.html" class="btn">Shop Now</a>
+            <a asp-action="ShopNow" class="btn">Shop Now</a>
         </div>
         <img src="~/image/home-img.png" class="home__img" alt="hats" />
     </div>
@@ -23,87 +22,115 @@
 <section class="shop container section">
     <div class="shop__layout">
 
-        <!-- Sidebar: Categories -->
-        <aside class="categories__sidebar">
-            <h3 class="section__title"><span><i class="fas fa-tags"></i></span> Categories</h3>
-            <ul class="category__list">
-                <li class="category__item">
-                    <span class="category__title">
-                        <i class="fas fa-tshirt"></i> T-Shirts
-                    </span>
-                    <ul class="subcategory__list">
-                        <li><i class="fas fa-circle-notch"></i> <a href="#">Casual</a></li>
-                        <li><i class="fas fa-circle-notch"></i> <a href="#">Formal</a></li>
-                        <li><i class="fas fa-circle-notch"></i> <a href="#">Graphic</a></li>
-                    </ul>
-                </li>
-                <li class="category__item">
-                    <span class="category__title">
-                        <i class="fas fa-shopping-bag"></i> Bags
-                    </span>
-                    <ul class="subcategory__list">
-                        <li><i class="fas fa-circle-notch"></i> <a href="#">Backpacks</a></li>
-                        <li><i class="fas fa-circle-notch"></i> <a href="#">Handbags</a></li>
-                        <li><i class="fas fa-circle-notch"></i> <a href="#">Wallets</a></li>
-                    </ul>
-                </li>
-                <!-- Repeat for more categories... -->
-            </ul>
-        </aside>
-
-
         <!-- Main Content: Products -->
         <div class="products__main">
-            <div class="tab__btns">
-                <span class="tab__btn active-tab" data-target="#featured">Featured</span>
-                <span class="tab__btn" data-target="#popular">Popular</span>
-                <span class="tab__btn" data-target="#new-added">New Added</span>
-            </div>
-
             <div class="tab__items">
                 <div class="tab__item active-tab" content id="featured">
                     <div class="products__container grid">
                         <!-- Example product item -->
-                        <div class="product__item">
-                            <div class="product__banner">
-                                <a href="details.html" class="product__images">
-                                    <img src="~/image/product-1-1.jpg" alt="" class="product__img default" />
-                                    <img src="~/image/product-1-2.jpg" alt="" class="product__img hover" />
-                                </a>
-                                <div class="product__actions">
-                                    <a href="#" class="action__btn" aria-label="Quick View">
-                                        <i class="fi fi-rs-eye"></i>
+                        @foreach (var item in Model.Products )
+                        {
+
+                            <div class="product__item">
+                                <div class="product__banner">
+                                    <a asp-action="ProductDetials" asp-controller="Home"  asp-route-id="@item.Id"  class="product__images">
+                                        @{
+                                            int imageCount = 0;
+                                        }
+
+                                        @foreach (var image in item.Images)
+                                        {
+                                            if (imageCount >= 2)
+                                            {
+                                                break;
+                                            }
+
+                                            if (image.IsPrimary)
+                                            { 
+                                                <img    src="~/image/@image.ImageUrl" alt="" class="product__img default" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/image/@image.ImageUrl" alt="" class="product__img hoverproduct__img hover" />
+                                            }
+
+                                            imageCount++;
+                                        }
+
+
                                     </a>
-                                    <a href="#" class="action__btn" aria-label="Add to Wishlist">
-                                        <i class="fi fi-rs-heart"></i>
+                                    <div class="product__actions">
+                                        <a asp-action="ProductDetials" asp-route-id="@item.Id" class="action__btn" aria-label="Quick View">
+                                            <i class="fi fi-rs-eye"></i>
+                                        </a>
+                                        <a data-product-id="@item.Id" class="action__btn add-to-wishlist" aria-label="Add to Wishlist">
+                                            <i class="fi fi-rs-heart"></i>
+                                        </a>
+                                        <a href="#" class="action__btn" aria-label="Compare">
+                                            <i class="fi fi-rs-shuffle"></i>
+                                        </a>
+                                    </div>
+                                    @if (item.Tag == "New")
+                                    {
+                                        <div class="product__badge light-green">@item.Tag</div>
+                                    }
+                                    else if (item.Tag == "BestSeller")
+                                    {
+                                        <div class="product__badge light-orange">@item.Tag</div>
+                                    }
+                                    else if (item.Tag == "Trending")
+                                    {
+                                        <div class="product__badge light-blue">@item.Tag</div>
+                                    }
+                                    else
+                                    {
+                                        <div class="product__badge light-pink">@item.Tag</div>
+                                    }
+                                </div>
+                                <div class="product__content">
+                                    <span class="product__category">@item.SubCategoryName</span>
+                                    <a href="details.html">
+                                        <h3 class="product__title">@item.Name</h3>
                                     </a>
-                                    <a href="#" class="action__btn" aria-label="Compare">
-                                        <i class="fi fi-rs-shuffle"></i>
+                                    <div class="product__rating">
+                                        @{
+                                            int SartNumber = (int?)(item?.Reviews?.Average(c => (double?)c.Rating)) ?? 0;
+                                        }
+
+                                        @for (int i = 1; i <=5; i++)
+                                        {
+                                            if (i < SartNumber)
+                                            {
+                                                <i class="fa fa-star checked"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fa fa-star"></i>
+                                            }
+                                        }
+
+                                    </div>
+                                    <div class="product__price flex">
+                                        @if (item.Discount != 0)
+                                        {
+                                            <span class="new__price">$@(item?.Price - ((item?.Discount / 100) * item?.Price))</span>
+                                            <span class="old__price">$@item?.Price</span>
+
+
+                                        }
+                                        else
+                                        {
+                                            <span class="new__price">$@item?.Price</span>
+                                        }
+
+                                    </div>
+                                    <a data-product-id="@item?.Id" class="action_btn cart_btn add-to-cart" aria-label="Add To Cart">
+                                        <i class="fi fi-rs-shopping-bag-add"></i>
                                     </a>
                                 </div>
-                                <div class="product__badge light-pink">Hot</div>
                             </div>
-                            <div class="product__content">
-                                <span class="product__category">Clothing</span>
-                                <a href="details.html">
-                                    <h3 class="product__title">Colorful Pattern Shirts</h3>
-                                </a>
-                                <div class="product__rating">
-                                    <i class="fi fi-rs-star"></i>
-                                    <i class="fi fi-rs-star"></i>
-                                    <i class="fi fi-rs-star"></i>
-                                    <i class="fi fi-rs-star"></i>
-                                    <i class="fi fi-rs-star"></i>
-                                </div>
-                                <div class="product__price flex">
-                                    <span class="new__price">$238.85</span>
-                                    <span class="old__price">$245.8</span>
-                                </div>
-                                <a href="#" class="action__btn cart__btn" aria-label="Add To Cart">
-                                    <i class="fi fi-rs-shopping-bag-add"></i>
-                                </a>
-                            </div>
-                        </div>
+                        }
+
                         <!-- End Product Item -->
                     </div>
                 </div>
@@ -113,416 +140,98 @@
 </section>
 
 
-<!--=============== DEALS ===============-->
-<section class="deals section">
-    <div class="deals__container container grid">
-        <div class="deals__item">
-            <div class="deals__group">
-                <h3 class="deals__brand">Deals of the Day</h3>
-                <span class="deals__category">Limited quantities</span>
-            </div>
-            <h4 class="deals__title">Summer Collection New Modern Design</h4>
-            <div class="deals__price flex">
-                <span class="new__price">$139.00</span>
-                <span class="old__price">$160.99</span>
-            </div>
-            <div class="deals__group">
-                <p class="deals__countdown-text">Hurry Up! Offer Ends In:</p>
-                <div class="countdown">
-                    <div class="countdown__amount">
-                        <p class="countdown__period">02</p>
-                        <span class="unit">Days</span>
-                    </div>
-                    <div class="countdown__amount">
-                        <p class="countdown__period">22</p>
-                        <span class="unit">Hours</span>
-                    </div>
-                    <div class="countdown__amount">
-                        <p class="countdown__period">57</p>
-                        <span class="unit">Mins</span>
-                    </div>
-                    <div class="countdown__amount">
-                        <p class="countdown__period">28</p>
-                        <span class="unit">Sec</span>
-                    </div>
-                </div>
-            </div>
-            <div class="deals__btn">
-                <a href="details.html" class="btn btn--md">Shop Now</a>
-            </div>
-        </div>
-        <div class="deals__item">
-            <div class="deals__group">
-                <h3 class="deals__brand">Women Clothing</h3>
-                <span class="deals__category">Shirts & Bag</span>
-            </div>
-            <h4 class="deals__title">Try Something new on vacation</h4>
-            <div class="deals__price flex">
-                <span class="new__price">$178.00</span>
-                <span class="old__price">$256.99</span>
-            </div>
-            <div class="deals__group">
-                <p class="deals__countdown-text">Hurry Up! Offer Ends In:</p>
-                <div class="countdown">
-                    <div class="countdown__amount">
-                        <p class="countdown__period">02</p>
-                        <span class="unit">Days</span>
-                    </div>
-                    <div class="countdown__amount">
-                        <p class="countdown__period">22</p>
-                        <span class="unit">Hours</span>
-                    </div>
-                    <div class="countdown__amount">
-                        <p class="countdown__period">57</p>
-                        <span class="unit">Mins</span>
-                    </div>
-                    <div class="countdown__amount">
-                        <p class="countdown__period">28</p>
-                        <span class="unit">Sec</span>
-                    </div>
-                </div>
-            </div>
-            <div class="deals__btn">
-                <a href="details.html" class="btn btn--md">Shop Now</a>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!--=============== NEW ARRIVALS ===============-->
 <section class="new__arrivals container section">
     <h3 class="section__title"><span>New</span> Arrivals</h3>
     <div class="new__container swiper">
         <div class="swiper-wrapper">
-            <div class="product__item swiper-slide">
-                <div class="product__banner">
-                    <a href="details.html" class="product__images">
-                        <img src="~/image/product-1-1.jpg"
-                             alt=""
-                             class="product__img default" />
-                        <img src="~/image/product-1-2.jpg"
-                             alt=""
-                             class="product__img hover" />
-                    </a>
-                    <div class="product__actions">
-                        <a href="#" class="action__btn" aria-label="Quick View">
-                            <i class="fi fi-rs-eye"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Add to Wishlist">
-                            <i class="fi fi-rs-heart"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Compare">
-                            <i class="fi fi-rs-shuffle"></i>
-                        </a>
-                    </div>
-                    <div class="product__badge light-pink">Hot</div>
-                </div>
-                <div class="product__content">
-                    <span class="product__category">Clothing</span>
-                    <a href="details.html">
-                        <h3 class="product__title">Colorful Pattern Shirts</h3>
-                    </a>
-                    <div class="product__rating">
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                    </div>
-                    <div class="product__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                    <a href="#"
-                       class="action__btn cart__btn"
-                       aria-label="Add To Cart">
-                        <i class="fi fi-rs-shopping-bag-add"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="product__item swiper-slide">
-                <div class="product__banner">
-                    <a href="details.html" class="product__images">
-                        <img src="~/image/product-2-1.jpg"
-                             alt=""
-                             class="product__img default" />
-                        <img src="~/image/product-2-2.jpg"
-                             alt=""
-                             class="product__img hover" />
-                    </a>
-                    <div class="product__actions">
-                        <a href="#" class="action__btn" aria-label="Quick View">
-                            <i class="fi fi-rs-eye"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Add to Wishlist">
-                            <i class="fi fi-rs-heart"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Compare">
-                            <i class="fi fi-rs-shuffle"></i>
-                        </a>
-                    </div>
-                    <div class="product__badge light-green">Hot</div>
-                </div>
-                <div class="product__content">
-                    <span class="product__category">Clothing</span>
-                    <a href="details.html">
-                        <h3 class="product__title">Colorful Pattern Shirts</h3>
-                    </a>
-                    <div class="product__rating">
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                    </div>
-                    <div class="product__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                    <a href="#"
-                       class="action__btn cart__btn"
-                       aria-label="Add To Cart">
-                        <i class="fi fi-rs-shopping-bag-add"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="product__item swiper-slide">
-                <div class="product__banner">
-                    <a href="details.html" class="product__images">
-                        <img src="~/image/product-3-1.jpg"
-                             alt=""
-                             class="product__img default" />
-                        <img src="~/image/product-3-2.jpg"
-                             alt=""
-                             class="product__img hover" />
-                    </a>
-                    <div class="product__actions">
-                        <a href="#" class="action__btn" aria-label="Quick View">
-                            <i class="fi fi-rs-eye"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Add to Wishlist">
-                            <i class="fi fi-rs-heart"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Compare">
-                            <i class="fi fi-rs-shuffle"></i>
-                        </a>
-                    </div>
-                    <div class="product__badge light-orange">Hot</div>
-                </div>
-                <div class="product__content">
-                    <span class="product__category">Clothing</span>
-                    <a href="details.html">
-                        <h3 class="product__title">Colorful Pattern Shirts</h3>
-                    </a>
-                    <div class="product__rating">
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                    </div>
-                    <div class="product__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                    <a href="#"
-                       class="action__btn cart__btn"
-                       aria-label="Add To Cart">
-                        <i class="fi fi-rs-shopping-bag-add"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="product__item swiper-slide">
-                <div class="product__banner">
-                    <a href="details.html" class="product__images">
-                        <img src="~/image/product-4-1.jpg"
-                             alt=""
-                             class="product__img default" />
-                        <img src="~/image/product-4-2.jpg"
-                             alt=""
-                             class="product__img hover" />
-                    </a>
-                    <div class="product__actions">
-                        <a href="#" class="action__btn" aria-label="Quick View">
-                            <i class="fi fi-rs-eye"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Add to Wishlist">
-                            <i class="fi fi-rs-heart"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Compare">
-                            <i class="fi fi-rs-shuffle"></i>
-                        </a>
-                    </div>
-                    <div class="product__badge light-blue">Hot</div>
-                </div>
-                <div class="product__content">
-                    <span class="product__category">Clothing</span>
-                    <a href="details.html">
-                        <h3 class="product__title">Colorful Pattern Shirts</h3>
-                    </a>
-                    <div class="product__rating">
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                    </div>
-                    <div class="product__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                    <a href="#"
-                       class="action__btn cart__btn"
-                       aria-label="Add To Cart">
-                        <i class="fi fi-rs-shopping-bag-add"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="product__item swiper-slide">
-                <div class="product__banner">
-                    <a href="details.html" class="product__images">
-                        <img src="~/image/product-5-1.jpg"
-                             alt=""
-                             class="product__img default" />
-                        <img src="~/image/product-5-2.jpg"
-                             alt=""
-                             class="product__img hover" />
-                    </a>
-                    <div class="product__actions">
-                        <a href="#" class="action__btn" aria-label="Quick View">
-                            <i class="fi fi-rs-eye"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Add to Wishlist">
-                            <i class="fi fi-rs-heart"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Compare">
-                            <i class="fi fi-rs-shuffle"></i>
-                        </a>
-                    </div>
-                    <div class="product__badge light-blue">-30%</div>
-                </div>
-                <div class="product__content">
-                    <span class="product__category">Clothing</span>
-                    <a href="details.html">
-                        <h3 class="product__title">Colorful Pattern Shirts</h3>
-                    </a>
-                    <div class="product__rating">
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                    </div>
-                    <div class="product__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                    <a href="#"
-                       class="action__btn cart__btn"
-                       aria-label="Add To Cart">
-                        <i class="fi fi-rs-shopping-bag-add"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="product__item swiper-slide">
-                <div class="product__banner">
-                    <a href="details.html" class="product__images">
-                        <img src="~/image/product-6-1.jpg"
-                             alt=""
-                             class="product__img default" />
-                        <img src="~/image/product-6-2.jpg"
-                             alt=""
-                             class="product__img hover" />
-                    </a>
-                    <div class="product__actions">
-                        <a href="#" class="action__btn" aria-label="Quick View">
-                            <i class="fi fi-rs-eye"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Add to Wishlist">
-                            <i class="fi fi-rs-heart"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Compare">
-                            <i class="fi fi-rs-shuffle"></i>
-                        </a>
-                    </div>
-                    <div class="product__badge light-blue">-22%</div>
-                </div>
-                <div class="product__content">
-                    <span class="product__category">Clothing</span>
-                    <a href="details.html">
-                        <h3 class="product__title">Colorful Pattern Shirts</h3>
-                    </a>
-                    <div class="product__rating">
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                    </div>
-                    <div class="product__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                    <a href="#"
-                       class="action__btn cart__btn"
-                       aria-label="Add To Cart">
-                        <i class="fi fi-rs-shopping-bag-add"></i>
-                    </a>
-                </div>
-            </div>
-            <div class="product__item swiper-slide">
-                <div class="product__banner">
-                    <a href="details.html" class="product__images">
-                        <img src="~/image/product-7-1.jpg"
-                             alt=""
-                             class="product__img default" />
-                        <img src="~/image/product-7-2.jpg"
-                             alt=""
-                             class="product__img hover" />
-                    </a>
-                    <div class="product__actions">
-                        <a href="#" class="action__btn" aria-label="Quick View">
-                            <i class="fi fi-rs-eye"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Add to Wishlist">
-                            <i class="fi fi-rs-heart"></i>
-                        </a>
-                        <a href="#" class="action__btn" aria-label="Compare">
-                            <i class="fi fi-rs-shuffle"></i>
-                        </a>
-                    </div>
-                    <div class="product__badge light-green">-22%</div>
-                </div>
-                <div class="product__content">
-                    <span class="product__category">Clothing</span>
-                    <a href="details.html">
-                        <h3 class="product__title">Colorful Pattern Shirts</h3>
-                    </a>
-                    <div class="product__rating">
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                        <i class="fi fi-rs-star"></i>
-                    </div>
-                    <div class="product__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                    <a href="#"
-                       class="action__btn cart__btn"
-                       aria-label="Add To Cart">
-                        <i class="fi fi-rs-shopping-bag-add"></i>
-                    </a>
-                </div>
-            </div>
-        </div>
 
-        <div class="swiper-button-prev">
-            <i class="fi fi-rs-angle-left"></i>
-        </div>
-        <div class="swiper-button-next">
-            <i class="fi fi-rs-angle-right"></i>
+
+            @foreach(var item in Model.NewArrivalsProducts )
+            {
+                <div class="product__item swiper-slide">
+                    <div class="product__banner">
+                        <a asp-action="ProductDetials" asp-controller="Home" asp-route-id="@item.Id" class="product__images">
+                            @{
+                                int imageCount = 0;
+                            }
+                            @foreach (var image in item.Images)
+                            {
+                                if (imageCount >= 2)
+                                {
+                                    break;
+                                }
+                                if (image.IsPrimary)
+                                {
+                                    <img src="~/image/@image.ImageUrl" alt="" class="product__img default" />
+                                }
+                                else
+                                {
+                                    <img src="~/image/@image.ImageUrl" alt="" class="product__img hoverproduct__img hover" />
+                                }
+
+                                imageCount++;
+                            }
+
+                        </a>
+                        <div class="product__actions">
+                            <a asp-action="PoductDetials" asp-route-id="{@item.Id}" class="action__btn" aria-label="Quick View">
+                                <i class="fi fi-rs-eye"></i>
+                            </a>
+                            <a href="#" class="action__btn" aria-label="Add to Wishlist">
+                                <i class="fi fi-rs-heart"></i>
+                            </a>
+                            <a href="#" class="action__btn" aria-label="Compare">
+                                <i class="fi fi-rs-shuffle"></i>
+                            </a>
+                        </div>
+                        <div class="product__badge light-pink">@item.Tag</div>
+                    </div>
+                    <div class="product__content">
+                        <span class="product__category">@item.SubCategoryName</span>
+                        <a href="details.html">
+                            <h3 class="product__title">@item.Name</h3>
+                        </a>
+                        <div class="product__rating">
+                            @{
+                                int SartNumber = (int?)(item?.Reviews?.Average(c => (double?)c.Rating)) ?? 0;
+                            }
+
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                if (i < SartNumber)
+                                {
+                                    <i class="fa fa-star checked"></i>
+                                }
+                                else
+                                {
+                                    <i class="fa fa-star"></i>
+                                }
+                            }
+                        </div>
+                        <div class="product__price flex">
+                            @if (item.Discount != 0)
+                            {
+                                <span class="new__price">$@(item?.Price - ((item?.Discount / 100) * item?.Price))</span>
+                                <span class="old__price">$@item?.Price</span>
+
+
+                            }
+                            else
+                            {
+                                <span class="new__price">$@item?.Price</span>
+                            }
+                        </div>
+                        <a href="#"
+                        class="action__btn cart__btn"
+                        aria-label="Add To Cart">
+                            <i class="fi fi-rs-shopping-bag-add"></i>
+                        </a>
+                    </div>
+                </div>
+            }
+
         </div>
     </div>
 </section>
@@ -531,220 +240,198 @@
 <section class="showcase section">
     <div class="showcase__container container grid">
         <div class="showcase__wrapper">
-            <h3 class="section__title">Hot Releases</h3>
-            <div class="showcase__item">
-                <a href="details.html" class="showcase__img-box">
-                    <img src="./~/image/showcase-img-1.jpg"
-                         alt=""
-                         class="showcase__img" />
+            <h3 class="section__title">Hot Releases
+                <a asp-action="ShopNow" asp-controller="Home" class="see-more-icon" title="See more" style="margin-left: 8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 1 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 1 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                    </svg>
                 </a>
-                <div class="showcase__content">
-                    <a href="details.html">
-                        <h4 class="showcase__title">
-                            Floral Print Casual Cotton Dress
-                        </h4>
+            </h3>
+            @foreach (var item in Model.HotRelease)
+            {
+                <div class="showcase__item">
+                    <a asp-action="ProductDetials" asp-controller="Home" asp-route-id="@item.Id" class="showcase__img-box">
+                        @foreach(var image in item.Images)
+                        {
+                            if(image.IsPrimary)
+                            {
+                                <img src="~/image/@image.ImageUrl"
+                                     alt=""
+                                     class="showcase__img" />
+                            }  
+                        }
+                        
                     </a>
-                    <div class="showcase__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
+                    <div class="showcase__content">
+                        <a href="details.html">
+                            <h4 class="showcase__title">
+                                @item.Name
+                            </h4>
+                        </a>
+                        <div class="showcase__price flex">
+                            @if (item.Discount != 0)
+                            {
+                                <span class="new__price">$@(item?.Price - ((item?.Discount / 100) * item?.Price))</span>
+                                <span class="old__price">$@item?.Price</span>
+
+
+                            }
+                            else
+                            {
+                                <span class="new__price">$@item?.Price</span>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="showcase__item">
-                <a href="details.html" class="showcase__img-box">
-                    <img src="~/image/showcase-img-2.jpg"
-                         alt=""
-                         class="showcase__img" />
-                </a>
-                <div class="showcase__content">
-                    <a href="details.html">
-                        <h4 class="showcase__title">
-                            Ruffled Solid Long Sleeve Blouse
-                        </h4>
-                    </a>
-                    <div class="showcase__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                </div>
-            </div>
-            <div class="showcase__item">
-                <a href="details.html" class="showcase__img-box">
-                    <img src="~/image/showcase-img-3.jpg"
-                         alt=""
-                         class="showcase__img" />
-                </a>
-                <div class="showcase__content">
-                    <a href="details.html">
-                        <h4 class="showcase__title">
-                            Multi-Color Print V-neck T-shirt
-                        </h4>
-                    </a>
-                    <div class="showcase__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                </div>
-            </div>
+                
+            }
+           
+         
         </div>
         <div class="showcase__wrapper">
-            <h3 class="section__title">Deals & Outlet</h3>
-            <div class="showcase__item">
-                <a href="details.html" class="showcase__img-box">
-                    <img src="~/image/showcase-img-4.jpg"
-                         alt=""
-                         class="showcase__img" />
+            <h3 class="section__title">Deals & Outlet
+                <a asp-action="ShopNow" asp-controller="Home"  class="see-more-icon" title="See more" style="margin-left: 8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 1 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 1 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                    </svg>
                 </a>
-                <div class="showcase__content">
-                    <a href="details.html">
-                        <h4 class="showcase__title">Fish Print Patched T-shirt</h4>
+            </h3>
+            @foreach (var item in Model.BestDeal)
+            {
+                <div class="showcase__item">
+                    <a asp-action="ProductDetials" asp-controller="Home" asp-route-id="@item.Id" class="showcase__img-box">
+                        @foreach (var image in item.Images)
+                        {
+                            if (image.IsPrimary)
+                            {
+                                <img src="~/image/@image.ImageUrl"
+                                     alt=""
+                                     class="showcase__img" />
+                            }
+                        }
+
                     </a>
-                    <div class="showcase__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
+                    <div class="showcase__content">
+                        <a href="details.html">
+                            <h4 class="showcase__title">
+                                @item.Name
+                            </h4>
+                        </a>
+                        <div class="showcase__price flex">
+                            @if (item.Discount != 0)
+                            {
+                                <span class="new__price">$@(item?.Price - ((item?.Discount / 100) * item?.Price))</span>
+                                <span class="old__price">$@item?.Price</span>
+
+
+                            }
+                            else
+                            {
+                                <span class="new__price">$@item?.Price</span>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="showcase__item">
-                <a href="details.html" class="showcase__img-box">
-                    <img src="~/image/showcase-img-5.jpg"
-                         alt=""
-                         class="showcase__img" />
-                </a>
-                <div class="showcase__content">
-                    <a href="details.html">
-                        <h4 class="showcase__title">Fintage Floral Print Dress</h4>
-                    </a>
-                    <div class="showcase__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                </div>
-            </div>
-            <div class="showcase__item">
-                <a href="details.html" class="showcase__img-box">
-                    <img src="~/image/showcase-img-6.jpg"
-                         alt=""
-                         class="showcase__img" />
-                </a>
-                <div class="showcase__content">
-                    <a href="details.html">
-                        <h4 class="showcase__title">
-                            Multi-Color Stripe Circle T-shirt
-                        </h4>
-                    </a>
-                    <div class="showcase__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                </div>
-            </div>
+
+            }
+
+
         </div>
         <div class="showcase__wrapper">
-            <h3 class="section__title">Top Selling</h3>
-            <div class="showcase__item">
-                <a href="details.html" class="showcase__img-box">
-                    <img src="~/image/showcase-img-7.jpg"
-                         alt=""
-                         class="showcase__img" />
+            <h3 class="section__title">Top Selling
+                <a asp-action="ShopNow" asp-controller="Home"   class="see-more-icon" title="See more" style="margin-left: 8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 1 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 1 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                    </svg>
                 </a>
-                <div class="showcase__content">
-                    <a href="details.html">
-                        <h4 class="showcase__title">
-                            Geometric Printed Long Sleeve Blouse
-                        </h4>
+            </h3>
+
+            @foreach (var item in Model.TopSelling)
+            {
+                <div class="showcase__item">
+                    <a asp-action="ProductDetials" asp-controller="Home" asp-route-id="@item.Id" class="showcase__img-box">
+                        @foreach (var image in item.Images)
+                        {
+                            if (image.IsPrimary)
+                            {
+                                <img src="~/image/@image.ImageUrl"
+                                     alt=""
+                                     class="showcase__img" />
+                            }
+                        }
+
                     </a>
-                    <div class="showcase__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
+                    <div class="showcase__content">
+                        <a href="details.html">
+                            <h4 class="showcase__title">
+                                @item.Name
+                            </h4>
+                        </a>
+                        <div class="showcase__price flex">
+                            @if (item.Discount != 0)
+                            {
+                                <span class="new__price">$@(item?.Price - ((item?.Discount / 100) * item?.Price))</span>
+                                <span class="old__price">$@item?.Price</span>
+
+
+                            }
+                            else
+                            {
+                                <span class="new__price">$@item?.Price</span>
+                            }
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="showcase__item">
-                <a href="details.html" class="showcase__img-box">
-                    <img src="~/image/showcase-img-8.jpg"
-                         alt=""
-                         class="showcase__img" />
-                </a>
-                <div class="showcase__content">
-                    <a href="details.html">
-                        <h4 class="showcase__title">Print Patchwork Maxi Dress</h4>
-                    </a>
-                    <div class="showcase__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                </div>
-            </div>
-            <div class="showcase__item">
-                <a href="details.html" class="showcase__img-box">
-                    <img src="~/image/showcase-img-9.jpg"
-                         alt=""
-                         class="showcase__img" />
-                </a>
-                <div class="showcase__content">
-                    <a href="details.html">
-                        <h4 class="showcase__title">
-                            Daisy Floral Print Straps Jumpsuit
-                        </h4>
-                    </a>
-                    <div class="showcase__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                </div>
-            </div>
+
+            }
+
+
         </div>
         <div class="showcase__wrapper">
-            <h3 class="section__title">Trendy</h3>
-            <div class="showcase__item">
-                <a href="details.html" class="showcase__img-box">
-                    <img src="~/image/showcase-img-7.jpg"
-                         alt=""
-                         class="showcase__img" />
+            <h3 class="section__title">Trendy
+                <a asp-action="ShopNow" asp-controller="Home"  class="see-more-icon" title="See more" style="margin-left: 8px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 1 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 1 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8z" />
+                    </svg>
                 </a>
-                <div class="showcase__content">
-                    <a href="details.html">
-                        <h4 class="showcase__title">Floral Print Casual Cotton</h4>
+            </h3>
+            @foreach (var item in Model.Trending)
+            {
+                <div class="showcase__item">
+                    <a asp-action="ProductDetials" asp-controller="Home" asp-route-id="@item.Id" class="showcase__img-box">
+                        @foreach (var image in item.Images)
+                        {
+                            if (image.IsPrimary)
+                            {
+                                <img src="~/image/@image.ImageUrl"
+                                     alt=""
+                                     class="showcase__img" />
+                            }
+                        }
+
                     </a>
-                    <div class="showcase__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
+                    <div class="showcase__content">
+                        <a href="details.html">
+                            <h4 class="showcase__title">
+                                @item.Name
+                            </h4>
+                        </a>
+                        @if (item.Discount != 0)
+                        {
+                            <span class="new__price">$@(item?.Price - ((item?.Discount / 100) * item?.Price))</span>
+                            <span class="old__price">$@item?.Price</span>
+
+
+                        }
+                        else
+                        {
+                            <span class="new__price">$@item?.Price</span>
+                        }
                     </div>
                 </div>
-            </div>
-            <div class="showcase__item">
-                <a href="details.html" class="showcase__img-box">
-                    <img src="~/image/showcase-img-8.jpg"
-                         alt=""
-                         class="showcase__img" />
-                </a>
-                <div class="showcase__content">
-                    <a href="details.html">
-                        <h4 class="showcase__title">Ruffled Solid Long Sleeve</h4>
-                    </a>
-                    <div class="showcase__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                </div>
-            </div>
-            <div class="showcase__item">
-                <a href="details.html" class="showcase__img-box">
-                    <img src="~/image/showcase-img-9.jpg"
-                         alt=""
-                         class="showcase__img" />
-                </a>
-                <div class="showcase__content">
-                    <a href="details.html">
-                        <h4 class="showcase__title">Multi-Color Print V-neck</h4>
-                    </a>
-                    <div class="showcase__price flex">
-                        <span class="new__price">$238.85</span>
-                        <span class="old__price">$245.8</span>
-                    </div>
-                </div>
-            </div>
+
+            }
+
         </div>
     </div>
 </section>

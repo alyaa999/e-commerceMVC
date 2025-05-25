@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using e_commerce.Domain.Entites;
 using Microsoft.EntityFrameworkCore;
 using IndexAttribute = Microsoft.EntityFrameworkCore.IndexAttribute;
 
@@ -13,13 +14,14 @@ public partial class Product
 {
     [Key]
     [Column("ID")]
+
     public int Id { get; set; }
 
     [Required]
     [StringLength(50)]
     public string Code { get; set; }
-
-    public Boolean IsApproved { get; set; }
+    public Tager? Tag { get; set; } = null!;
+    public int? TagId { get; set; }
     [Required]
     [StringLength(255)]
     public string Name { get; set; }
@@ -36,13 +38,24 @@ public partial class Product
     [Column(TypeName = "decimal(5, 2)")]
     public decimal? Discount { get; set; }
 
-    public int Stock { get; set; }
+    public int? Stock { get; set; }
+
+    [Required]
+    [Column(TypeName = "bit")]
+    public bool IsApproved { get; set; } = false;
+
+   
+
+
+    public bool IsActive { get; set; }
+
+    public DateTime? CreatedAt { get; set; }
 
     [Column("Sub_Category_ID")]
-    public int SubCategoryId { get; set; }
+    public int? SubCategoryId { get; set; }
 
     [Column("Seller_ID")]
-    public int SellerId { get; set; }
+    public int? SellerId { get; set; }
 
     [InverseProperty("ProductCodeNavigation")]
     public virtual ICollection<CartProduct> CartProducts { get; set; } = new List<CartProduct>();
@@ -63,11 +76,29 @@ public partial class Product
     [InverseProperty("Products")]
     public virtual Seller Seller { get; set; }
 
+    [ForeignKey("TagId")]
+
+    public virtual  Tag? TagObj { get; set; }
+
+
     [ForeignKey("SubCategoryId")]
     [InverseProperty("Products")]
     public virtual SubCategory SubCategory { get; set; }
 
+
     [ForeignKey("ProductId")]
     [InverseProperty("Products")]
     public virtual ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
+}
+
+public enum Tager
+{
+    feature = 1,
+    Popular = 2,
+    New = 3,
+    BestSeller = 4,
+    HotRelease = 5,
+    BestDeal = 6,
+    TopSelling = 7,
+    Trending = 8,
 }

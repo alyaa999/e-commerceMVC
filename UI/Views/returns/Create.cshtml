@@ -1,0 +1,179 @@
+﻿@model e_commerce.Infrastructure.Entites.Return
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+@{
+    ViewData["Title"] = "Create Return";
+}
+<h2 style="text-align:center">Add Return Request</h2>
+
+<form asp-action="Create" method="post" class="form-container">
+    <div  class="form-group">
+        <label for="OrderId" class="form-title">Choose Order</label>
+        <select class="form-control" id="OrderId" name="OrderId" asp-items="ViewBag.OrderId">
+            <option value="">-- Choose Order --</option>
+        </select>
+    </div>
+
+    <div id="returnItemsContainer" class="mt-3"></div>
+
+    <div class="mt-3">
+        <a class="btn btn-success d-none" id="addItemBtn">
+            <i class="fa-solid fa-square-plus fa-lg me-1" style="color: #ffff;"></i>&nbsp; Add Item
+        </a>
+        <button type="submit" class="btn btn-success"><i class="fa-solid fa-clipboard-check"></i>&nbsp; Save</button>
+        <a class=" btn btn-primary" asp-action="returnsIndexForm"><i class="fa-solid fa-arrow-rotate-left"></i>&nbsp; Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        let selectedProducts = [];
+        let allProducts = []; // Store all products for the order
+
+        $('#OrderId').on('change', function () {
+            $('#returnItemsContainer').html('');
+            selectedProducts = [];
+            const orderId = $(this).val();
+
+            if (!orderId) {
+                $('#addItemBtn').addClass('d-none');
+                return;
+            }
+
+            $('#addItemBtn').removeClass('d-none');
+            loadInitialProducts(orderId); // Load products but don't create a row yet
+        });
+
+        function loadInitialProducts(orderId) {
+            $.ajax({
+                url: '/returns/GetProductsByOrderId',
+                type: 'GET',
+                data: { orderId },
+                success: function (products) {
+                    if (!products || !Array.isArray(products)) {
+                        alert("Failed to load products. Please check the Order ID.");
+                        return;
+                    }
+                    allProducts = products; // Store all products
+                }
+            });
+        }
+
+        $('#addItemBtn').on('click', function () {
+            const orderId = $('#OrderId').val();
+            if (!orderId) return;
+
+            // Filter available products
+            const availableProducts = allProducts.filter(p =>
+                !selectedProducts.includes(p.productId.toString())
+            );
+
+            if (availableProducts.length === 0) {
+                alert("All products are already selected.");
+                return;
+            }
+
+            createProductRow(availableProducts);
+        });
+
+        function createProductRow(availableProducts) {
+            let productOptions = '<option value="">-- Select Product --</option>';
+            availableProducts.forEach(p => {
+                productOptions += `<option value="${p.productId}">${p.name}</option>`;
+            });
+
+            const row = $(`
+                <div class="return-item row mb-2">
+                    <div class="col-md-5" style="margin-bottom:10px">
+                        <select name="ProductId" class="form-control product-select">
+                            ${productOptions}
+                        </select>
+                    </div>
+                    <div class="col-md-5" style="margin-bottom:10px">
+                        <input type="text" name="Reason" class="form-control" placeholder="Reason for return" required />
+                    </div>
+                    <div class="col-md-2">
+                       <button type="button" class="btn btn-outline-danger remove-item" style="margin-bottom:10px">
+                                   <i class="fa-solid fa-trash"></i>
+                               </button>                    </div>
+                </div>
+            `);
+
+            row.find('.product-select').on('change', function () {
+                const selectedVal = $(this).val();
+                if (selectedVal) {
+                    // Update selected products
+                    selectedProducts = $('.product-select').map(function() {
+                        return $(this).val();
+                    }).get().filter(Boolean);
+                }
+            });
+
+            row.find('.remove-item').on('click', function () {
+                const val = row.find('.product-select').val();
+                selectedProducts = selectedProducts.filter(p => p !== val);
+                row.remove();
+            });
+
+            $('#returnItemsContainer').append(row);
+        }
+    </script>
+}
+<style>
+    .return-item {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 10px;
+        background-color: #fdfafd;
+        transition: background-color 0.3s ease;
+        margin-bottom: 10px;
+    }
+
+        .return-item:hover {
+            background-color: #f2edf5;
+        }
+
+    .form-control {
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        height: 48px;
+        font-size: 1rem;
+        padding: 0.5rem 0.75rem;
+        width: 100%; /* Increase input width */
+    }
+
+        /* Placeholder text style */
+        .form-control::placeholder {
+            color: #999;
+        }
+
+        /* On focus, highlight the border */
+        .form-control:focus {
+            border-color: #999;
+            outline: none;
+            box-shadow:  none;
+
+        }
+
+    .form-container {
+        max-width: 500px; /* controls the form width, increase this value for a wider form */
+        margin: 0 auto; /* center horizontally */
+        padding: 1rem;
+    }
+
+    /* Form header */
+    .form-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+
+</style>

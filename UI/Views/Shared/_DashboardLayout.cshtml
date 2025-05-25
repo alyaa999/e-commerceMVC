@@ -1,0 +1,64 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+
+@functions {
+    bool IsActive(string action, string controller)
+    {
+        var routeData = ViewContext.RouteData;
+        var currentAction = routeData.Values["action"]?.ToString();
+        var currentController = routeData.Values["controller"]?.ToString();
+
+        return string.Equals(action, currentAction, StringComparison.OrdinalIgnoreCase) &&
+               string.Equals(controller, currentController, StringComparison.OrdinalIgnoreCase);
+    }
+}
+
+
+<section class="accounts section--lg">
+    <div class="accounts__container container grid">
+        <div class="account__tabs">
+<a class="account__tab @(IsActive("Index", "MyAccount") ? "account__tab--active" : "")"
+               href="@Url.Action("Index", "MyAccount")"><i class="fi fi-rs-settings-sliders"></i> Dashboard</a>
+
+<a class="account__tab @(IsActive("UpdateProfile", "MyAccount") ? "account__tab--active" : "")"
+               href="@Url.Action("UpdateProfile", "MyAccount")"><i class="fi fi-rs-user"></i> Update Profile</a>
+
+@if (User.IsInRole("Customer"))
+{
+    <a class="account__tab @(IsActive("returnsIndexForm", "returns") ? "account__tab--active" : "")"
+    href="@Url.Action("returnsIndexForm", "returns")"><i class="fa-duotone fa-solid fa-right-left" style="--fa-primary-color: #69b5a6; --fa-secondary-color: #69b5a6;"></i> Returns</a>
+
+}
+
+<a class="account__tab @(IsActive("ChangePassword", "MyAccount") ? "account__tab--active" : "")"
+href="@Url.Action("ChangePassword", "MyAccount")"><i class="fi fi-rs-settings-sliders"></i> Change Password</a>
+
+@if (User.IsInRole("Customer"))
+{
+    <a class="account__tab @(IsActive("getAllCustOrder", "_Orders") ? "account__tab--active" : "")"
+        href="@Url.Action("getAllCustOrder", "_Orders")"><i class="fi fi-rs-shopping-bag"></i> Orders</a>
+
+
+    <a class="account__tab @(IsActive("Index", "Addresses") ? "account__tab--active" : "")"
+        href="@Url.Action("Index", "Addresses")"> <i class="fi fi-rs-marker"></i> My Address</a>
+}
+
+
+
+ <a class="account__tab @(IsActive("ChangeEmail", "MyAccount") ? "account__tab--active" : "")"
+            href="@Url.Action("ChangeEmail", "MyAccount")"><i class="fas fa-pen-to-square"></i> Change Email</a>
+
+@* <a class="account__tab @(IsActive("ChangeEmail", "MyAccount") ? "account__tab--active" : "")" *@
+@*    href="@Url.Action("ChangeEmail","MyAccount")">Reviews</a> *@
+
+ <a class="account__tab" href="@Url.Action("Logout", "Account")"><i class="fi fi-rs-exit"></i> Logout</a>
+
+        </div>
+
+        <div class="tabs__content">
+            @RenderBody()
+        </div>
+    </div>
+</section>

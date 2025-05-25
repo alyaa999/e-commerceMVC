@@ -3,42 +3,38 @@
 
 /*=============== VARIABLES CSS ===============*/
 :root {
-  --header-height: 4rem;
-
-  /*========== Colors ==========*/
-  --first-color: hsl(176, 88%, 27%);
-  --first-color-alt: hsl(129, 44%, 94%);
-  --second-color: hsl(34, 94%, 87%);
-  --title-color: hsl(0, 0%, 13%);
-  --text-color: hsl(154, 13%, 32%);
-  --text-color-light: hsl(60, 1%, 56%);
-  --body-color: hsl(0, 0%, 100%);
-  --container-color: hsl(0, 0%, 93%);
-  --border-color: hsl(129, 36%, 85%);
-  --border-color-alt: hsl(113, 15%, 90%);
-
-  /*========== Font and typography ==========*/
-  --body-font: "Lato", sans-serif;
-  --second-font: "League Spartan" sans-serif;
-  --big-font-size: 3.5rem;
-  --h1-font-size: 2.75rem;
-  --h2-font-size: 2rem;
-  --h3-font-size: 1.75rem;
-  --h4-font-size: 1.375rem;
-  --large-font-size: 1.125rem;
-  --normal-font-size: 1rem;
-  --small-font-size: 0.875rem;
-  --smaller-font-size: 0.75rem;
-  --tiny-font-size: 0.6875rem;
-
-  /*========== Font weight ==========*/
-  --weight-400: 400;
-  --weight-500: 500;
-  --weight-600: 600;
-  --weight-700: 700;
-
-  /*========== Transition ==========*/
-  --transition: cubic-bezier(0, 0, 0.05, 1);
+    --header-height: 4rem;
+    /*========== Colors ==========*/
+    --first-color: #FF8DA1;
+    --first-color-alt: #f8d7dd; /* Light pink alternative */
+    --second-color: #FFD6A1; /* Peach accent */
+    --title-color: #222222;
+    --text-color: #5A6D66;
+    --text-color-light: #8F8F8F;
+    --body-color: #FFFFFF;
+    --container-color: #EDEDED;
+    --border-color: #E0E9E5;
+    --border-color-alt: #E5E5E5;
+    /*========== Font and typography ==========*/
+    --body-font: "Lato", sans-serif;
+    --second-font: "League Spartan" sans-serif;
+    --big-font-size: 3.5rem;
+    --h1-font-size: 2.75rem;
+    --h2-font-size: 2rem;
+    --h3-font-size: 1.75rem;
+    --h4-font-size: 1.375rem;
+    --large-font-size: 1.125rem;
+    --normal-font-size: 1rem;
+    --small-font-size: 0.875rem;
+    --smaller-font-size: 0.75rem;
+    --tiny-font-size: 0.6875rem;
+    /*========== Font weight ==========*/
+    --weight-400: 400;
+    --weight-500: 500;
+    --weight-600: 600;
+    --weight-700: 700;
+    /*========== Transition ==========*/
+    --transition: cubic-bezier(0, 0, 0.05, 1);
 }
 
 /* Responsive typography */
@@ -313,10 +309,13 @@ table {
   color: var(--first-color);
 }
 
+.pagination__link.icon.disabled {
+    display:none ;
+}
 /*=============== HOME ===============*/
 .home__container {
-  grid-template-columns: 5fr 7fr;
-  align-items: center;
+    grid-template-columns: 5fr 7fr;
+    align-items: center;
 }
 
 .home__subtitle,
@@ -396,6 +395,10 @@ table {
 }
 
 /*=============== CATEGORIES ===============*/
+
+
+
+
 .categories {
   overflow: hidden;
 }
@@ -623,7 +626,6 @@ table {
   position: absolute;
   left: 1.25rem;
   top: 1.25rem;
-  background-color: var(--first-color);
   color: var(--body-color);
   padding: 0.25rem 0.625rem;
   font-size: var(--tiny-font-size);
@@ -666,7 +668,6 @@ table {
 }
 
 .product__rating {
-  color: hsl(42, 100%, 50%);
   font-size: var(--smaller-font-size);
   margin-bottom: 0.75rem;
 }
@@ -681,7 +682,12 @@ table {
   right: 1.25rem;
 }
 
-/* Active Tab */
+/* 
+    
+    
+    
+    
+    Tab */
 .tab__btn.active-tab {
   color: var(--first-color);
   background-color: var(--second-color);
@@ -737,11 +743,11 @@ table {
 }
 
 .deals__item:nth-child(1) {
-  background-image: url(../img/deals-1.jpg);
+  background-image: url(../image/deals-1.jpg);
 }
 
 .deals__item:nth-child(2) {
-  background-image: url(../img/deals-2.png);
+  background-image: url(../image/deals-2.png);
 }
 
 .deals__item {
@@ -897,7 +903,7 @@ table {
 
 /*=============== NEWSLETTER ===============*/
 .newsletter {
-  background-color: hsl(166, 23%, 74%);
+    background-color: var(--first-color-alt);
 }
 
 .home__newsletter {
@@ -1318,7 +1324,6 @@ table {
 }
 
 .review__rating {
-  color: hsl(24, 100%, 50%);
   margin-bottom: 0.25rem;
 }
 
@@ -1613,21 +1618,127 @@ table {
 
 /*=============== LOGIN & REGISTER ===============*/
 .login-register__container {
-  grid-template-columns: repeat(2, 1fr);
-  align-items: flex-start;
+    display: grid;
+    grid-template-columns: 1fr;
+    place-items: center; /* Perfectly centers in grid */
+    /*min-height: 100vh;*/ /* Full height */
+    text-align: center;
 }
+
+
 
 .login,
 .register {
-  border: 1px solid var(--border-color-alt);
-  padding: 2rem;
-  border-radius: 0.5rem;
-  -webkit-border-radius: 0.5rem;
-  -moz-border-radius: 0.5rem;
-  -ms-border-radius: 0.5rem;
-  -o-border-radius: 0.5rem;
+    border: 1px solid var(--border-color-alt);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    -webkit-border-radius: 0.5rem;
+    -moz-border-radius: 0.5rem;
+    -ms-border-radius: 0.5rem;
+    -o-border-radius: 0.5rem;
+    text-align: center;
+    width: 50%;
+   
+    
 }
 
+.login__header {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.login__header .link {
+    color: #007bff;
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 0.5rem;
+}
+
+.login__header .link:hover {
+    text-decoration: underline;
+}
+
+.or-divider {
+    position: relative;
+    text-align: center;
+    margin: 2rem 0;
+}
+
+.or-divider::before,
+.or-divider::after {
+    content: '';
+    height: 1px;
+    width: 40%;
+    background: #ccc;
+    position: absolute;
+    top: 50%;
+}
+
+.or-divider::before {
+    left: 0;
+}
+
+.or-divider::after {
+    right: 0;
+}
+
+.or-divider span {
+    background: #fff;
+    padding: 0 1rem;
+    position: relative;
+    z-index: 1;
+    font-weight: 500;
+    color: #555;
+}
+
+.social-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+}
+
+.social-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 500;
+    color: #333;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    width: 50%;
+}
+
+.social-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.social-btn img {
+    width: 20px;
+    height: 20px;
+}
+
+.social-btn.google {
+    border-color: #db4437;
+}
+
+.social-btn.facebook {
+    border-color: #4267B2;
+}
+
+.account__tab--active {
+    background-color: var(--first-color); /* your button color */
+    color: white;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+}
 /*=============== ACCOUNTS ===============*/
 .accounts__container {
   grid-template-columns: 4fr 8fr;
@@ -2124,4 +2235,499 @@ table {
   .header__search {
     max-width: 270px;
   }
+   
+}
+<<<<<<<<< Temporary merge branch 1
+/* Admin Dashboard Styles */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 20px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+    table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        padding: 12px 15px;
+    }
+
+    table td {
+        padding: 12px 15px;
+        vertical-align: middle;
+    }
+
+.badge {
+    padding: 6px 10px;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.btn {
+    padding: 8px 15px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* Filter section styles */
+.filter-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-header .row {
+        flex-direction: column;
+    }
+
+    .card-header .col-md-6 {
+        width: 100%;
+        margin-bottom: 15px;
+        }
+
+.fa-spinner {
+    animation: fa-spin 2s infinite linear;
+}
+
+@keyframes fa-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(359deg);
+    }
+}
+
+.action__btn[disabled] {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Overall container spacing */
+.form-container {
+    max-width: 500px; /* controls the form width, increase this value for a wider form */
+    margin: 0 auto; /* center horizontally */
+    padding: 1rem;
+}
+
+/* Form header */
+.form-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+/* Optional tab-like navigation (just a visual mock) */
+.tab-nav {
+    border-bottom: 2px solid #eee;
+    margin-bottom: 1.5rem;
+}
+
+    .tab-nav .tab-link {
+        display: inline-block;
+        margin-right: 1rem;
+        font-weight: 600;
+        color: #000;
+        text-decoration: none;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid transparent;
+    }
+
+        .tab-nav .tab-link.active {
+            border-bottom-color: #000; /* active tab underline */
+        }
+
+/* Required field notice */
+.required-note {
+    color: #888;
+    margin-bottom: 1rem;
+}
+
+/* Form group spacing */
+.form-group {
+    margin-bottom: 1.25rem;
+}
+
+/* Label style */
+.form-label {
+    display: inline-block;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+/* Add an asterisk to required fields */
+.required::after {
+    content: "*";
+    margin-left: 3px;
+    color: red;
+}
+
+/* Input fields - thicker border, rounded corners, consistent height, increased width */
+.form-control {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    height: 48px;
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+    width: 100%; /* Increase input width */
+}
+
+    /* Placeholder text style */
+    .form-control::placeholder {
+        color: #999;
+    }
+
+    /* On focus, highlight the border */
+    .form-control:focus {
+        border-color: #999;
+        outline: none;
+        box-shadow: none;
+    }
+
+/* Submit button styling */
+.btn-submit, .btn-back {
+    background-color: #000;
+    color: #fff;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    font-weight: 600;
+}
+
+    .btn-submit:hover {
+        background-color: #333;
+    }
+
+/* Back to list link as a button (optional) */
+.btn-back {
+    text-decoration: none;
+    color: #333;
+    background-color: #f0f0f0;
+}
+
+/* General Container Styles */
+.container {
+    width: 80%;
+    margin: auto;
+    padding: 20px;
+}
+
+/* Heading Styles */
+.tab__header {
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+
+
+/* Buttons and Actions */
+.btn-light {
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    margin: 10px;
+    color: black;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
+
+    .btn-light:hover {
+        background-color: #007bff;
+        color: white;
+    }
+
+.btn-delete-address {
+    color: red;
+    cursor: pointer;
+}
+
+    .btn-delete-address:hover {
+        color: darkred;
+    }
+
+
+/* Error Modal Styling */
+.custom-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(3px);
+}
+
+.custom-modal-content {
+    position: relative;
+    background-color: #fff;
+    margin: 20% auto;
+    padding: 0;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 8px;
+    overflow: hidden;
+    animation: modalAppear 0.3s ease-out;
+}
+
+/* Error-specific styling */
+.error-modal {
+    border-top: 5px solid #ff4444;
+    box-shadow: 0 0 25px rgba(255, 50, 50, 0.3);
+}
+
+.error-title {
+    color: #ff4444;
+    padding: 15px 20px;
+    margin: 0;
+    background-color: #fff8f8;
+    font-size: 1.3rem;
+}
+
+.modal-body {
+    padding: 20px;
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.error-button {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    float: right;
+    transition: all 0.2s;
+}
+
+    .error-button:hover {
+        background-color: #ff2222;
+        transform: translateY(-1px);
+    }
+
+.close-modal {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    font-size: 24px;
+    color: #aaa;
+    cursor: pointer;
+}
+
+    .close-modal:hover {
+        color: #ff4444;
+    }
+
+/* Admin Dashboard Styles */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+    margin-bottom: 30px;
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 20px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+    table th {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        padding: 12px 15px;
+    }
+
+    table td {
+        padding: 12px 15px;
+        vertical-align: middle;
+    }
+
+.badge {
+    padding: 6px 10px;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.btn {
+    padding: 8px 15px;
+    font-size: 13px;
+    font-weight: 500;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.btn-sm {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+
+/* Filter section styles */
+.filter-section {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-header .row {
+        flex-direction: column;
+    }
+
+    .card-header .col-md-6 {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    }
+
+.remove-item i {
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.remove-item:hover i {
+    transform: scale(1.2);
+}
+
+.filters-container {
+    display: flex;
+    gap: 30px;
+}
+
+.filters {
+    width: 200px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.filter-group {
+    margin-bottom: 20px;
+}
+
+.filter-title {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: 600;
+}
+
+.price-range {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+    .price-range input[type="range"] {
+        width: 100%;
+    }
+
+.price-values {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+}
+
+.checkbox-option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+    .checkbox-option input {
+        margin-right: 8px;
+    }
+
+    .checkbox-option label {
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+/* Smaller filter buttons */
+.btn-try {
+    padding: 4px 8px; /* Reduced from 8px 15px */
+    border: none;
+    border-radius: 3px; /* Slightly smaller radius */
+    cursor: pointer;
+    font-size: 12px; /* Slightly larger than your 10px for better readability */
+    margin-right: 8px; /* Reduced spacing between buttons */
+    line-height: 1.2;
+    height: auto;
+}
+
+.btn-primary {
+    background-color: var(--first-color);
+    color: white;
+    transition: background-color 0.2s; /* Smooth hover effect */
+}
+
+    .btn-primary:hover {
+        background-color: #0069d9; /* Slightly darker on hover */
+    }
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    transition: background-color 0.2s; /* Smooth hover effect */
+}
+
+    .btn-secondary:hover {
+        background-color: #5a6268; /* Slightly darker on hover */
+    }
+
+/* Adjust the filter container to account for smaller buttons */
+.filter-group {
+    margin-bottom: 15px; /* Reduced from 20px */
+}
+
+.filter-title {
+    font-size: 14px; /* Slightly smaller title */
+    margin-bottom: 8px; /* Reduced spacing */
 }

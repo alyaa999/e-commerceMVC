@@ -1,0 +1,102 @@
+﻿@model IEnumerable<e_commerce.Infrastructure.Entites.Return>
+
+@{
+    ViewData["Title"] = "returnsIndexForm";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+<h3 class="tab__header">Your returns</h3>
+@if (Model == null || !Model.Any())
+{
+    <div class="container">
+        <h1>Your returns is empty</h1>
+        <p>Looks like you haven't returned anything  yet.</p>
+        <a asp-action="Create" class="btn btn--lg mb-3">return now!</a>
+    </div>
+} 
+else{ 
+<div class="tab__body">
+    <table class="placed__order-table">
+            <a asp-action="Create" class="btn btn--lg my-3">Add new return!</a>
+        <thead>
+            <tr>
+                <th>Order</th>
+                <th>product</th>
+                <th>Reason</th>
+                <th>Status</th>
+                <th>Return Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Order.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Product.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Reason)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ReturnDate)
+                    </td>
+                </tr>
+            }
+        </tbody> 
+
+    </table>
+</div>
+}
+@* <h1>returnsIndexForm</h1> *@
+
+@* <p> *@
+@*     <a asp-action="Create">Create New</a> *@
+@* </p> *@
+@* <table class="table">  *@
+@*     <thead> *@
+@*         <tr> *@
+@*             <th> *@
+@*                 @Html.DisplayNameFor(model => model.Order) *@
+@*             </th> *@
+@*             <th> *@
+@*                 @Html.DisplayNameFor(model => model.Product) *@
+@*             </th> *@
+@*             <th> *@
+@*                 @Html.DisplayNameFor(model => model.Reason) *@
+@*             </th> *@
+@*             <th> *@
+@*                 @Html.DisplayNameFor(model => model.Status) *@
+@*             </th> *@
+@*             <th> *@
+@*                 @Html.DisplayNameFor(model => model.ReturnDate) *@
+@*             </th> *@
+@*             <th></th> *@
+@*         </tr> *@
+@*     </thead> *@
+@*     <tbody> *@
+@* @foreach (var item in Model) { *@
+@*         <tr> *@
+@*             <td> *@
+@*                 @Html.DisplayFor(modelItem => item.Order.Id) *@
+@*             </td> *@
+@*             <td> *@
+@*                 @Html.DisplayFor(modelItem => item.Product.Name) *@
+@*             </td> *@
+@*             <td> *@
+@*                 @Html.DisplayFor(modelItem => item.Reason) *@
+@*             </td> *@
+@*             <td> *@
+@*                 @Html.DisplayFor(modelItem => item.Status) *@
+@*             </td> *@
+@*             <td> *@
+@*                 @Html.DisplayFor(modelItem => item.ReturnDate) *@
+@*             </td> *@
+@*         </tr> *@
+@* } *@
+@*     </tbody> *@
+@* </table> *@

@@ -1,0 +1,85 @@
+﻿@model IEnumerable<e_commerce.Infrastructure.Entites.Product>
+
+@{
+    ViewData["Title"] = "Products Management";
+    var sellers = ViewBag.Sellers as List<e_commerce.Infrastructure.Entites.Seller>;
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Products</h1>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <i class="fas fa-box-open me-1"></i>
+                    All Products
+                </div>
+                <div class="col-md-6 text-end">
+                    <form asp-action="Products" method="get" class="row g-2">
+                        <div class="col-md-5">
+                            <select name="sellerId" class="form-select" onchange="this.form.submit()">
+                                <option value="">All Sellers</option>
+                                @foreach (var seller in sellers)
+                                {
+                                    <option value="@seller.Id" selected="@(Context.Request.Query["sellerId"] == seller.Id.ToString())">
+                                        @* @seller.Name *@
+                                    </option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" name="searchString" class="form-control"
+                                   placeholder="Search products..." value="@ViewData["CurrentFilter"]" />
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fi fi-rs-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Seller</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Created Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.Id</td>
+                                <td>@item.Name</td>
+                                <td>@item.Seller?.Id</td>
+                                <td>@item.Price.ToString("C")</td>
+                                <td>@item.Stock</td>
+                                <td>@item.CreatedAt</td>
+                                <td>
+                                    <span class="badge @(item.IsActive ? "bg-success" : "bg-secondary")">
+                                        @(item.IsActive ? "Active" : "Inactive")
+                                    </span>
+                                </td>
+                                <td>
+                                    <a href="#" class="btn btn-sm btn-primary">Edit</a>
+                                    <a href="#" class="btn btn-sm btn-info">View</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

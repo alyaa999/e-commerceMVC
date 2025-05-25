@@ -1,0 +1,26 @@
+﻿@model e_commerce.Web.Models.UpdateProfileViewModel
+@{
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+}
+
+<h3>Update Profile</h3>
+
+@if (ViewBag.ProfileMessage != null)
+{
+    <div class="alert alert-success">@ViewBag.ProfileMessage</div>
+}
+
+<form asp-action="UpdateProfile" method="post" class="form grid">
+    <input asp-for="UserName" class="form__input" placeholder="Username" />
+    <span asp-validation-for="UserName" class="text-danger"></span>
+
+    <input asp-for="FirstName" class="form__input" placeholder="First Name" />
+    <span asp-validation-for="FirstName" class="text-danger"></span>
+
+    <input asp-for="LastName" class="form__input" placeholder="Last Name" />
+    <span asp-validation-for="LastName" class="text-danger"></span>
+
+    <div class="form__btn">
+        <button type="submit" class="btn">Update</button>
+    </div>
+</form>

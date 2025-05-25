@@ -1,0 +1,87 @@
+﻿@model e_commerce.Web.Models.RegisterUserViewModel
+
+@{
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // if using a layout
+}
+
+<!--=============== REGISTER ===============-->
+<section class="login-register section--lg">
+    <div class="login-register__container container grid">
+        <!-- Register Form -->
+        <div class="register">
+            <h3 class="section__title">Create an Account</h3>
+            <form asp-action="Register" class="form grid">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <input asp-for="UserName" class="form__input" placeholder="Username" />
+                <span asp-validation-for="UserName" class="text-danger"></span>
+
+                <input asp-for="FirstName" class="form__input" placeholder="FirstName" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+
+                <input asp-for="LastName" class="form__input" placeholder="LastName" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+
+                <input asp-for="Email" class="form__input" placeholder="Your Email" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+
+                <input asp-for="Password" class="form__input" placeholder="Your Password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+
+                <input asp-for="ConfirmPassword" class="form__input" placeholder="Confirm Password" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+
+                <select asp-for="Role" class="form__input">
+                    <option value="">-- Select Role --</option>
+                    <option value="Customer">Customer</option>
+                    <option value="Seller">Seller</option>
+                </select>
+                <span asp-validation-for="Role" class="text-danger"></span>
+
+
+                <div class="form__btn">
+                    <button type="submit" class="btn">Register</button>
+                </div>
+            </form>
+
+
+            <!-- Link to Login -->
+            <div class="login__header">
+                <span>Already have an account? </span>
+                <a href="@Url.Action("Login", "Account")" class="link">Sign in</a>
+            </div>
+
+            <!-- Divider -->
+            <div class="or-divider">
+                <span>OR</span>
+            </div>
+
+            <!-- Social Login Buttons -->
+            <div class="social-buttons">
+                <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Google" })"
+                   class="social-btn google">
+                    <img src="~/image/google-icon.svg" alt="Google" />
+                    Continue with Google
+                </a>
+
+                <a href="@Url.Action("ExternalLogin", "Account", new { provider = "Facebook" })"
+                   class="social-btn facebook">
+                    <img src="~/image/icon-facebook.svg" alt="Facebook" />
+                    Continue with Facebook
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+</section>
+
+
+
+
+
+
+
+
+

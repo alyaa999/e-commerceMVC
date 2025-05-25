@@ -1,0 +1,327 @@
+﻿@using e_commerce.Infrastructure.Entites
+@* @model e_commerce.Web.ViewModels.AdminOrdersViewModel *@
+
+@* @{ *@
+@*     ViewData["Title"] = "Orders Management"; *@
+@*     Layout = "_AdminLayout"; *@
+@* } *@
+
+@* <h1 class="text-center my-4 text-primary fw-bold">Orders Management</h1> *@
+
+@* @if (TempData["SuccessMessage"] != null) *@
+@* { *@
+@*     <div class="alert alert-success alert-dismissible fade show" role="alert"> *@
+@*         @TempData["SuccessMessage"] *@
+@*         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> *@
+@*     </div> *@
+@* } *@
+
+@* @if (TempData["ErrorMessage"] != null) *@
+@* { *@
+@*     <div class="alert alert-danger alert-dismissible fade show" role="alert"> *@
+@*         @TempData["ErrorMessage"] *@
+@*         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button> *@
+@*     </div> *@
+@* } *@
+
+@* <div class="container mb-4"> *@
+@*     <form method="get" asp-action="Index" class="row g-3 align-items-end"> *@
+@*         <div class="col-md-4"> *@
+@*             <label for="customerSearch" class="form-label">Search by Customer</label> *@
+@*             <input type="text" name="customerSearch" id="customerSearch" class="form-control" value="@Model.CustomerSearch" placeholder="Customer ID or Name" /> *@
+@*         </div> *@
+@*         <div class="col-md-4"> *@
+@*             <label for="status" class="form-label">Filter by Status</label> *@
+@*             <select id="status" name="status" class="form-select"> *@
+@*                 <option value="">All Statuses</option> *@
+@*                 @foreach (var status in Enum.GetValues(typeof(orderstateEnum)) *@
+@*                 .Cast<orderstateEnum>()) *@
+@*                 { *@
+@*                     <option value="@((int)status)" selected="@(Model.StatusFilter == (int)status)"> *@
+@*                         @status *@
+@*                     </option> *@
+@*                 } *@
+@*             </select> *@
+@*         </div> *@
+@*         <div class="col-md-4 d-flex align-items-end"> *@
+@*             <button type="submit" class="btn btn-primary w-100">Apply Filters</button> *@
+@*         </div> *@
+@*     </form> *@
+@* </div> *@
+
+@* <div class="container mb-4"> *@
+@*     <form method="post" asp-action="ExportToCsv"> *@
+@*         @Html.AntiForgeryToken() *@
+@*         <input type="hidden" name="status" value="@Model.StatusFilter" /> *@
+@*         <button type="submit" class="btn btn-success">📥 Export to CSV</button> *@
+@*     </form> *@
+@* </div> *@
+
+@* <div class="container table-responsive"> *@
+@*     <table class="table table-hover table-bordered align-middle"> *@
+@*         <thead class="table-dark"> *@
+@*             <tr> *@
+@*                 <th>Order ID</th> *@
+@*                 <th class="small text-muted">Customer</th> *@
+@*                 <th>Date</th> *@
+@*                 <th>Amount</th> *@
+@*                 <th>Status</th> *@
+
+@*                 <th>Actions</th> *@
+@*             </tr> *@
+@*         </thead> *@
+@*         <tbody> *@
+@*             @foreach (var order in Model.Ordersbb ?? Enumerable.Empty<Order>()) *@
+@*             { *@
+@*                 var statusValue = order?.Status ?? -1; *@
+@*                 var statusName = Enum.GetName(typeof(orderstateEnum), statusValue) ?? "Unknown"; *@
+
+@*                 var statusClass = statusValue switch *@
+@*                 { *@
+@*                     0 => "badge bg-warning text-dark",   // Pending *@
+@*                     1 => "badge bg-primary",             // Confirmed *@
+@*                     2 => "badge bg-info",                // Shipped *@
+@*                     3 => "badge bg-success",             // Delivered *@
+@*                     4 => "badge bg-danger",              // Cancelled *@
+@*                     5 => "badge bg-secondary",           // Returned *@
+@*                     _ => "badge bg-light text-dark"       // Unknown/Default *@
+@*                 }; *@
+
+@*                 <tr> *@
+@*                     <td>@order?.Id</td> *@
+
+@*                     <td class="small text-muted">@(order?.Customer?.ApplicationUser?.Email ?? "N/A")</td> *@
+
+@*                     <td class="small text-muted">@(order?.Customer?.Id)</td> *@
+
+@*                     <td>@order?.OrderDate</td> *@
+@*                     <td>@order?.TotalPrice.ToString("C")</td> *@
+@*                     <td><span class="@statusClass">@statusName</span></td> *@
+@*                     <td>@(order?.OrderProducts?.Count ?? 0)</td> *@
+@*                     <td class="text-nowrap"> *@
+@*                         @if (order != null && statusValue == (int)orderstateEnum.Pending) *@
+@*                         { *@
+@*                             <form method="post" asp-action="Confirm" asp-route-id="@order.Id" class="d-inline"> *@
+@*                                 @Html.AntiForgeryToken() *@
+@*                                 <button type="submit" class="btn btn-sm btn-success me-1">Confirm</button> *@
+@*                             </form> *@
+
+@*                             <form method="post" asp-action="Cancel" asp-route-id="@order.Id" class="d-inline"> *@
+@*                                 @Html.AntiForgeryToken() *@
+@*                                 <button type="submit" class="btn btn-sm btn-danger me-1">Cancel</button> *@
+@*                             </form> *@
+@*                         } *@
+@*                         else if (order != null && statusValue == (int)orderstateEnum.Confirmed) *@
+@*                         { *@
+@*                             <form method="post" asp-action="Cancel" asp-route-id="@order.Id" class="d-inline"> *@
+@*                                 @Html.AntiForgeryToken() *@
+@*                                 <button type="submit" class="btn btn-sm btn-danger me-1">Cancel</button> *@
+@*                             </form> *@
+@*                         } *@
+@*                         @if (order != null) *@
+@*                         { *@
+@*                             <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-info">Details</a> *@
+@*                         } *@
+@*                     </td> *@
+@*                 </tr> *@
+@*             } *@
+@*         </tbody> *@
+@*     </table> *@
+@* </div> *@
+@model e_commerce.Web.ViewModels.AdminOrdersViewModel
+@{
+    ViewData["Title"] = "Orders Management";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4 text-primary">Orders Management</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Manage and track all orders</li>
+    </ol>
+
+    <!-- Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <!-- Filter Card -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <i class="fas fa-filter me-1"></i> Filter Orders
+        </div>
+        <div class="card-body">
+            <form method="get" asp-action="Index" class="row g-3">
+                <div class="col-md-4">
+                    <label for="customerSearch" class="form-label">Customer Search</label>
+                    <input type="text" name="customerSearch" id="customerSearch" class="form-control" 
+                    value="@Model.CustomerSearch" placeholder="Email or ID" />
+                </div>
+                <div class="col-md-4">
+                    <label for="status" class="form-label">Order Status</label>
+                    <select id="status" name="status" class="form-select">
+                        <option value="">All Statuses</option>
+                        @foreach (var status in Enum.GetValues(typeof(e_commerce.Domain.Enums.orderstateEnum))
+                        .Cast<e_commerce.Domain.Enums.orderstateEnum>())
+                        {
+                            <option value="@((int)status)" selected="@(Model.StatusFilter == (int)status)">
+                                @status
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-md-4 d-flex align-items-end">
+                    <div class="btn-group w-100">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-1"></i> Search
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="fas fa-sync-alt"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Orders Card -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <div>
+                <i class="fas fa-table me-1"></i> Orders List
+            </div>
+            <form method="post" asp-action="ExportToCsv" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="status" value="@Model.StatusFilter" />
+                <input type="hidden" name="customerSearch" value="@Model.CustomerSearch" />
+                <button type="submit" class="btn btn-sm btn-success">
+                    <i class="fas fa-file-csv me-1"></i> Export CSV
+                </button>
+            </form>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-bordered" id="ordersTable" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th style="width:5%">Order ID</th>
+                            <th style="width:20%">Customer</th>
+                            <th>Date</th>
+                            <th style="width:7%">TotalPrice</th>
+                            <th>Status</th>
+                            <th>Items</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var order in Model.Ordersbb ?? Enumerable.Empty<Order>())
+                        {
+                            var statusValue = order?.Status != null ? (int)order.Status : -1;
+                            var statusName = Enum.GetName(typeof(e_commerce.Domain.Enums.orderstateEnum), statusValue) ?? "Unknown";
+
+                            var statusClass = statusValue switch
+                            {
+                                0 => "badge bg-warning text-dark",   // Pending
+                                1 => "badge bg-primary",             // Confirmed
+                                2 => "badge bg-info",                // Shipped
+                                3 => "badge bg-success",             // Delivered
+                                4 => "badge bg-danger",              // Cancelled
+                                5 => "badge bg-secondary",           // Returned
+                                _ => "badge bg-light text-dark"       // Unknown/Default
+                            };
+
+                            <tr>
+                                <td class="fw-bold" style="width:5%">@order?.Id</td>
+                                <td style="width:20%">
+                                    <div>@(order?.Customer?.ApplicationUser?.Email ?? "N/A")</div>
+                                    <small class="text-muted">ID: @(order?.Customer?.Id)</small>
+                                </td>
+                                <td>@order?.OrderDate</td>
+                                <td class="fw-bold" style="width:7%">@order?.TotalPrice.ToString("C")</td>
+                                <td><span class="@statusClass">@statusName</span></td>
+                                <td>@(order?.OrderProducts?.Count ?? 0)</td>
+                                <td class="text-nowrap" style="width:100px">
+                                    <div class="d-flex flex-wrap gap-1">
+                                        @if (order != null && statusValue == (int)e_commerce.Domain.Enums.orderstateEnum.Pending)
+                                        {
+                                            <form method="post" asp-action="Confirm" asp-route-id="@order.Id" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-check"></i> Confirm
+                                                </button>
+                                            </form>
+
+                                            <form method="post" asp-action="Cancel" asp-route-id="@order.Id" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-times"></i> Cancel
+                                                </button>
+                                            </form>
+                                        }
+                                        else if (order != null && statusValue == (int)e_commerce.Domain.Enums.orderstateEnum.Confirmed)
+                                        {
+                                            <form method="post" asp-action="Cancel" asp-route-id="@order.Id" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <button type="submit" class="btn btn-sm btn-danger">
+                                                    <i class="fas fa-times"></i> Cancel
+                                                </button>
+                                            </form>
+                                        }
+                                        @if (order != null)
+                                        {
+                                            <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-info">
+                                                <i class="fas fa-eye"></i> Details
+                                            </a>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+          
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable with pagination and search
+            $('#ordersTable').DataTable({
+                responsive: true,
+                dom: '<"top"f>rt<"bottom"lip><"clear">',
+                pageLength: 25,
+                lengthMenu: [10, 25, 50, 100],
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search orders...",
+                },
+                columnDefs: [
+                    { orderable: false, targets: [6] } // Disable sorting on Actions column
+                ]
+            });
+
+            // Confirmation for critical actions
+            $('form[asp-action="Cancel"]').submit(function(e) {
+                if (!confirm('Are you sure you want to cancel this order?')) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+}

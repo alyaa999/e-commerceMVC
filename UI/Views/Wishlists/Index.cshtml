@@ -1,0 +1,80 @@
+﻿@model e_commerce.Infrastructure.Entites.Wishlist
+
+@{
+}
+
+<section class="breadcrumb">
+    <ul class="breadcrumb__list flex container">
+        <li><a href="index.html" class="breadcrumb__link">Home</a></li>
+        <li><span class="breadcrumb__link"></span></li>
+        <li><span class="breadcrumb__link">Shop</span></li>
+        <li><span class="breadcrumb__link"></span></li>
+        <li><span class="breadcrumb__link">Wishlist</span></li>
+    </ul>
+</section>
+@if (Model == null || !Model.Products.Any())
+{
+    <div class="container">
+        <h1>Your wishlist is empty</h1>
+        <p>Looks like you haven't added anything to your wishlist yet.</p>
+        <a asp-action="index" asp-controller="home" class="btn btn--lg">Start Shopping</a>
+    </div>
+}
+else
+{
+<section class="wishlist section--lg container">
+    <div class="table__container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Stock Status</th>
+                    <th>Add to Cart</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Products)
+                {
+                    <tr>
+                        <td>
+                            <img src=@Url.Content($"~/image/{item.ProductImages.FirstOrDefault().ImageUrl}")
+                                 alt=""
+                                 class="table__img" />
+                        </td>
+                        <td>
+                            <h3 class="table__title">
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </h3>
+                        </td>
+                        <td>
+                            <span class="table__price">@Html.DisplayFor(m => item.Price)</span>
+                        </td>
+                        <td>
+                            @if (@item.Stock > 0)
+                            {
+                                <span class="table__stock">In Stock</span>
+                            }
+                            else
+                            {
+                                <span class="table__stock">Out of Stock</span>
+                            }
+                        </td>
+                            <td>
+                                <a data-product-id="@item.Id" class="action_btn cart_btn add-to-cart" aria-label="Add To Cart">
+                                    <i class="fi fi-rs-shopping-bag-add"></i>
+                                </a>
+                            </td>
+                        <td><a data-id="@item.Id" class="btn-delete"><i class="fi fi-rs-trash table__trash"></i></a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>
+}
+<a data-product-id="5" class="action_btn cart_btn add-to-cart" aria-label="Add To Cart">
+    <i class="fi fi-rs-shopping-bag-add"></i>
+</a>

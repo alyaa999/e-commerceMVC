@@ -1,0 +1,248 @@
+﻿@using e_commerce.Web.ViewModels.Home
+@model ProductDetialsViewModel
+
+<!--=============== MAIN ===============-->
+
+<!--=============== BREADCRUMB ===============-->
+<section class="breadcrumb">
+    <ul class="breadcrumb__list flex container">
+        <li><a asp-action="Index"class="breadcrumb__link">Home</a></li>
+        <li><span class="breadcrumb__link"></span>></li> 
+        <li><span class="breadcrumb__link">Shop</span></li> 
+
+        <li><span class="breadcrumb__link"></span>></li>
+        <li><span class="breadcrumb__link"></span> @Model.ProductDetials.CategoryName</li>
+        <li><span class="breadcrumb__link"></span>></li>
+        <li><span class="breadcrumb__link"></span> @Model.ProductDetials.SubCategoryName</li>
+    </ul>
+</section>
+
+<!--=============== DETAILS ===============-->
+<section class="details section--lg">
+    <div class="details__container container grid">
+        <div class="details__group">
+            @foreach (var item in Model.ProductDetials.Images)
+            {
+                if(item.IsPrimary)
+                {
+                    <img src="~/image/@item.ImageUrl"
+                    alt=""
+                    class="details__img" />
+
+                }
+            }
+
+            <div class="details__small-images grid">
+                @foreach (var item in Model.ProductDetials.Images)
+                {
+                    if (!item.IsPrimary)
+                    {
+                        <img src="~/image/@item.ImageUrl"
+                        alt=""
+                        class="details__small-img" />
+
+                    }
+                }
+
+
+            </div>
+        </div>
+        <div class="details__group">
+            <h3 class="details__title">@Model.ProductDetials.Name</h3>
+            <p class="details__brand">Brand: <span>@Model.ProductDetials.Brand</span></p>
+            <div class="details__price flex">
+                <span class="new__price">$@(Model.ProductDetials.Price - (Model.ProductDetials.Price * Model.ProductDetials.Discount / 10))e</span>
+                <span class="old__price">$@Model.ProductDetials.Price</span>
+                <span class="save__price">@Model.ProductDetials.Discount% Off</span>
+            </div>
+            <p class="short__description">
+                @Model.ProductDetials.Desc
+            </p>
+            <ul class="products__list">
+                <li class="list__item flex">
+                    <i class="fi-rs-crown"></i> 1 Year @Model.ProductDetials.Brand Brand
+                </li>
+                <li class="list__item flex">
+                    <i class="fi-rs-refresh"></i> 30 Days Return Policy
+                </li>
+                <li class="list__item flex">
+                    <i class="fi-rs-credit-card"></i> Cash on Delivery available
+                </li>
+            </ul>
+            <div class="details__action">
+                <a data-product-id="@Model.ProductDetials.Id" class="btn btn--sm add-to-cart">Add To Card</a>
+                <a data-product-id="@Model.ProductDetials.Id" class="details__action-btn add-to-wishlist">
+                    <i class="fi fi-rs-heart"></i>
+                </a>
+            </div>
+            <ul class="details__meta">
+                <li class="meta__list flex"><span>SKU:</span>@Model.ProductDetials.Code</li>
+                <li class="meta__list flex">
+                    <span>Tags:</span>@Model.ProductDetials.CategoryName , @Model.ProductDetials.SubCategoryName, @Model.ProductDetials.Tag
+                </li>
+                <li class="meta__list flex">
+                    <span>Availability:</span>@Model.ProductDetials.Stock Items in Stock
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!--=============== DETAILS TAB ===============-->
+<section class="details__tab container">
+    <div class="detail__tabs">
+        <span class="detail__tab" data-target="#reviews">Reviews(@Model.ProductDetials.Reviews.Count())</span>
+    </div>
+    <div class="details__tabs-content">
+        <div class="details__tab-content" content id="reviews">
+            <div class="reviews__container grid">
+                @foreach (var item in Model.ProductDetials.Reviews)
+                {
+
+                    <div class="review__single">
+                        <div>
+                            <img src="~/image/avatar-1.jpg"
+                            alt=""
+                            class="review__img" />
+                            <h4 class="review__title">@item.CustomerName</h4>
+                        </div>
+                        <div class="review__data">
+                            <div class="review__rating">
+
+                                @for (int i = 1; i <=5; i++)
+                                {
+                                    if (i < item.Rating)
+                                    {
+                                        <i class="fa fa-star checked"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="fa fa-star"></i>
+                                    }
+                                }
+                            </div>
+                            <p class="review__description">
+                                @item.Comment
+                            </p>
+                            <span class="review__date">
+                                @item?.ReviewDate?.ToString("MMMM dd, yyyy")  
+                            </span>
+                        </div>
+                    </div>
+
+                }  
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!--=============== PRODUCTS ===============-->
+<section class="products container section--lg">
+    <h3 class="section__title"><span>Related</span> Products</h3>
+    <div class="products__container grid">
+        @foreach (var item in Model.RelatedProducts)
+        {
+
+            <div class="product__item">
+                <div class="product__banner">
+                    <a asp-action="ProductDetials" asp-controller="Home" asp-route-id="@item.Id" class="product__images">
+                        @{
+                            int imageCount = 0;
+                        }
+
+                        @foreach (var image in item.Images)
+                        {
+                            if (imageCount >= 2)
+                            {
+                                break;
+                            }
+
+                            if (image.IsPrimary)
+                            {
+                                <img src="~/image/@image.ImageUrl" alt="" class="product__img default" />
+                            }
+                            else
+                            {
+                                <img src="~/image/@image.ImageUrl" alt="" class="product__img hoverproduct__img hover" />
+                            }
+
+                            imageCount++;
+                        }
+
+
+                    </a>
+                    <div class="product__actions">
+                        <a asp-action="ProductDetials" asp-route-id="@item.Id" class="action__btn" aria-label="Quick View">
+                            <i class="fi fi-rs-eye"></i>
+                        </a>
+                        <a href="#" data-product-id="@Model.ProductDetials.Id" class="action__btn add-to-wishlist" aria-label="Add to Wishlist">
+                            <i class="fi fi-rs-heart"></i>
+                        </a>
+                        <a href="#" class="action__btn" aria-label="Compare">
+                            <i class="fi fi-rs-shuffle"></i>
+                        </a>
+                    </div>
+                    @if (item.Tag == "New")
+                    {
+                        <div class="product__badge light-green">@item.Tag</div>
+                    }
+                    else if (item.Tag == "BestSeller")
+                    {
+                        <div class="product__badge light-orange">@item.Tag</div>
+                    }
+                    else if (item.Tag == "Trending")
+                    {
+                        <div class="product__badge light-blue">@item.Tag</div>
+                    }
+                    else
+                    {
+                        <div class="product__badge light-pink">@item.Tag</div>
+                    }
+                </div>
+                <div class="product__content">
+                    <span class="product__category">@item.SubCategoryName</span>
+                    <a href="details.html">
+                        <h3 class="product__title">@item.Name</h3>
+                    </a>
+                    <div class="product__rating">
+                        @{
+                            int SartNumber = (int?)(item?.Reviews?.Average(c => (double?)c.Rating)) ?? 0;
+                        }
+
+                        @for (int i = 1; i <= 5; i++)
+                        {
+                            if (i < SartNumber)
+                            {
+                                <i class="fa fa-star checked"></i>
+                            }
+                            else
+                            {
+                                <i class="fa fa-star"></i>
+                            }
+                        }
+
+                    </div>
+                    <div class="product__price flex">
+                        @if (item.Discount != 0)
+                        {
+                            <span class="new__price">$@(item?.Price - ((item?.Discount / 100) * item?.Price))</span>
+                            <span class="old__price">$@item?.Price</span>
+
+
+                        }
+                        else
+                        {
+                            <span class="new__price">$@item?.Price</span>
+                        }
+                    </div>
+                    <a href="#" data-product-id="@Model.ProductDetials.Id" class="action__btn cart__btn add-to-cart" aria-label="Add To Cart">
+                        <i class="fi fi-rs-shopping-bag-add"></i>
+                    </a>
+                </div>
+            </div>
+        }
+
+            </div>
+        </section>
+

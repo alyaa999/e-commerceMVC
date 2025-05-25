@@ -1,0 +1,145 @@
+﻿@model e_commerce.Infrastructure.Entites.Cart
+
+@{
+    ViewData["Title"] = "viewcartproducts";
+}
+
+<main class="main">
+    <!--=============== BREADCRUMB ===============-->
+    <section class="breadcrumb">
+        <ul class="breadcrumb__list flex container">
+            <li><a href="index.html" class="breadcrumb__link">Home</a></li>
+            <li><span class="breadcrumb__link"></span>></li>
+            <li><span class="breadcrumb__link">Shop</span></li>
+            <li><span class="breadcrumb__link"></span>></li>
+            <li><span class="breadcrumb__link">Cart</span></li>
+        </ul>
+    </section>
+    @if (Model == null || !Model.CartProducts.Any())
+    {
+        <div class="container">
+            <h1>Your cart is empty</h1>
+            <p>Looks like you haven't added anything to your cart yet.</p>
+            <a asp-action="index" asp-controller="home" class="btn btn--lg">Start Shopping</a>
+        </div>
+    }
+    else
+    { 
+    <!--=============== CART ===============-->
+    <section class="cart section--lg container">
+        <div class="table__container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                        <th>delete</th>
+                    </tr>
+                </thead> 
+                <tbody> 
+
+                @foreach (var item in Model.CartProducts)
+                {
+                        <tr class="cart-item" data-product-id="@item.ProductCodeNavigation.Id">
+                            <td> 
+                                <img src=@Url.Content($"~/image/{item.ProductCodeNavigation.ProductImages.FirstOrDefault().ImageUrl}")
+                                     alt="no image"
+                                     class="table__img" />
+                            </td>  
+                            <td>
+                                <h3 class="table__title">
+                                    @item.ProductCodeNavigation.Name
+                                </h3>
+                            </td>
+                            <td>
+                                <span class="table__price"> $@item.UnitPrice </span>
+                            </td>
+                            <td>
+                                <input min="1" class="quantity-input"
+                           data-original="@item.Quantity"
+                                       type="number" value="@item.Quantity"/>
+                                </td>
+                            <td><span class="subtotal">$@(item.UnitPrice * item.Quantity)</span></td>
+                            <td><a data-product-id="@item.ProductCodeNavigation.Id" class="btn-delete-cart"><i class="fi fi-rs-trash table__trash"></i></a></td>
+                        </tr>
+                }
+                </tbody>
+            </table>
+        </div> 
+    
+
+        <div class="cart__actions">
+            <a id="update-cart-btn"  class="btn flex btn__md">
+                <i class="fi-rs-shuffle"></i> Update Cart
+            </a>
+                <a asp-action="index" asp-controller="home" class="btn flex btn__md">
+                <i class="fi-rs-shopping-bag"></i> Continue Shopping
+            </a>
+        </div>
+
+        <div class="divider">
+            <i class="fi fi-rs-fingerprint"></i>
+        </div>
+
+        <div class="cart__group grid">
+@*             <div>
+                <div class="cart__shippinp">
+                    <h3 class="section__title">Calculate Shipping</h3>
+                    <form action="" class="form grid">
+                        <input type="text"
+                               class="form__input"
+                               placeholder="State / Country" />
+                        <div class="form__group grid">
+                            <input type="text" class="form__input" placeholder="City" />
+                            <input type="text"
+                                   class="form__input"
+                                   placeholder="PostCode" />
+                        </div>
+                        <div class="form__btn">
+                            <button class="btn flex btn--sm">
+                                <i class="fi-rs-shuffle"></i> Update
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                <div class="cart__coupon">
+                    <h3 class="section__title">Apply Coupon</h3>
+                    <form action="" class="coupon__form form grid">
+                        <div class="form__group grid">
+                            <input type="text"
+                                   class="form__input"
+                                   placeholder="Enter Your Coupon" />
+                            <div class="form__btn">
+                                <button class="btn flex btn--sm">
+                                    <i class="fi-rs-label"></i> Aplly
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div> *@
+
+            <div class="cart__total">
+                <h3 class="section__title">Cart Totals</h3>
+                <table class="cart__total-table">
+                    <tr>
+                        <td><span class="cart__total-title">Cart total number of pieces </span></td>
+                        <td><span class="cart__total-price">$ @Model.TotalItemsNumber</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="cart__total-title">Total</span></td>
+                        <td><span class="cart__total-price">$ @Model.TotalPrice</span></td>
+                    </tr>
+                </table>
+                <a asp-action="Index" asp-controller="CheckOut"  class="btn flex btn--md">
+                    <i class="fi fi-rs-box-alt"></i> Proceed To Checkout
+                </a>
+            </div>
+        </div>
+    </section>
+
+    }
+</main>

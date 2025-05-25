@@ -1,0 +1,94 @@
+﻿@model e_commerce.Infrastructure.Entites.Order
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+<section class="checkout section--lg">
+    <div class="checkout__container container grid">
+        <div class="checkout__group">
+            <h3 class="section__title"> Order Address </h3>
+                    <div class="address-card "  >
+                        <h3 class="tab__header">Shipping Address </h3>
+                        <div class="address-details">
+                            <address>
+                        <span class="address-label">City:</span>  @ViewBag.Addresse.City <br />
+                        <span class="address-label">Street:</span> @ViewBag.Addresse.Street <br />
+                        <span class="address-label">Dept No:</span> @ViewBag.Addresse.DeptNo <br />
+                        <span class="address-label">Is Default:</span> @ViewBag.Addresse.IsDefault <br />
+                            </address>
+                        </div>
+                    </div>
+                
+
+        </div>
+        <div class="checkout__group">
+            <h3 class="section__title">Cart Totals</h3>
+            <table class="order__table">
+                <thead>
+                    <tr>
+                        <th colspan="2">Products</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var item in Model.OrderProducts)
+                    {
+                        <tr>
+                            <td>
+                                <img src=@Url.Content($"~/image/{item.Product.ProductImages.FirstOrDefault().ImageUrl}")
+                                     alt="no image"
+                                     class="table__img" />
+                            </td>
+                            <td>
+                                <h3 class="table__title"> @item.Product.Name</h3>
+                                <p class="table__quantity">x @item.Quantity</p>
+                            </td>
+                           
+                            <td><a  href="#"><i class="fa-duotone fa-solid fa-right-left" style="--fa-primary-color: #69b5a6; --fa-secondary-color: #69b5a6;"></i></a></td>
+                        </tr>
+                    }
+
+                    <tr>
+                        <td><span class="order__subtitle">Subtotal</span></td>
+                        <td colspan="2"><span class="table__price">$ @Model.OrderProducts.Sum(op => op.ItemTotal)</span></td>
+                    </tr>
+                    <tr>
+                        <td><span class="order__subtitle">Shipping</span></td>
+                        <td colspan="2">
+                            @if (@ViewBag.isFirstTime)
+                            {
+                                <span class="table__price">Free Shipping</span>
+                            }
+                            else
+                            {
+                                <span class="table__price">$50</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><span class="order__subtitle">Total</span></td>
+                        <td colspan="2">
+
+                            <span class="order__grand-total">$ @Model.TotalPrice</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="payment__methods">
+                <h3 class="checkout__title payment__title">Payment Method</h3>
+                <div class="payment__option flex">
+                    <label for="l3" class="payment__label">@Model.PaymentMethod</label>
+                </div>
+                <h3 class="checkout__title payment__title">Orderstatus</h3>
+                <div class="payment__option flex">
+                    <label for="l3" class="payment__label">@Model.Status</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+

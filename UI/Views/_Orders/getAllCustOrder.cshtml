@@ -1,0 +1,93 @@
+﻿@model IEnumerable<e_commerce.Infrastructure.Entites.Order>
+
+@{
+    ViewData["Title"] = "getAllCustOrder";
+    Layout = "~/Views/Shared/_DashboardLayout.cshtml";
+
+}
+
+
+                <h3 class="tab__header">Your Orders</h3>
+                <div class="tab__body">
+                    <table class="placed__order-table" id="ordersTable">
+                        <thead>
+                            <tr>
+                                <th>Orders</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Payment Status</th>
+                                <th>Payment Method</th>
+                                <th>Totals</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.OrderDate)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Status)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PaymentStatus)
+                                        </td>
+                                      
+                                        <td>
+                                          @Html.DisplayFor(modelItem => item.PaymentMethod)
+                                        </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TotalPrice)
+                                    </td>
+                                    <td>
+                                        <a asp-action="Details" asp-route-custID="@item.CustomerId" asp-route-orderID="@item.Id" asp-route-addressID="@item.ShippingAddressId" ><i class="fa-solid fa-circle-info"></i> </a>
+                                &nbsp; &nbsp; | &nbsp; &nbsp;
+                                @if (@item.PaymentMethod == e_commerce.Domain.Enums.PaymentMethod.cash && item.Status != e_commerce.Domain.Enums.orderstateEnum.Delivered)
+                                {
+                                     <a class="cancel-order-btn" data-order-id="@item.Id" data-message="You are about to cancel the order."><i class="fi fi-rs-trash table__trash"></i></a>
+                                }
+                                else if(@item.PaymentStatus == e_commerce.Domain.Enums.PaymentStatusEnum.Refunded){
+                                     <a class="cancel-order-btn" data-order-id="@item.Id" data-message="This order is cancelled and money refunded arleady"><i class="fi fi-rs-trash table__trash"></i></a>
+                                }
+
+                                else if (item.Status == e_commerce.Domain.Enums.orderstateEnum.Delivered && item.ReturnStatus != null)
+                                {
+                                    <a class="cancel-order-btn" data-order-id="@item.Id" data-message="You have receiced the order arleady and make a return request"><i class="fi fi-rs-trash table__trash"></i></a>
+                                }
+                                else if (item.Status == e_commerce.Domain.Enums.orderstateEnum.Delivered && item.ReturnStatus == null)
+                                {
+                                    <a class="cancel-order-btn" data-order-id="@item.Id" data-message="You have receiced the order arleady we will redirect you to return page"><i class="fi fi-rs-trash table__trash"></i></a>
+                                }
+                                else
+                                {
+                                    <a class="cancel-order-btn" data-order-id="@item.Id" data-message="You are about to cancel the order and request a refund."><i class="fi fi-rs-trash table__trash"></i>
+
+                                    </a>
+                                }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table> 
+                </div>
+<style>
+    .tab__content {
+        border: 1px solid var(--border-color-alt);
+    }
+
+    .tab__header {
+        background-color: var(--container-color);
+        border-bottom: 1px solid var(--border-color-alt);
+        padding: 1rem;
+        font-size: var(--small-font-size);
+    }
+
+    .tab__body {
+        padding:  1rem;
+    }
+</style>

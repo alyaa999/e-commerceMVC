@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace e_commerce.Infrastructure.Entites;
 
@@ -12,6 +13,7 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
     {
     }
 
+    public virtual DbSet<Tag> Tags { get; set; }
     public virtual DbSet<Address> Addresses { get; set; }
 
     public virtual DbSet<Cart> Carts { get; set; }
@@ -32,7 +34,6 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Return> Returns { get; set; }
 
-    public virtual DbSet<ReturnImage> ReturnImages { get; set; }
 
     public virtual DbSet<Review> Reviews { get; set; }
 
@@ -42,12 +43,15 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
 
     public virtual DbSet<Wishlist> Wishlists { get; set; }
 
+
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) { }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-
     {
+       ModelBuilderExtensions.Seed(modelBuilder);
         base.OnModelCreating(modelBuilder);
+       
 
 
         modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
@@ -139,7 +143,7 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
                 entity.HasKey(e => new { e.OrderId, e.ProductId }).HasName("PK__Order_Pr__48672C2257690B3E");
 
                 entity.HasOne(d => d.Order).WithMany(p => p.OrderProducts)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("FK__Order_Pro__Order__5441852A");
 
                 entity.HasOne(d => d.Product).WithMany(p => p.OrderProducts)
@@ -187,15 +191,7 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
                     .HasConstraintName("FK__Returns__Product__6EF57B66");
             });
 
-            modelBuilder.Entity<ReturnImage>(entity =>
-            {
-                entity.HasKey(e => e.Id).HasName("PK__Return_I__3214EC27A7EF9997");
-
-                entity.Property(e => e.DisplayOrder).HasDefaultValue(0);
-                entity.Property(e => e.IsPrimary).HasDefaultValue(false);
-
-                entity.HasOne(d => d.Return).WithMany(p => p.ReturnImages).HasConstraintName("FK__Return_Im__Retur__73BA3083");
-            });
+           
 
             modelBuilder.Entity<Review>(entity =>
             {
@@ -254,7 +250,14 @@ public class ECommerceDBContext : IdentityDbContext<ApplicationUser>
                         });
             });
         }
+
+
+   
+
     }
-}
+  
+        
+    }
+
 
 
